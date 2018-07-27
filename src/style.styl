@@ -1,0 +1,248 @@
+@import './reset'
+
+*, ::after, ::before
+	box-sizing: border-box
+	outline none
+
+BG = #1d1f21
+SELECTION = #373b41
+CURRENT_LINE = #282a2e
+
+FG = #c6c8c6
+CANVAS_BG = lighten(#c5c8c6, 20)
+
+global-reset()
+
+html, body
+	margin 0
+	border 0
+	padding 0	
+	color FG
+
+html
+	background FG
+	font-size 14px
+	font-family sans-serif
+
+button, input
+	margin 0
+	border 0
+	outline none
+	appearance none
+	-webkit-appearance none
+	background none
+	color inherit
+	font inherit	
+
+button, input[type=text]
+	padding .8em
+	border 1px solid FG
+	color #c6c8c6
+
+button
+	&:hover
+		background FG
+		color BG
+
+input[type=text]
+	&:hover
+		background lighten(BG, 10)
+
+.menu
+	cursor default
+	position absolute
+	// width 10em
+	background #282a2e
+	z-index 100
+
+	li
+		padding 1em
+
+		&:hover
+			background SELECTION	
+			
+.fill
+	position fixed
+	top 0
+	left 0
+	width 100%
+	height 100%
+	z-index 0
+
+.artboard
+	position absolute
+	width 100%
+	height 100%
+	background CANVAS_BG
+
+	&.pan
+		cursor grab
+		cursor -webkit-grab
+
+
+.sidebar
+	position absolute
+	top 0
+	right 0
+	width 30em
+	height 100%
+	display flex
+	flex-direction column
+	align-items stretch
+	background BG
+
+	&__header
+		z-index 10
+		height 5rem
+		display flex
+		justify-content space-between
+		flex 0 0 @height
+		padding 1rem .5rem 1rem 1rem
+
+		input
+			border-bottom 1px solid CANVAS_BG
+			border-color transparent transparent FG
+			margin-right 1rem
+			padding 0.5rem
+
+			&.icon
+				font-size 1.5em
+				width 2em
+				padding-left 0
+				padding-right 0
+				text-align center
+			
+			&.label
+				flex-grow 1
+		
+		.menu-button
+			font-size 1.8rem
+			padding 0 .1em 0 .35em
+			margin-left .5rem
+			border 0
+		
+		.menu
+			top 3.5rem
+			right .5rem	
+
+	&__code
+		height 100%
+		margin 1em
+			
+
+.toolbar
+	SIZE = 2.5rem
+
+	user-select none
+	position absolute
+	top 1rem
+	left @top
+	font-size 0.5 * SIZE
+
+
+
+	&__tools
+		display flex
+		flex-direction column
+		align-items flex-start
+
+	li
+		position relative
+		display flex
+		overflow hidden
+		width auto
+		height SIZE
+		margin-bottom .5rem
+		background BG
+		border-radius 0.5 * SIZE
+		transform-origin (0.5 * SIZE) (0.5 * SIZE)
+		transition all .1s ease
+		color CANVAS_BG
+
+		&.active
+			transform scale(1)
+		
+		&:hover
+			transform scale(1.2)
+
+		&:hover, &.active
+			width auto
+
+			label
+				width auto
+				padding 0 (0.5 * SIZE) 0 0
+
+		&:checked
+			background red
+			transform scale(1)
+	
+	input
+		float left
+		display block
+		width SIZE
+		height SIZE
+		flex 0 0 SIZE
+
+	label
+		display block
+		overflow hidden
+		width 0
+		height SIZE
+		padding 0
+		transition all .1s ease
+		font-size .8em
+		color CANVAS_BG
+		line-height SIZE
+	
+	.icon
+		position absolute
+		top 0
+		left 0
+		width SIZE
+		height SIZE
+		text-align center
+		line-height SIZE
+		z-index 10
+		pointer-events none
+
+		&.tinyletter
+			font-size .9em		
+			line-height 1.1 * SIZE	
+	
+	.add
+		width SIZE !important
+		background CANVAS_BG
+		border 1px dashed BG
+
+		&:before
+			content '+'
+			display block
+			width 100%
+			height 100%
+			color black
+			line-height 0.9 * SIZE
+			text-align center
+	
+.settings-button
+	position absolute
+	left 1rem
+	bottom @left
+	width 2.5rem
+	height @width
+	background-image embedurl('./gear.svg')
+	background-size 100% 100%
+	transition all .1s ease
+
+	&:hover
+		transform scale(1.2)
+
+.settings
+	position absolute
+	left 4.5rem
+	bottom .8rem
+	color BG
+	background CANVAS_BG
+	border 1px solid #d6d6d6
+
+	li:hover
+		background #efefef
