@@ -2,20 +2,36 @@ import EventEmitter from 'eventemitter3'
 import paper from 'paper'
 import Mousetrap from 'mousetrap'
 import localeval from 'localeval'
+import linesIntersection from 'lines-intersection'
+import jsonBeautify from 'json-beautify'
+import Color from 'color'
 
 class Tool extends EventEmitter {
 
-	constructor(project, events = {}, globalVariables) {
+	constructor(tool, project, parameters) {
 
 		super()
 
-		this.globalVariables = globalVariables
+		this.code = tool.code
+		this.metadata = {...tool}
+		delete this.metadata.code
 
 		this.project = project
+		this.parameters = parameters
 		this.el = project.view.element
+
+		this.globalVariables = {...globalVariables}
+
+		const codeToCompile = createEvalChunk(this.code)
+		const scope = {...sandbox, globalVariables: this.globalVariables, parameters}
+
+		const events = localeval(codeToCompile, scope)
+
+		
 
 		this.isDrawing = false
 		this.isDragging = false
+		this.isPressing = false
 
 		this.on(events)
 		
@@ -24,23 +40,29 @@ class Tool extends EventEmitter {
 		this._onMouseup = this._onMouseup.bind(this)
 	}
 
-	disable() {
+	pause() {
 		this.el.removeEventListener('mousedown', this._onMousedown)
 		window.removeEventListener('mousemove', this._onMousemove)
+		window.removeEventListener('mousewheel', this._onMousemove)
 		window.removeEventListener('mouseup', this._onMouseup)
 	}
 
-	enable() {
+	resume() {
 		this.el.addEventListener('mousedown', this._onMousedown)
 		window.addEventListener('mousemove', this._onMousemove)
+		window.addEventListener('mousewheel', this._onMousemove)
 		window.addEventListener('mouseup', this._onMouseup)
 	}
 
-	dispose() {
+	deactivate() {
 		if (this.isDrawing) {
 			this.end()
 		}
-		this.disable()
+		this.pause()
+	}
+
+	activate() {
+		this.resume()
 	}
 	
 
@@ -57,10 +79,20 @@ class Tool extends EventEmitter {
 	end() {
 		this.isDrawing = false
 		this.isDragging = false
+		this.isPressiong = false
+
+		this.project.layers.guide.removeChildren()
+		this.project.layers.guide.bringToFront()
 
 		// end
 		Mousetrap.unbind(['enter', 'esc'])
 		this.emit('end')
+	}
+
+	exportText() {
+		const metadata = jsonBeautify(this.metadata, null, 2, 20)
+		const text =  `/*\n${metadata}\n*/\n\n${this.code}`
+		return text
 	}
 
 	_onMousedown(_e) {
@@ -68,17 +100,20 @@ class Tool extends EventEmitter {
 		const e = this._transformMouseEvent(_e)
 
 		this.isDragging = true
+		this.isPressing = true
 
 		if (!this.isDrawing) {
 
 			// begin
 			Mousetrap.bind(['enter', 'esc'], this.end.bind(this))
 			this.isDrawing = true
+			this.globalVariables.pressCount = 0
+			
 			this.emit('begin', e)
-
 		}
 
-		this.emit('press', e)		
+		this.globalVariables.pressCount += 1
+		this.emit('press', e)
 	}
 
 	_onMousemove(_e) {
@@ -96,9 +131,14 @@ class Tool extends EventEmitter {
 
 	_onMouseup(_e) {
 
-		const e = this._transformMouseEvent(_e)
-
+		if (!this.isPressing) {
+			return
+		}
+		
 		this.isDragging = false
+		this.isPressing = false
+
+		const e = this._transformMouseEvent(_e)
 
 		if (this.isDrawing) {
 			this.emit('release', e)
@@ -108,7 +148,7 @@ class Tool extends EventEmitter {
 	_transformMouseEvent(e) {
 
 		const pos = new paper.Point(e.x, e.y)
-		const mouse = this.project.activeLayer.globalToLocal(pos)
+		const mouse = this.project.view.viewToProject(pos)
 
 		this.globalVariables.mouse = mouse
 		this.globalVariables.mouseX = mouse.x
@@ -121,6 +161,14 @@ class Tool extends EventEmitter {
 	}
 
 }
+
+const globalVariables = {
+	mouse: new paper.Point(0, 0),
+	mouseX: 0,
+	mouseY: 0,
+	pressCount: 0,
+	GUIDE: '#3e999f'
+} 
 
 const sandbox = {
 	// paper
@@ -137,19 +185,89 @@ const sandbox = {
 	RegularPolygon: paper.Path.RegularPolygon,
 	Star: paper.Path.Star,
 
-	console: console
+	Color,
+
+	Guide: {
+
+		add(item, mode = 'stroke') {
+
+			item.addTo(paper.project.layers.guide)
+
+			if (mode == 'stroke') {
+				item.strokeColor = '#3e999f'
+				item.strokeWidth = 0.5
+				item.fillColor = null
+				item.strokeScaling = false
+			} else {
+				item.fillColor = '#3e999f'
+				item.strokeWidth = null
+			}
+
+			return item
+		},
+
+		addPoint(center, mode = 'fill') {
+
+			let item = new paper.Path.Circle(center, 3)
+			item.applyMatrix = false
+			item.scaling =  1 / paper.project.view.scaling.x
+			item.addTo(paper.project.layers.guide)
+
+			if (mode == 'stroke') {
+				item.strokeColor = '#3e999f'
+				item.strokeWidth = 0.5
+				item.strokeScaling = false
+				item.fillColor = 'white'
+			} else {
+				item.fillColor = '#3e999f'
+				item.strokeWidth = null
+			}
+			item.data.isMarker = true
+
+			return item
+		},
+
+		addLine(from, to, width = 0.5) {
+
+			let item = new paper.Path.Line(from, to)
+			item.addTo(paper.project.layers.guide)
+			item.strokeColor = '#3e999f'
+			item.strokeWidth = 0.5
+			item.strokeScaling = false
+			item.data.originalStrokeWidth = width
+
+			return item
+		}
+
+	},
+
+	getIntersection(p0, p1, p2, p3) {
+		const result = linesIntersection(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)
+		return result ? new paper.Point(result[0], result[1]) : null
+	},
+
+	console: console,
+
+	// math
+	degrees: rad => rad * 180 / Math.PI,
+	radians: deg => deg* Math.PI / 180,
+
+	PI_2: Math.PI * 2
 }
 
 Object.getOwnPropertyNames(Math).forEach(name => sandbox[name] = Math[name])
 
-Tool.compileFromCode = (code) => {
-
-	const codeToCompile = `
-try {
+function createEvalChunk(code) {
+	
+	return `try {
 	with (globalVariables) {
-		${code}
+		with (parameters) {
+			${code}
+		}
 	}
-} catch (err) {}
+} catch (err) {
+	console.error(err)
+}
 
 let events = {}
 
@@ -178,23 +296,28 @@ try {
 } catch (err) {}
 
 events`
+}
 
-	const globalVariables = {
-		mouse: new paper.Point(0, 0),
-		mouseX: 0,
-		mouseY: 0
+Tool.compile = (tool, parameters) => {	
+
+	return new Tool(tool, paper.project, parameters)
+}
+
+Tool.parseToolText = (text) => {
+
+	const result = text.match(/\/\*([\s\S]*?)\*\/[\n]*([\s\S]*)/m)
+	const code = result[2]
+
+	let metadata
+	try {
+		metadata = JSON.parse(result[1])
+	} catch (err) {
+		console.error('Invalid metadata', result[1])
 	}
 
-	const scope = {...sandbox, globalVariables}
+	metadata.parameters = metadata.parameters || []
 
-	const events = localeval(codeToCompile, scope)
-
-	setInterval(() => {
-		scope.globalVariables.mouseX += 1
-	}, 10)
-
-
-	return new Tool(paper.project, events, globalVariables)
+	return {...metadata, code}
 }
 
 export default Tool
