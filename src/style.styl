@@ -279,7 +279,7 @@ input[type=text], input[type=number]
 
   user-select none
   position absolute
-  top 1rem
+  top 0.5rem
   left @top
   font-size 0.5 * SIZE
 
@@ -296,7 +296,7 @@ input[type=text], input[type=number]
     overflow hidden
     width auto
     height SIZE
-    margin-bottom .5rem
+    margin-bottom 1px
     background BG
     border-radius 0.5 * SIZE
     transform-origin (0.5 * SIZE) (0.5 * SIZE)
@@ -361,6 +361,7 @@ input[type=text], input[type=number]
     width SIZE !important
     background CANVAS_BG
     border 1px dashed BG
+    cursor pointer
 
     &:before
       content '+'
@@ -379,11 +380,12 @@ input[type=text], input[type=number]
   height @width
   background-image url('./gear.svg')
   background-size 2em
-  transition all .1s ease
+  transition all 250ms ease
   background-repeat no-repeat
   background-position center
   border-radius 1.5em
   overflow hidden
+  cursor pointer
 
   &:hover
     transform scale(1.2) rotate(30deg)
@@ -406,7 +408,7 @@ PADDING = .8rem
   position absolute
   top 0
   right 100%
-  margin-right 0rem
+  margin-right 0.5rem
   z-index 100
   width 15rem
   color SELECTION
