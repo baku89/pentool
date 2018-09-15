@@ -193,10 +193,26 @@ input[type=text], input[type=number]
 				text-align center
 				height:100%
 				margin-right 0
+				background transparent
+				cursor pointer
 			
+				&:hover
+					color white
+
 			&.label
 				flex-grow 1
 				font-size 0.9rem
+				line-height 2.4em
+				background-color transparent
+				position absolute
+				left 3em
+				width calc(100% - 12em)
+				height 3em
+				top 0.25em
+				cursor pointer
+
+				&:hover
+					color white
 		
 		.btn-menu
 			font-size 1.5rem
