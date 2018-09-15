@@ -327,9 +327,13 @@ input[type=text], input[type=number]
 	bottom @left
 	width 2.5rem
 	height @width
-	background-image embedurl('./gear.svg')
-	background-size 100% 100%
+	background-image url('./gear.svg')
+	background-size 2em
 	transition all .1s ease
+	background-repeat no-repeat
+	background-position center
+	border-radius 60px
+	overflow hidden
 
 	&:hover
 		transform scale(1.2) rotate(30deg)
