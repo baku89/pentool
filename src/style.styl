@@ -115,27 +115,29 @@ input[type=text], input[type=number]
 		background BG
 		right 100%
 		top 50%
-		width 1.2rem
+		width 1rem
 		height 8rem
 		margin-top -0.5 * @height
 		margin-right 0
 		text-align center
 		font-size .8rem
 		z-index 20
+		border-top-left-radius 5px
+		border-bottom-left-radius 5px
+		cursor pointer
+		transition all 250ms
 
 		&:before
-			content: '◀'
 			position relative
 			display inline-block
 			left .1em
 			line-height @height
 
 		&:hover
-			color BG
-			background FG
+			background SELECTION
+			width 1.2rem
 
 	&.show &__split:before
-			content: '▶'
 			left .4em
 
 .tool-editor
@@ -221,6 +223,8 @@ input[type=text], input[type=number]
 			line-height 3rem
 			padding 0
 			color #888
+			transition background-color 250ms
+			cursor pointer
 
 			&.active
 				background SELECTION
@@ -261,7 +265,7 @@ input[type=text], input[type=number]
 			transform scale(1)
 		
 		&:hover
-			transform scale(1.2)
+			transform scale(1)
 
 		&:hover, &.active
 			width auto
@@ -269,6 +273,7 @@ input[type=text], input[type=number]
 			label
 				width auto
 				padding 0 (0.5 * SIZE) 0 0
+				opacity 1
 
 		&:checked
 			background red
@@ -281,6 +286,7 @@ input[type=text], input[type=number]
 		height SIZE
 		flex 0 0 SIZE
 		opacity 0
+		cursor pointer
 
 	label
 		display block
@@ -288,10 +294,11 @@ input[type=text], input[type=number]
 		width 0
 		height SIZE
 		padding 0
-		transition all .1s ease
-		font-size .8em
+		transition all 250ms ease
+		font-size .7em
 		color CANVAS_BG
 		line-height SIZE
+		opacity 0
 	
 	.icon
 		position absolute
