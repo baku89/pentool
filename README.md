@@ -3,6 +3,16 @@
 ![](./thumb.jpg)
 
 Vector graphics editor with programmable pen tools aiming to be alternative to de facto standards on graphic design tools.
+This tool is built deeply based on [Paper.js](http://paperjs.org). I'd like to take over the phillosophy of [Scriptgrapher].
+
+## Developemnt
+
+```
+git clone https://github.com/baku89/pentool
+cd pentool
+yarn install
+gulp
+```
 
 ## TODO
 
