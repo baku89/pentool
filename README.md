@@ -140,6 +140,8 @@ $npm install -D paper
 
 ### 4.2 フリーズしても何とかなるようにする
 
+マニュアルで実行するモードと、コード編集する度自動的に実行されるモードとを切り替えられるようにします。（[p5.js Web Editor](https://editor.p5js.org/)の戦略）
+
 `index.html`に実行ボタンと自動更新チェックボックスを追加。
 
 ```html
@@ -151,8 +153,6 @@ $npm install -D paper
 ```
 
 `src/main.js`をアップデート。（`src/main.4.2.js`）
-
-マニュアルで実行するモードと、コード編集する度自動的に実行されるモードとを切り替えられるようにします。（[p5.js Web Editor](https://editor.p5js.org/)の戦略）
 
 - LocalStorage に新しく`auto-refresh`プロパティを追加。`true`にセットされている時のみ自動更新を有効とする。
 - コードの実行前に一時的に `auto-refresh`を`false`にし、処理が`PaperScript.execute`から帰ってきた時点で、元の値に戻す。
