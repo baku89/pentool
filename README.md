@@ -236,6 +236,16 @@ const { updateOverlays } = useDirectManipulation(editor)
 
 ## その他
 
+### 再現性のある `Math.random()` 関数
+
+コードの更新ごとにチカチカなるのを防ぐため。`Math.seedrandom()`でシード値を与えることが出来ます。
+
+```
+<script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+```
+
+### パスのオフセット
+
 `paperjs-offset`で、パスのオフセット機能を追加できます。
 
 ```
