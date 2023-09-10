@@ -72,10 +72,12 @@ const run = (code) => {
 	const doAutoRefresh = localStorage.getItem('auto-refresh') ?? 'true'
 	localStorage.setItem('auto-refresh', 'false')
 
-	paper.project.activeLayer.removeChildren()
-	paper.PaperScript.execute(code, paper)
-
-	localStorage.setItem('auto-refresh', doAutoRefresh)
+	try {
+		paper.project.activeLayer.removeChildren()
+		paper.PaperScript.execute(code, paper)
+	} finally {
+		localStorage.setItem('auto-refresh', doAutoRefresh)
+	}
 }
 
 // run the code on change
