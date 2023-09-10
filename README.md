@@ -17,6 +17,11 @@ https://jssst2023.wordpress.com/tutorial/
 
 ## 1. 開発環境のセットアップ
 
+```
+$ git clone https://github.com/baku89/jssst40-tuts
+$ cd jssst40-tuts
+```
+
 ### 1.0 Vite をインストール、ボイラープレートを整理 (オプション)
 
 このリポジトリを clone している時点で完了しているので、スキップして OK です。
