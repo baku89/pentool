@@ -7,7 +7,7 @@
 
 https://jssst2023.wordpress.com/tutorial/
 
-触れるデモはこちら: [Live Programming Editor w/ Paper.js](https://glisp.app/jssst-tuts/)
+触れるデモはこちら: [Live Programming Editor w/ Paper.js](https://glisp.app/jssst40-tuts/)
 
 ## 📝 NOTE
 
