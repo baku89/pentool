@@ -263,3 +263,13 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 ```
+
+### 描画ツールのサポート
+
+```js
+//...
+paper.project.activeLayer.removeChildren()
+paper.tools.forEach((t) => t.remove())
+paper.PaperScript.execute(code, paper)
+// ...
+```

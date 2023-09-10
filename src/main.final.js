@@ -74,6 +74,7 @@ const run = (code) => {
 
 	try {
 		paper.project.activeLayer.removeChildren()
+		paper.tools.forEach((t) => t.remove())
 		paper.PaperScript.execute(code, paper)
 	} finally {
 		localStorage.setItem('auto-refresh', doAutoRefresh)
