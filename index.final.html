@@ -8,11 +8,19 @@
 	<body>
 		<div>
 			<canvas id="canvas" resize></canvas>
+			<div id="point-handle"></div>
 		</div>
 		<div id="code">
-			<div id="actions"></div>
+			<div id="actions">
+				<button id="run">Run</button>
+				<button id="copy">Copy</button>
+				<button id="paste">Paste</button>
+				<input type="checkbox" id="auto-refresh" checked />
+				<label for="auto-refresh">Auto Refresh</label>
+			</div>
 			<div id="editor-wrapper">
 				<div id="editor"></div>
+				<input type="color" id="color-picker" />
 			</div>
 		</div>
 		<script type="module" src="/src/main.js"></script>
