@@ -128,7 +128,7 @@ export default defineConfig({
 ベクターグラフィックス描画のバックエンドに[Paper.js](http://paperjs.org/)を用います。 Paper.js には PaperScript という JavaScript の拡張言語がバンドルされているので、それを`eval`関数のかわりに実行環境として用いることにします。
 
 ```
-$npm install -D paper
+$npm install -D paper acorn
 ```
 
 `src/main.js` をアップデート。（`src/main.3.js`）

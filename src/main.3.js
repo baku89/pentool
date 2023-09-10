@@ -1,5 +1,10 @@
 import './style.2.css'
 import * as monaco from 'monaco-editor'
+
+// needs to import the latest version of acorn to use ES6 syntax in PaperScript
+import * as acorn from 'acorn'
+window.acorn = acorn
+
 import paper from 'paper'
 
 const initialCode = `const path = new Path()
