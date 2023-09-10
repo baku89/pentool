@@ -16,6 +16,8 @@ export default function useDirectManipulation(editor) {
 		const model = editor.getModel()
 		const position = editor.getPosition()
 
+		if (!model || !position) return
+
 		// reset all of event listeners and styles of overlay UIs
 		colorPicker.style.visibility = 'hidden'
 		colorPicker.oninput = null
