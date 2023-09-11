@@ -7,7 +7,7 @@ tool.onMouseDown = (e) => {
 	path.add(e.point)
 	path.strokeColor = 'skyblue'
 	path.strokeWidth = 20
-	path.strokeCap = 'round'
+	path.strokeCap = path.strokeJoin = 'round'
 }
 
 tool.onMouseDrag = (e) => {
