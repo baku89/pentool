@@ -1,6 +1,6 @@
-const rawData = `apple 20
-banana 20
-melon 23`
+const rawData = `apple	20
+banana	32
+melon	54`
 
 const colors = [
 	'#3333ff',
@@ -16,7 +16,7 @@ const width = 164
 
 const data = rawData
 	.split('\n')
-	.map((l) => l.split(' ').map((v, i) => (i ? parseFloat(v) : v)))
+	.map((l) => l.split('	').map((v, i) => (i ? parseFloat(v) : v)))
 const sum = data.reduce((s, [, v]) => s + v, 0)
 const center = new Point(radius + width / 2, radius + width / 2)
 
