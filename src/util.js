@@ -15,7 +15,7 @@ export function findTextBetweenDelimitersAtColumn(
 ) {
 	subject = subject.slice(0, column - 1) + '🍡' + subject.slice(column - 1)
 
-	const regex = new RegExp(open + '(.*?🍡.*?)' + close)
+	const regex = new RegExp(`${open}([^${open}]*?🍡[^${close}]*?)${close}`)
 
 	const match = regex.exec(subject)
 
