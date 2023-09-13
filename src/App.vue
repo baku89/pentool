@@ -122,7 +122,7 @@ async function pasteSVGToCanvas() {
 				<OverlayNumberSlider
 					v-show="!colorPickerVisible"
 					v-model:code="code"
-					:cursorIndex="cursorIndex"
+					v-model:cursorIndex="cursorIndex"
 					:cursorPosition="cursorPosition"
 				/>
 			</div>

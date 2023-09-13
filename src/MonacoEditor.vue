@@ -130,6 +130,16 @@ onMounted(() => {
 			editor.pushUndoStop()
 		}
 	)
+
+	watch(
+		() => props.cursorIndex,
+		(value) => {
+			const position = editor.getModel()?.getPositionAt(value)
+			if (!position) return
+
+			editor.setPosition(position)
+		}
+	)
 })
 </script>
 

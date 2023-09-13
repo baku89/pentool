@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits<{
 	(e: 'update:code', value: string): void
+	(e: 'update:cursorIndex', value: number): void
 }>()
 
 const selection = computed(() => {
@@ -60,6 +61,7 @@ function onPointermove(e: PointerEvent) {
 		value.toFixed(precision)
 	)
 
+	emits('update:cursorIndex', selection.value.startIndex)
 	emits('update:code', code)
 }
 
