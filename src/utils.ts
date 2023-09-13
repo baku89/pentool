@@ -30,8 +30,8 @@ export function findTextBetweenDelimiters(
 	return { text, startIndex, endIndex }
 }
 
-export function findNumericLiteralAtColumn(subject: string, column: number) {
-	subject = subject.slice(0, column - 1) + '🍡' + subject.slice(column - 1)
+export function findNumericLiteralAtColumn(subject: string, index: number) {
+	subject = subject.slice(0, index) + '🍡' + subject.slice(index)
 
 	const regex = /([+-\d.]*🍡[+-\d.]*)/
 
@@ -40,15 +40,15 @@ export function findNumericLiteralAtColumn(subject: string, column: number) {
 	if (!match) return null
 
 	const text = match[1].replace('🍡', '')
-	const startColumn = match.index + 1
-	const endColumn = startColumn + text.length
+	const startIndex = match.index
+	const endIndex = startIndex + text.length
 
 	if (/^[+-]?\d+$/.test(text)) {
 		return {
 			value: parseInt(text),
 			precision: 0,
-			startColumn,
-			endColumn,
+			startIndex,
+			endIndex,
 		}
 	}
 
@@ -58,8 +58,8 @@ export function findNumericLiteralAtColumn(subject: string, column: number) {
 		return {
 			precision: Math.max(1, floatMatch[1].length),
 			value: parseFloat(text),
-			startColumn,
-			endColumn,
+			startIndex,
+			endIndex,
 		}
 	}
 
