@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import { vec2 } from 'linearly'
 import { useLocalStorage } from '@vueuse/core'
 // needs to import the latest version of acorn to use ES6 syntax in PaperScript
@@ -50,7 +50,7 @@ function executeCode() {
 	}
 }
 
-watch([code, autoRefresh], executeCode, { flush: 'post' })
+watch([code, autoRefresh], () => nextTick(executeCode))
 
 // Setup paper.js
 const $canvas = ref<HTMLCanvasElement | null>(null)
