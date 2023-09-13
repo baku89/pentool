@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor'
 import { defineProps, ref, onMounted, watch } from 'vue'
+import { Vec2, vec2 } from 'linearly'
 
 interface Props {
 	modelValue: string
-	cursorPosition: number
+	cursorIndex: number
+	cursorPosition: Vec2
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: '',
-	cursorPosition: 0,
+	cursorIndex: 0,
+	cursorPosition: () => vec2.zero,
 })
 
 const emits = defineEmits<{
 	(e: 'update:modelValue', value: string): void
-	(e: 'update:cursorPosition', index: number): void
+	(e: 'update:cursorIndex', value: number): void
+	(e: 'update:cursorPosition', value: Vec2): void
 }>()
 
 const $root = ref<HTMLElement | null>(null)
@@ -99,8 +103,14 @@ onMounted(() => {
 
 		// Convert monaco editor's position to character-based index
 		const index = editor.getModel()?.getOffsetAt(position) ?? 0
+		emits('update:cursorIndex', index)
 
-		emits('update:cursorPosition', index)
+		// Convert monaco editor's position to pixel-based position
+		const cursorInfo = editor.getScrolledVisiblePosition(position)
+		if (cursorInfo) {
+			const { top, left, height } = cursorInfo
+			emits('update:cursorPosition', [left, top + height])
+		}
 	})
 
 	watch(
@@ -131,9 +141,4 @@ onMounted(() => {
 	</div>
 </template>
 
-<style lang="stylus" scoped>
-
-.editor
-	width 100%
-	height 100%
-</style>
+<style lang="stylus" scoped></style>

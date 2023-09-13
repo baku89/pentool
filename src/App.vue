@@ -14,6 +14,7 @@ PaperOffset(paper)
 import MonacoEditor from './MonacoEditor.vue'
 import PointHandle from './PointHandle.vue'
 import { replaceTextBetween } from './utils'
+import { vec2 } from 'linearly'
 
 const code = useLocalStorage('code', '')
 
@@ -27,7 +28,8 @@ path.moveTo(start)
 path.lineTo(start + [200, 50])`
 }
 
-const cursorPosition = ref(0)
+const cursorIndex = ref(0)
+const cursorPosition = ref(vec2.zero)
 
 const autoRefresh = useLocalStorage('autoRefresh', true)
 
@@ -70,8 +72,8 @@ async function pasteSVGToCanvas() {
 
 	code.value = replaceTextBetween(
 		code.value,
-		cursorPosition.value,
-		cursorPosition.value,
+		cursorIndex.value,
+		cursorIndex.value,
 		svgCode
 	)
 }
@@ -81,7 +83,7 @@ async function pasteSVGToCanvas() {
 	<div class="App">
 		<div>
 			<canvas class="canvas" ref="$canvas" resize></canvas>
-			<PointHandle v-model:code="code" :cursorPosition="cursorPosition" />
+			<PointHandle v-model:code="code" :cursorIndex="cursorIndex" />
 		</div>
 
 		<div class="inspector">
@@ -100,11 +102,14 @@ async function pasteSVGToCanvas() {
 					<span class="material-symbols-outlined">content_paste</span>Paste
 				</button>
 			</div>
-			<MonacoEditor
-				class="editor"
-				v-model="code"
-				v-model:cursorPosition="cursorPosition"
-			/>
+			<div class="editor-wrapper">
+				<MonacoEditor
+					class="editor"
+					v-model="code"
+					v-model:cursorIndex="cursorIndex"
+					v-model:cursorPosition="cursorPosition"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -163,9 +168,13 @@ async function pasteSVGToCanvas() {
 			color white
 
 
-.editor
+.editor-wrapper
 	position relative
 	flex-grow 1
+
+.editor
+	width 100%
+	height 100%
 
 /* Direct Manipulation */
 #color-picker

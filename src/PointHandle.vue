@@ -4,12 +4,12 @@ import { findTextBetweenDelimiters, replaceTextBetween } from './utils'
 
 interface Props {
 	code: string
-	cursorPosition: number
+	cursorIndex: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	code: '',
-	cursorPosition: 0,
+	cursorIndex: 0,
 })
 
 const emits = defineEmits<{
@@ -19,8 +19,8 @@ const emits = defineEmits<{
 const selection = computed(() => {
 	// show point handle
 	const matchBrackets = [
-		findTextBetweenDelimiters(props.code, props.cursorPosition, '[', ']'),
-		findTextBetweenDelimiters(props.code, props.cursorPosition, '(', ')'),
+		findTextBetweenDelimiters(props.code, props.cursorIndex, '[', ']'),
+		findTextBetweenDelimiters(props.code, props.cursorIndex, '(', ')'),
 	].filter(Boolean) as Array<
 		Exclude<ReturnType<typeof findTextBetweenDelimiters>, null>
 	>

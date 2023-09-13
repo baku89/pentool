@@ -17,6 +17,7 @@
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-simple-import-sort": "^10.0.0",
 		"eslint-plugin-unused-imports": "^3.0.0",
+		"linearly": "^0.4.2",
 		"monaco-editor": "^0.43.0",
 		"paper": "^0.12.17",
 		"paperjs-offset": "^1.0.8",

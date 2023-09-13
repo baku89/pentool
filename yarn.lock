@@ -931,6 +931,11 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+linearly@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.4.2.tgz#4057196752ebcf58f87251218f1f342e3f49e879"
+  integrity sha512-N124gVwh/vqzdXJ3NaSLFXP0TVac3Nr0MNtg8Zw1+uHW5rh+wN/gz8G9MWW2JoST3wCATrxY4fTdZKBt8Rwcjg==
+
 locate-path@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-6.0.0.tgz#55321eb309febbc59c4801d931a72452a681d286"
