@@ -15,6 +15,7 @@ import MonacoEditor from './MonacoEditor.vue'
 import PointHandle from './PointHandle.vue'
 import { replaceTextBetween } from './utils'
 import { vec2 } from 'linearly'
+import ColorPicker from './ColorPicker.vue'
 
 const code = useLocalStorage('code', '')
 
@@ -108,6 +109,11 @@ async function pasteSVGToCanvas() {
 					v-model="code"
 					v-model:cursorIndex="cursorIndex"
 					v-model:cursorPosition="cursorPosition"
+				/>
+				<ColorPicker
+					v-model:code="code"
+					:cursorIndex="cursorIndex"
+					:cursorPosition="cursorPosition"
 				/>
 			</div>
 		</div>
