@@ -63,6 +63,8 @@ onMounted(() => {
 	executeCode()
 })
 
+const colorPickerVisible = ref(false)
+
 function copyCanvasAsSVG() {
 	const svg = paper.project.exportSVG({ asString: true })
 	navigator.clipboard.writeText(svg.toString())
@@ -115,8 +117,10 @@ async function pasteSVGToCanvas() {
 					v-model:code="code"
 					:cursorIndex="cursorIndex"
 					:cursorPosition="cursorPosition"
+					v-model:visible="colorPickerVisible"
 				/>
 				<OverlayNumberSlider
+					v-show="!colorPickerVisible"
 					v-model:code="code"
 					:cursorIndex="cursorIndex"
 					:cursorPosition="cursorPosition"

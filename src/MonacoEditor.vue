@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor'
 import { defineProps, ref, onMounted, watch } from 'vue'
-import { Vec2, vec2 } from 'linearly'
+import { Vec2 } from 'linearly'
 
 interface Props {
 	modelValue: string
 	cursorIndex: number
-	cursorPosition: Vec2
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: '',
 	cursorIndex: 0,
-	cursorPosition: () => vec2.zero,
 })
 
 const emits = defineEmits<{

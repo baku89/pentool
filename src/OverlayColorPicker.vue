@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Vec2 } from 'linearly'
-import { computed } from 'vue'
+import { computed, watchEffect } from 'vue'
 import {
 	findTextBetweenDelimiters,
 	normalizeColorToHexCode,
@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits<{
 	(e: 'update:code', value: string): void
+	(e: 'update:visible', value: boolean): void
 }>()
 
 const selection = computed(() => {
@@ -40,6 +41,10 @@ const selection = computed(() => {
 	}
 
 	return null
+})
+
+watchEffect(() => {
+	emits('update:visible', !!selection.value)
 })
 
 const style = computed(() => {
