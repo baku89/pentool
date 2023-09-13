@@ -78,7 +78,7 @@ function onInput(e: Event) {
 
 <template>
 	<input
-		class="ColorPicker"
+		class="OverlayColorPicker"
 		type="color"
 		:style="style"
 		:value="color"
@@ -87,7 +87,7 @@ function onInput(e: Event) {
 </template>
 
 <style lang="stylus" scoped>
-.ColorPicker
+.OverlayColorPicker
 	position absolute
 	visibility hidden
 	width 3.2rem

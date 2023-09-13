@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
+import { vec2 } from 'linearly'
 import { useLocalStorage } from '@vueuse/core'
 // needs to import the latest version of acorn to use ES6 syntax in PaperScript
 import * as acorn from 'acorn'
@@ -11,11 +12,10 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
-import MonacoEditor from './MonacoEditor.vue'
-import PointHandle from './PointHandle.vue'
 import { replaceTextBetween } from './utils'
-import { vec2 } from 'linearly'
-import ColorPicker from './ColorPicker.vue'
+import MonacoEditor from './MonacoEditor.vue'
+import OverlayPointHandle from './OverlayPointHandle.vue'
+import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 
 const code = useLocalStorage('code', '')
@@ -85,7 +85,7 @@ async function pasteSVGToCanvas() {
 	<div class="App">
 		<div>
 			<canvas class="canvas" ref="$canvas" resize></canvas>
-			<PointHandle v-model:code="code" :cursorIndex="cursorIndex" />
+			<OverlayPointHandle v-model:code="code" :cursorIndex="cursorIndex" />
 		</div>
 
 		<div class="inspector">
@@ -111,7 +111,7 @@ async function pasteSVGToCanvas() {
 					v-model:cursorIndex="cursorIndex"
 					v-model:cursorPosition="cursorPosition"
 				/>
-				<ColorPicker
+				<OverlayColorPicker
 					v-model:code="code"
 					:cursorIndex="cursorIndex"
 					:cursorPosition="cursorPosition"

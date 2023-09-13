@@ -99,7 +99,7 @@ function onPointerup(e: PointerEvent) {
 
 <template>
 	<div
-		class="PointHandle"
+		class="OverlayPointHandle"
 		@pointerdown="onPointerdown"
 		@pointerup="onPointerup"
 		ref="$handle"
@@ -108,7 +108,7 @@ function onPointerup(e: PointerEvent) {
 </template>
 
 <style lang="stylus" scoped>
-.PointHandle
+.OverlayPointHandle
 	position absolute
 	visibility hidden
 	margin -8px 0 0 -8px
