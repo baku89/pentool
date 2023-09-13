@@ -101,7 +101,18 @@ onMounted(() => {
 		(value) => {
 			if (editor.getValue() === value) return
 
-			editor.setValue(value)
+			const model = editor.getModel()
+			if (!model) return
+
+			editor.pushUndoStop()
+
+			editor.executeEdits('name-of-edit', [
+				{
+					range: model.getFullModelRange(),
+					text: value,
+				},
+			])
+			editor.pushUndoStop()
 		}
 	)
 })

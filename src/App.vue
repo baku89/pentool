@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
-import MonacoEditor from './MonacoEditor.vue'
 import { useLocalStorage } from '@vueuse/core'
-
 // needs to import the latest version of acorn to use ES6 syntax in PaperScript
 import * as acorn from 'acorn'
 window.acorn = acorn
@@ -12,6 +10,9 @@ import paper from 'paper'
 // Add offset functions for global paper.js object
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
+
+import MonacoEditor from './MonacoEditor.vue'
+import { replaceTextBetween } from './utils'
 
 const code = useLocalStorage('code', '')
 
@@ -44,7 +45,7 @@ function executeCode() {
 	}
 }
 
-watch(code, executeCode)
+watch(code, executeCode, { flush: 'post' })
 
 // Setup paper.js
 const $canvas = ref<HTMLCanvasElement | null>(null)
@@ -66,7 +67,12 @@ async function pasteSVGToCanvas() {
 	const svg = await navigator.clipboard.readText()
 	const svgCode = `project.importSVG(\`${svg}\`)\n`
 
-	code.value += svgCode
+	code.value = replaceTextBetween(
+		code.value,
+		cursorPosition.value,
+		cursorPosition.value,
+		svgCode
+	)
 }
 </script>
 
@@ -160,3 +166,4 @@ async function pasteSVGToCanvas() {
 		border 0
 		border-radius 0.8rem
 </style>
+./utils

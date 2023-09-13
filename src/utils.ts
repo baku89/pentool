@@ -66,16 +66,11 @@ export function findNumericLiteralAtColumn(subject: string, column: number) {
 	return null
 }
 
-export function replaceCode(
-	editor: monaco.editor.IStandaloneCodeEditor,
-	line: number,
-	startColumn: number,
-	endColumn: number,
-	text: string
+export function replaceTextBetween(
+	subject: string,
+	startIndex: number,
+	endIndex: number,
+	replacement: string
 ) {
-	const op = {
-		range: new monaco.Range(line, startColumn, line, endColumn),
-		text,
-	}
-	editor.getModel()?.pushEditOperations([], [op], () => null)
+	return subject.slice(0, startIndex) + replacement + subject.slice(endIndex)
 }
