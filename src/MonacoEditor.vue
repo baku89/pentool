@@ -24,6 +24,12 @@ const $editor = ref<HTMLElement | null>(null)
 onMounted(() => {
 	if (!$editor.value || !$root.value) return
 
+	// get the font size of the root element
+	const fontSize = parseFloat(
+		window.getComputedStyle($root.value).fontSize ?? '16'
+	)
+
+	// Initialize the editor
 	const editor = monaco.editor.create($editor.value, {
 		value: props.modelValue,
 		language: 'javascript',
@@ -34,6 +40,7 @@ onMounted(() => {
 		'bracketPairColorization.enabled': false,
 		fontLigatures: true,
 		fontFamily: 'Fira Code',
+		fontSize,
 		folding: false,
 		lineNumbers: 'off',
 		lineDecorationsWidth: 0,

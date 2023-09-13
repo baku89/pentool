@@ -45,7 +45,7 @@ function executeCode() {
 	}
 }
 
-watch(code, executeCode, { flush: 'post' })
+watch([code, autoRefresh], executeCode, { flush: 'post' })
 
 // Setup paper.js
 const $canvas = ref<HTMLCanvasElement | null>(null)
@@ -85,9 +85,19 @@ async function pasteSVGToCanvas() {
 
 		<div class="inspector">
 			<div class="actions">
-				<button id="run">{{ autoRefresh ? 'Pause' : 'Resume' }}</button>
-				<button @click="copyCanvasAsSVG">Copy</button>
-				<button @click="pasteSVGToCanvas">Paste</button>
+				<button class="play" @click="autoRefresh = !autoRefresh">
+					<span class="material-symbols-outlined">{{
+						autoRefresh ? 'pause_circle' : 'play_circle'
+					}}</span>
+					{{ autoRefresh ? 'Pause' : 'Resume' }}
+				</button>
+				<div class="spacer" />
+				<button @click="copyCanvasAsSVG">
+					<span class="material-symbols-outlined">content_copy</span>Copy
+				</button>
+				<button @click="pasteSVGToCanvas">
+					<span class="material-symbols-outlined">content_paste</span>Paste
+				</button>
 			</div>
 			<MonacoEditor
 				class="editor"
@@ -128,12 +138,29 @@ async function pasteSVGToCanvas() {
 	align-items center
 	gap 0.5rem
 
+	.spacer
+		flex-grow 1
+
 	button
-		background black
-		color white
-		padding 0 1em
-		height 2rem
+		display inline-flex
+		align-items center
+		background #eee
+		color black
+		padding 0 12px 0 6px
+		height 32px
 		border-radius 9999px
+		vertical-align middle
+		gap .4em
+		transition all ease .2s
+
+		&.play
+			background black
+			color white
+
+		&:hover
+			background blue
+			color white
+
 
 .editor
 	position relative
