@@ -12,6 +12,7 @@
     "monaco-editor": "^0.43.0",
     "paper": "^0.12.17",
     "paperjs-offset": "^1.0.8",
+    "typescript": "^5.2.2",
     "vite": "^4.4.5",
     "vite-plugin-monaco-editor": "^1.1.0"
   }

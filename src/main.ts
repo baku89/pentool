@@ -26,6 +26,10 @@ path.lineTo(start + [200, 50])`
 
 const editorElement = document.getElementById('editor')
 
+if (!editorElement || !editorElement.parentElement) {
+	throw new Error('Editor element not found')
+}
+
 // initialze Monaco editor
 const editor = monaco.editor.create(editorElement, {
 	value: initialCode,
@@ -68,11 +72,11 @@ new ResizeObserver((entries) => {
 }).observe(editorElement.parentElement)
 
 // setup paper.js
-const canvas = document.getElementById('canvas')
+const canvas = document.getElementById('canvas') as HTMLCanvasElement
 paper.setup(canvas)
 
 // run the current code
-const run = (code) => {
+const run = (code: string) => {
 	const doAutoRefresh = localStorage.getItem('auto-refresh') ?? 'true'
 	localStorage.setItem('auto-refresh', 'false')
 
@@ -86,7 +90,7 @@ const run = (code) => {
 }
 
 // run the code on change
-editor.getModel().onDidChangeContent(() => {
+editor.getModel()?.onDidChangeContent(() => {
 	const code = editor.getValue()
 	localStorage.setItem('code', code)
 
@@ -104,7 +108,9 @@ editor.getModel().onDidChangeContent(() => {
 const initialAutoRefresh =
 	(localStorage.getItem('auto-refresh') ?? 'true') === 'true'
 
-const autoRefreshElement = document.getElementById('auto-refresh')
+const autoRefreshElement = document.getElementById(
+	'auto-refresh'
+) as HTMLInputElement
 
 autoRefreshElement.checked = initialAutoRefresh
 
@@ -119,7 +125,7 @@ autoRefreshElement.addEventListener('change', () => {
 })
 
 // manual execution
-document.getElementById('run').addEventListener('click', () => {
+document.getElementById('run')?.addEventListener('click', () => {
 	run(editor.getValue())
 })
 

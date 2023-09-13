@@ -2,16 +2,18 @@ import * as monaco from 'monaco-editor'
 
 const ctx = document.createElement('canvas').getContext('2d')
 
-export function normalizeColorToHexCode(color) {
+export function normalizeColorToHexCode(color: string) {
+	if (!ctx) throw new Error()
+
 	ctx.fillStyle = color
 	return ctx.fillStyle + ''
 }
 
 export function findTextBetweenDelimitersAtColumn(
-	subject,
-	column,
-	open,
-	close
+	subject: string,
+	column: number,
+	open: string,
+	close: string
 ) {
 	subject = subject.slice(0, column - 1) + '🍡' + subject.slice(column - 1)
 
@@ -28,7 +30,7 @@ export function findTextBetweenDelimitersAtColumn(
 	return { text, startColumn, endColumn }
 }
 
-export function findNumericLiteralAtColumn(subject, column) {
+export function findNumericLiteralAtColumn(subject: string, column: number) {
 	subject = subject.slice(0, column - 1) + '🍡' + subject.slice(column - 1)
 
 	const regex = /([+-\d.]*🍡[+-\d.]*)/
@@ -64,10 +66,16 @@ export function findNumericLiteralAtColumn(subject, column) {
 	return null
 }
 
-export function replaceCode(editor, line, startColumn, endColumn, text) {
+export function replaceCode(
+	editor: monaco.editor.IStandaloneCodeEditor,
+	line: number,
+	startColumn: number,
+	endColumn: number,
+	text: string
+) {
 	const op = {
 		range: new monaco.Range(line, startColumn, line, endColumn),
 		text,
 	}
-	editor.getModel().pushEditOperations([], [op], () => null)
+	editor.getModel()?.pushEditOperations([], [op], () => null)
 }

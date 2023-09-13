@@ -7,10 +7,14 @@ import {
 	replaceCode,
 } from './util'
 
-export default function useDirectManipulation(editor) {
-	const colorPicker = document.getElementById('color-picker')
-	const pointHandle = document.getElementById('point-handle')
-	const editorRootElement = editor.getDomNode()
+export default function useDirectManipulation(
+	editor: monaco.editor.IStandaloneCodeEditor
+) {
+	const colorPicker = document.getElementById(
+		'color-picker'
+	) as HTMLInputElement
+	const pointHandle = document.getElementById('point-handle') as HTMLElement
+	const editorRootElement = editor.getDomNode() as HTMLElement
 
 	const updateOverlays = () => {
 		const model = editor.getModel()
@@ -91,7 +95,9 @@ export default function useDirectManipulation(editor) {
 		let matchBrackets = [
 			findTextBetweenDelimitersAtColumn(line, position.column, '\\[', '\\]'),
 			findTextBetweenDelimitersAtColumn(line, position.column, '\\(', '\\)'),
-		].filter(Boolean)
+		].filter(Boolean) as Array<
+			Exclude<ReturnType<typeof findTextBetweenDelimitersAtColumn>, null>
+		>
 
 		for (const matchBracket of matchBrackets) {
 			const reg2DCoord = /^\s*([+-.\d]+)\s*,\s*([+-.\d]+)\s*$/
