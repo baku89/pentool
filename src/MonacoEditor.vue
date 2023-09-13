@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor'
-import { defineProps, ref, onMounted } from 'vue'
+import { defineProps, ref, onMounted, watch } from 'vue'
 
 interface Props {
 	modelValue: string
+	cursorPosition: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: '',
+	cursorPosition: 0,
 })
 
 const emits = defineEmits<{
 	(e: 'update:modelValue', value: string): void
+	(e: 'update:cursorPosition', index: number): void
 }>()
 
 const $root = ref<HTMLElement | null>(null)
@@ -51,11 +54,6 @@ onMounted(() => {
 		tabSize: 2,
 	})
 
-	// run the code on change
-	editor.getModel()?.onDidChangeContent(() => {
-		emits('update:modelValue', editor.getValue())
-	})
-
 	// fetch the theme file and apply to the editor
 	fetch(
 		'https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/Tomorrow.json'
@@ -81,6 +79,31 @@ onMounted(() => {
 	options.noLib = true
 	options.target = monaco.languages.typescript.ScriptTarget.ES5
 	options.lib = ['es6']
+
+	// run the code on change
+	editor.getModel()?.onDidChangeContent(() => {
+		emits('update:modelValue', editor.getValue())
+	})
+
+	editor.onDidChangeCursorPosition(() => {
+		const position = editor.getPosition()
+
+		if (!position) return
+
+		// Convert monaco editor's position to character-based index
+		const index = editor.getModel()?.getOffsetAt(position) ?? 0
+
+		emits('update:cursorPosition', index)
+	})
+
+	watch(
+		() => props.modelValue,
+		(value) => {
+			if (editor.getValue() === value) return
+
+			editor.setValue(value)
+		}
+	)
 })
 </script>
 

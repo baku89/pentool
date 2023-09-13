@@ -13,20 +13,23 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
-const code = useLocalStorage(
-	'code',
-	`const path = new Path()
+const code = useLocalStorage('code', '')
+
+if (code.value === '') {
+	code.value = `const path = new Path()
 path.strokeColor = "red"
 
 const start = new Point(100, 100)
 
 path.moveTo(start)
 path.lineTo(start + [200, 50])`
-)
+}
+
+const cursorPosition = ref(0)
 
 const autoRefresh = useLocalStorage('autoRefresh', true)
 
-function run(code: string) {
+function executeCode() {
 	if (!autoRefresh.value) return
 
 	const _autoRefresh = autoRefresh.value
@@ -35,15 +38,13 @@ function run(code: string) {
 	try {
 		paper.project.activeLayer.removeChildren()
 		paper.tools.forEach((t) => t.remove())
-		paper.PaperScript.execute(code, paper)
+		paper.PaperScript.execute(code.value, paper)
 	} finally {
 		autoRefresh.value = _autoRefresh
 	}
 }
 
-watch(code, (code) => {
-	run(code)
-})
+watch(code, executeCode)
 
 // Setup paper.js
 const $canvas = ref<HTMLCanvasElement | null>(null)
@@ -52,7 +53,21 @@ onMounted(() => {
 	// setup paper.js
 	if (!$canvas.value) return
 	paper.setup($canvas.value)
+
+	executeCode()
 })
+
+function copyCanvasAsSVG() {
+	const svg = paper.project.exportSVG({ asString: true })
+	navigator.clipboard.writeText(svg.toString())
+}
+
+async function pasteSVGToCanvas() {
+	const svg = await navigator.clipboard.readText()
+	const svgCode = `project.importSVG(\`${svg}\`)\n`
+
+	code.value += svgCode
+}
 </script>
 
 <template>
@@ -65,10 +80,14 @@ onMounted(() => {
 		<div class="inspector">
 			<div class="actions">
 				<button id="run">{{ autoRefresh ? 'Pause' : 'Resume' }}</button>
-				<button id="copy">Copy</button>
-				<button id="paste">Paste</button>
+				<button @click="copyCanvasAsSVG">Copy</button>
+				<button @click="pasteSVGToCanvas">Paste</button>
 			</div>
-			<MonacoEditor class="editor" v-model="code" />
+			<MonacoEditor
+				class="editor"
+				v-model="code"
+				v-model:cursorPosition="cursorPosition"
+			/>
 		</div>
 	</div>
 </template>
