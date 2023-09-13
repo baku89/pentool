@@ -3,7 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 // needs to import the latest version of acorn to use ES6 syntax in PaperScript
 import * as acorn from 'acorn'
-window.acorn = acorn
+;(window as any).acorn = acorn
 
 import paper from 'paper'
 
@@ -12,6 +12,7 @@ import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
 import MonacoEditor from './MonacoEditor.vue'
+import PointHandle from './PointHandle.vue'
 import { replaceTextBetween } from './utils'
 
 const code = useLocalStorage('code', '')
@@ -80,7 +81,7 @@ async function pasteSVGToCanvas() {
 	<div class="App">
 		<div>
 			<canvas class="canvas" ref="$canvas" resize></canvas>
-			<div id="point-handle"></div>
+			<PointHandle v-model:code="code" :cursorPosition="cursorPosition" />
 		</div>
 
 		<div class="inspector">
@@ -167,17 +168,6 @@ async function pasteSVGToCanvas() {
 	flex-grow 1
 
 /* Direct Manipulation */
-#point-handle
-	position absolute
-	visibility hidden
-	margin -10px 0 0 -10px
-	width 21px
-	height 21px
-	outline 1px solid rgba(255, 255, 255, 0.5)
-	border 1px solid blue
-	border-radius 50%
-	background white
-
 #color-picker
 	position absolute
 	visibility hidden

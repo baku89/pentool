@@ -1,5 +1,3 @@
-import * as monaco from 'monaco-editor'
-
 const ctx = document.createElement('canvas').getContext('2d')
 
 export function normalizeColorToHexCode(color: string) {
@@ -9,25 +7,27 @@ export function normalizeColorToHexCode(color: string) {
 	return ctx.fillStyle + ''
 }
 
-export function findTextBetweenDelimitersAtColumn(
+export function findTextBetweenDelimiters(
 	subject: string,
-	column: number,
+	index: number,
 	open: string,
 	close: string
 ) {
-	subject = subject.slice(0, column - 1) + '🍡' + subject.slice(column - 1)
+	subject = subject.slice(0, index) + '🍡' + subject.slice(index)
 
-	const regex = new RegExp(`${open}([^${open}]*?🍡[^${close}]*?)${close}`)
+	const regex = new RegExp(
+		`\\${open}([^\\${open}]*?🍡[^\\${close}]*?)\\${close}`
+	)
 
 	const match = regex.exec(subject)
 
 	if (!match) return null
 
 	const text = match[1].replace('🍡', '')
-	const startColumn = match.index + 2
-	const endColumn = startColumn + text.length
+	const startIndex = match.index + 1
+	const endIndex = startIndex + text.length
 
-	return { text, startColumn, endColumn }
+	return { text, startIndex, endIndex }
 }
 
 export function findNumericLiteralAtColumn(subject: string, column: number) {
