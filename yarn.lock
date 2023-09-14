@@ -1590,13 +1590,12 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
-bndr-js@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.5.0.tgz#f11e1056b2ab034c6e8f4e600f796e01abe622dc"
-  integrity sha512-ZLGH3MU/hVYjtAqH8ztFDlK/N7R+gtJaCLXs/DH10PZTFXIW51nn2qmQYcnHE/zng8+cb6gsjBg8LJ+PmUUS/w==
+bndr-js@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.5.1.tgz#12ef0d81f6d0c0d2a0f3977b68d154999a0de346"
+  integrity sha512-lI8sgh8a0NtTPkMBfDNSvnNnWwF2yoE3C9lg/M+mf9L0PXHBW7QZ8sHHoz1myNC8whV6EZagU1cTY/B0m6QOpg==
   dependencies:
     hotkeys-js "^3.10.2"
-    linearly "^0.6.0"
     lodash "^4.17.21"
     typescript-memoize "^1.1.1"
 
@@ -2611,10 +2610,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-linearly@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.6.0.tgz#5c32798d040ec21f89158d8056ce65c44614894e"
-  integrity sha512-R3Wj6zCHGSZZ4JPLyZtmBdIKyzQp3LUAP2GdOjiRqAVYTuRRdtlxsnt0m7GfK55ROXmOIpv3/fa2NHEHDihb1Q==
+linearly@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.6.1.tgz#5ddcf05b2797dd0abfd2faa5525eb9e606d3894e"
+  integrity sha512-GnvY2V9fBZjMuzUewTup7Pd180eGz4kcH5M9XxrUvzrJUBvOtRe+UGXXeUlqAD91JtFa+oTIFX40C0a9o2dHDg==
 
 locate-path@^6.0.0:
   version "6.0.0"
@@ -3407,7 +3406,7 @@ vite-plugin-pwa@^0.16.5:
     workbox-build "^7.0.0"
     workbox-window "^7.0.0"
 
-vite@^4.4.5:
+vite@^4.4.9:
   version "4.4.9"
   resolved "https://registry.yarnpkg.com/vite/-/vite-4.4.9.tgz#1402423f1a2f8d66fd8d15e351127c7236d29d3d"
   integrity sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==

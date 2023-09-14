@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { defineProps, computed, ref } from 'vue'
+import { defineProps, computed, ref, onMounted, watchEffect } from 'vue'
 import { findTextBetweenDelimiters, replaceTextBetween } from './utils'
+import { vec2, type Mat2d, Vec2, mat2d } from 'linearly'
+import Bndr from 'bndr-js'
 
 interface Props {
 	code: string
 	cursorIndex: number
+	viewTransform: Mat2d
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,8 +37,7 @@ const selection = computed(() => {
 			const { startIndex, endIndex } = matchBracket
 
 			return {
-				x,
-				y,
+				position: vec2.of(x, y),
 				startIndex,
 				endIndex,
 			}
@@ -48,7 +50,9 @@ const selection = computed(() => {
 const style = computed(() => {
 	if (!selection.value) return {} as Record<string, string>
 
-	const { x, y } = selection.value
+	const { position } = selection.value
+
+	const [x, y] = vec2.transformMat2d(position, props.viewTransform)
 
 	return {
 		visibility: 'visible',
@@ -59,52 +63,51 @@ const style = computed(() => {
 
 const $handle = ref<HTMLElement | null>(null)
 
-let prevX: number, prevY: number
+const viewTransformInv = computed(() => {
+	return mat2d.invert(props.viewTransform) ?? mat2d.identity
+})
 
-function onPointerdown(e: PointerEvent) {
-	prevX = e.clientX
-	prevY = e.clientY
+const zoom = computed(() => {
+	return mat2d.determinant(props.viewTransform)
+})
 
-	$handle.value?.setPointerCapture(e.pointerId)
-	$handle.value?.addEventListener('pointermove', onPointermove)
-}
+onMounted(() => {
+	if (!$handle.value) return
 
-function onPointermove(e: PointerEvent) {
-	if (!selection.value) return
+	const pointer = Bndr.pointer.target($handle.value)
 
-	const x = selection.value.x + e.clientX - prevX
-	const y = selection.value.y + e.clientY - prevY
+	pointer
+		.position()
+		.while(pointer.pressed({ pointerCapture: true }))
+		.map(
+			(pos) => vec2.transformMat2d(pos, viewTransformInv.value),
+			Bndr.type.vec2
+		)
+		.delta()
+		.on((delta) => {
+			if (!selection.value) return
 
-	prevX = e.clientX
-	prevY = e.clientY
+			const [x, y] = vec2.add(selection.value.position, delta)
 
-	// replace the numeric literals in the code
-	const text = x.toFixed(0) + ', ' + y.toFixed(0)
+			const precision = Math.ceil(Math.log10(zoom.value))
 
-	const newCode = replaceTextBetween(
-		props.code,
-		selection.value.startIndex,
-		selection.value.endIndex,
-		text
-	)
+			// replace the numeric literals in the code
+			const text = x.toFixed(precision) + ', ' + y.toFixed(precision)
 
-	emits('update:code', newCode)
-}
+			const newCode = replaceTextBetween(
+				props.code,
+				selection.value.startIndex,
+				selection.value.endIndex,
+				text
+			)
 
-function onPointerup(e: PointerEvent) {
-	$handle.value?.releasePointerCapture(e.pointerId)
-	$handle.value?.removeEventListener('pointermove', onPointermove)
-}
+			emits('update:code', newCode)
+		})
+})
 </script>
 
 <template>
-	<div
-		class="OverlayPointHandle"
-		@pointerdown="onPointerdown"
-		@pointerup="onPointerup"
-		ref="$handle"
-		:style="style"
-	></div>
+	<div class="OverlayPointHandle" ref="$handle" :style="style"></div>
 </template>
 
 <style lang="stylus" scoped>

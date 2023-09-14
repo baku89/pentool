@@ -5,11 +5,8 @@ import { computed, ref } from 'vue'
 /**
  * Provides a zoomable and pannable interface for an element.
  */
-export function useZUI(
-	element: HTMLElement,
-	onTransform: (xform: Mat2d) => void
-) {
-	const pointer = Bndr.pointer.target(element)
+export function useZUI(onTransform: (xform: Mat2d) => void) {
+	const pointer = Bndr.pointer
 	const position = pointer.position()
 	const scroll = pointer.scroll({ preventDefault: true })
 

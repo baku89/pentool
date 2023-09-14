@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, nextTick, computed, watchEffect } from 'vue'
+import {
+	ref,
+	onMounted,
+	watch,
+	nextTick,
+	computed,
+	watchEffect,
+	shallowRef,
+} from 'vue'
 import { Mat2d, mat2d, vec2 } from 'linearly'
 import { useLocalStorage, useTitle } from '@vueuse/core'
 // needs to import the latest version of acorn to use ES6 syntax in PaperScript
@@ -102,7 +110,10 @@ watch([code, autoRefresh], () => nextTick(executeCode))
 // Setup paper.js
 const $canvas = ref<HTMLCanvasElement | null>(null)
 
-const viewTransform = ref<Mat2d>([...mat2d.identity])
+const viewTransform = shallowRef(mat2d.identity)
+const { cursor } = useZUI((xform) => {
+	viewTransform.value = mat2d.multiply(xform, viewTransform.value)
+})
 
 onMounted(() => {
 	// setup paper.js
@@ -110,10 +121,6 @@ onMounted(() => {
 	paper.setup($canvas.value)
 
 	executeCode()
-
-	const { cursor } = useZUI($canvas.value, (xform) => {
-		viewTransform.value = mat2d.multiply(xform, viewTransform.value)
-	})
 
 	watch(viewTransform, () => {
 		paper.view.matrix.set(viewTransform.value)
@@ -220,7 +227,11 @@ window.addEventListener('drop', async (e) => {
 		<main class="main">
 			<div class="canvas-wrapper">
 				<canvas class="canvas" ref="$canvas" resize></canvas>
-				<OverlayPointHandle v-model:code="code" :cursorIndex="cursorIndex" />
+				<OverlayPointHandle
+					v-model:code="code"
+					:cursorIndex="cursorIndex"
+					:viewTransform="viewTransform"
+				/>
 			</div>
 
 			<div class="inspector">
@@ -254,7 +265,7 @@ window.addEventListener('drop', async (e) => {
 						v-model:code="code"
 						:cursorIndex="cursorIndex"
 						:cursorPosition="cursorPosition"
-						v-model:visible="colorPickerVisible"
+						:visible="colorPickerVisible"
 					/>
 					<OverlayNumberSlider
 						v-show="!colorPickerVisible"
