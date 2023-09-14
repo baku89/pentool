@@ -46,7 +46,7 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 
 	Bndr.combine(zoomByScroll, zoomByDrag)
 		.map((delta) => {
-			return mat2d.multiply(
+			return mat2d.mul(
 				mat2d.fromTranslation(zoomOrigin.value),
 				mat2d.fromScaling(vec2.of(1.003 ** -delta)),
 				mat2d.fromTranslation(vec2.negate(zoomOrigin.value))

@@ -112,7 +112,7 @@ const $canvas = ref<HTMLCanvasElement | null>(null)
 
 const viewTransform = shallowRef(mat2d.identity)
 const { cursor } = useZUI((xform) => {
-	viewTransform.value = mat2d.multiply(xform, viewTransform.value)
+	viewTransform.value = mat2d.mul(xform, viewTransform.value)
 })
 
 const zoom = computed(() => {
