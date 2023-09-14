@@ -13,7 +13,7 @@ import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
 import { replaceTextBetween } from './utils'
-import MonacoEditor from './MonacoEditor.vue'
+import MonacoEditor, { ErrorInfo } from './MonacoEditor.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
 import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
@@ -35,16 +35,62 @@ const cursorPosition = ref(vec2.zero)
 
 const autoRefresh = useLocalStorage('autoRefresh', true)
 
+const errors = ref<ErrorInfo[] | null>(null)
+
 function executeCode() {
 	if (!autoRefresh.value) return
 
 	const _autoRefresh = autoRefresh.value
 	autoRefresh.value = false
 
+	errors.value = null
+
 	try {
 		paper.project.activeLayer.removeChildren()
 		paper.tools.forEach((t) => t.remove())
 		paper.PaperScript.execute(code.value, paper)
+	} catch (e) {
+		if (e instanceof SyntaxError) {
+			const match = e.stack?.match(/(\d+):(\d+)/)
+			if (match) {
+				let [line, column] = match.slice(1).map(Number)
+				errors.value = [
+					{
+						message: e.message,
+						line,
+						column,
+					},
+				]
+			}
+		} else if (e instanceof Error) {
+			const match = e.stack?.match(/<anonymous>:(\d+):(\d+)/)
+
+			if (match) {
+				let [line, column] = match.slice(1).map(Number)
+
+				if (line === 1) {
+					column -= 70
+				}
+
+				errors.value = [
+					{
+						message: e.message,
+						line,
+						column,
+					},
+				]
+			}
+		}
+
+		if (!errors.value) {
+			errors.value = [
+				{
+					message: (e as Error).toString(),
+					line: 1,
+					column: 0,
+				},
+			]
+		}
 	} finally {
 		autoRefresh.value = _autoRefresh
 	}
@@ -186,6 +232,7 @@ window.addEventListener('drop', async (e) => {
 						v-model="code"
 						v-model:cursorIndex="cursorIndex"
 						v-model:cursorPosition="cursorPosition"
+						:errors="errors"
 					/>
 					<OverlayColorPicker
 						v-model:code="code"

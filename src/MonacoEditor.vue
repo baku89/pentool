@@ -3,9 +3,16 @@ import * as monaco from 'monaco-editor'
 import { defineProps, ref, onMounted, watch } from 'vue'
 import { Vec2 } from 'linearly'
 
+export interface ErrorInfo {
+	message: string
+	line: number
+	column: number
+}
+
 interface Props {
 	modelValue: string
 	cursorIndex: number
+	errors: ErrorInfo[] | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -150,6 +157,28 @@ onMounted(() => {
 			if (!position) return
 
 			editor.setPosition(position)
+		}
+	)
+
+	watch(
+		() => props.errors,
+		(errors) => {
+			const model = editor.getModel()
+			if (!model) return
+
+			// Add error decorations to monaco editor
+			monaco.editor.setModelMarkers(
+				model,
+				'my-source',
+				(errors ?? []).map((error) => ({
+					message: error.message,
+					severity: monaco.MarkerSeverity.Error,
+					startLineNumber: error.line,
+					endLineNumber: error.line,
+					startColumn: error.column,
+					endColumn: error.column,
+				}))
+			)
 		}
 	)
 })
