@@ -115,9 +115,9 @@ function onPointerup(e: PointerEvent) {
 	width 17px
 	height 17px
 	outline 1px solid rgba(255, 255, 255, 0.5)
-	border 1px solid blue
+	border 1px solid var(--ui-accent)
 	border-radius 50%
-	background white
+	background var(--ui-bg)
 
 	&:before
 		content ''
@@ -126,5 +126,5 @@ function onPointerup(e: PointerEvent) {
 		border-radius 50%
 
 	&:hover
-		background blue
+		background var(--ui-accent)
 </style>

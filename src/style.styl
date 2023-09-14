@@ -1,19 +1,24 @@
 :root
-	font-size 14px
+	font-size 12px
 	font-family 'Fira Code', Monaco, monospace
 	font-synthesis none
 	-webkit-font-smoothing antialiased
 	-moz-osx-font-smoothing grayscale
 	-webkit-text-size-adjust 100%
+	--titlebar-area-height env(titlebar-area-height, 33px)
 	// Color scheme
-	--ui-bg #fff
+	--ui-bg #ffffff
+	--ui-bg-rgb 255, 255, 255
 	--ui-color #000
+	--ui-color-rgb 0, 0, 0
 	--ui-button #eee
 	--ui-accent blue
 
 	@media (prefers-color-scheme dark)
 		--ui-bg #222
+		--ui-bg-rgb 34, 34, 34
 		--ui-color #fff
+		--ui-color-rgb 255, 255, 255
 		--ui-button #333
 		--ui-accent skyblue
 
@@ -29,6 +34,7 @@ button, input
 	border 0
 	font-size inherit
 	font-family inherit
+	user-select none
 
 body
 	overflow hidden

@@ -150,7 +150,7 @@ window.addEventListener('drop', async (e) => {
 			Paper.js Editor
 		</div>
 		<main class="main">
-			<div>
+			<div class="canvas-wrapper">
 				<canvas class="canvas" ref="$canvas" resize></canvas>
 				<OverlayPointHandle v-model:code="code" :cursorIndex="cursorIndex" />
 			</div>
@@ -200,53 +200,68 @@ window.addEventListener('drop', async (e) => {
 </template>
 
 <style lang="stylus" scoped>
-.App
-	display flex
-	flex-direction column
+
 .title
-	display none
+	display flex
+	left env(titlebar-area-x, 0)
+	top env(titlebar-area-y, 0)
+	width env(titlebar-area-width, 100%)
+	height var(--titlebar-area-height)
+	display flex
+	z-index 100
+	user-select none
+
+	position fixed
+	background 'linear-gradient(to bottom, rgba(%s, .5) 20%, transparent)' % var(--ui-bg-rgb)
+	backdrop-filter blur(2px)
+	gap .6rem
+	padding .4rem .4rem
+	-webkit-app-region: drag;
+	app-region: drag;
+
+	line-height calc(var(--titlebar-area-height) - 0.8rem)
 
 	@media (display-mode: window-controls-overlay)
-		margin-left env(titlebar-area-x, 0)
-		margin-top env(titlebar-area-y, 0)
-		width env(titlebar-area-width, 100%)
-		height env(titlebar-area-height, 33px)
+		padding-left 0
 
-		display flex
-		gap .6rem
-		padding .4rem 0
-		-webkit-app-region: drag;
-		app-region: drag;
-
-		line-height calc(env(titlebar-area-height, 33px) - 0.8rem)
-		.icon
-			height calc(env(titlebar-area-height, 33px) - .8rem)
+	.icon
+		height calc(var(--titlebar-area-height) - .8rem)
 .main
-	flex-grow 1
-	display flex
-	box-sizing border-box
-	padding 1rem
+	position relative
 	height 100vh
-	gap 1rem
 
 	@media (display-mode: window-controls-overlay), (display-mode: standalone)
 		padding-top 0
 
-	& > div
-		position relative
-		width 50%
-
-.canvas
-	width 100%
+.canvas-wrapper
+	position relative
 	height 100%
 	// draws dotted grid
 	background-image radial-gradient(circle at 0 0, var(--ui-color) 1px, transparent 0)
 	background-size 20px 20px
 
+.canvas
+	height 100%
+	width 100%
+
 .inspector
+	position absolute
+	padding 1rem
+	border 1px solid 'rgba(%s, .1)' % var(--ui-color-rgb)
+	outline  'rgba(%s, .5)' % var(--ui-bg-rgb) 1px solid
+	background 'rgba(%s, .95)' % var(--ui-bg-rgb)
+	backdrop-filter blur(4px)
+	width 50%
+	right 0
+	bottom 0
 	display flex
 	flex-direction column
 	gap 1rem
+
+	top calc(env(titlebar-area-y, 0px) + var(--titlebar-area-height))
+	border-width 1px 0 0 1px
+	border-radius 1.4rem 0 0 0
+
 
 .actions
 	display flex
@@ -258,17 +273,21 @@ window.addEventListener('drop', async (e) => {
 
 	button
 		display inline-flex
+		justify-content center
 		align-items center
 		background var(--ui-button)
 		color var(--ui-color)
-		padding 0 12px
+		width 32px
 		height 32px
 		border-radius 9999px
 		vertical-align middle
+		padding 0 6px
 		gap .4em
 		transition all ease .2s
 
 		&.play
+			width auto
+			padding 0 12px 0 6px
 			background var(--ui-color)
 			color var(--ui-bg)
 
