@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { vec2 } from 'linearly'
-import { useLocalStorage } from '@vueuse/core'
+import { useLocalStorage, useTitle } from '@vueuse/core'
 // needs to import the latest version of acorn to use ES6 syntax in PaperScript
 import * as acorn from 'acorn'
 ;(window as any).acorn = acorn
@@ -84,6 +84,12 @@ async function pasteSVGToCanvas() {
 
 const fileHandle = ref<FileSystemFileHandle | null>(null)
 
+const fileName = computed(() => {
+	return fileHandle.value?.name || 'Untitled'
+})
+
+useTitle(fileName)
+
 const filePickerOptions: FilePickerOptions = {
 	types: [
 		{
@@ -147,7 +153,7 @@ window.addEventListener('drop', async (e) => {
 	<div class="App">
 		<div class="title">
 			<img class="icon" src="/favicon.svg" />
-			Paper.js Editor
+			{{ fileName }}
 		</div>
 		<main class="main">
 			<div class="canvas-wrapper">
