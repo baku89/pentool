@@ -115,6 +115,22 @@ const { cursor } = useZUI((xform) => {
 	viewTransform.value = mat2d.multiply(xform, viewTransform.value)
 })
 
+const zoom = computed(() => {
+	return Math.sqrt(mat2d.determinant(viewTransform.value))
+})
+
+const canvasStyle = computed(() => {
+	const [x, y] = vec2.transformMat2d(vec2.zero, viewTransform.value)
+
+	const size = `${zoom.value * 20}px ${zoom.value * 20}px, 2px 2px, 2px 2px`
+	const offset = `${x}px ${y}px, ${x}px ${y}px, ${x}px ${y}px`
+
+	return {
+		backgroundSize: size,
+		backgroundPosition: offset,
+	}
+})
+
 onMounted(() => {
 	// setup paper.js
 	if (!$canvas.value) return
@@ -225,7 +241,7 @@ window.addEventListener('drop', async (e) => {
 			{{ fileName }}
 		</div>
 		<main class="main">
-			<div class="canvas-wrapper">
+			<div class="canvas-wrapper" :style="canvasStyle">
 				<canvas class="canvas" ref="$canvas" resize></canvas>
 				<OverlayPointHandle
 					v-model:code="code"
@@ -317,8 +333,9 @@ window.addEventListener('drop', async (e) => {
 	position relative
 	height 100%
 	// draws dotted grid
-	background-image radial-gradient(circle at 0 0, var(--ui-color) 1px, transparent 0)
-	background-size 20px 20px
+	--axis-color 'rgba(%s, .1)' % var(--ui-color-rgb)
+	background-image radial-gradient(circle at 0 0, var(--ui-color) 1px, transparent 0), linear-gradient(to bottom, var(--axis-color) 1px, transparent 0), linear-gradient(to right, var(--axis-color) 1px, transparent 0)
+	background-repeat repeat, repeat-x, repeat-y
 
 .canvas
 	height 100%
