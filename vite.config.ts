@@ -23,7 +23,9 @@ export default defineConfig({
 			manifest: {
 				name: 'Paper.js Editor',
 				short_name: 'Paper.js',
-				theme_color: '#ffffff',
+				theme_color: '#000000',
+				display: 'standalone', // 'standalone', 'fullscreen', 'minimal-ui', 'browser
+				display_override: ['window-controls-overlay', 'standalone'],
 				icons: [
 					{
 						src: 'icon-192x192.png',

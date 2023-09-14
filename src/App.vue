@@ -85,59 +85,89 @@ async function pasteSVGToCanvas() {
 
 <template>
 	<div class="App">
-		<div>
-			<canvas class="canvas" ref="$canvas" resize></canvas>
-			<OverlayPointHandle v-model:code="code" :cursorIndex="cursorIndex" />
+		<div class="title">
+			<img class="icon" src="/favicon.svg" />
+			Paper.js Editor
 		</div>
+		<main class="main">
+			<div>
+				<canvas class="canvas" ref="$canvas" resize></canvas>
+				<OverlayPointHandle v-model:code="code" :cursorIndex="cursorIndex" />
+			</div>
 
-		<div class="inspector">
-			<div class="actions">
-				<button class="play" @click="autoRefresh = !autoRefresh">
-					<span class="material-symbols-outlined">{{
-						autoRefresh ? 'pause_circle' : 'play_circle'
-					}}</span>
-					{{ autoRefresh ? 'Pause' : 'Resume' }}
-				</button>
-				<div class="spacer" />
-				<button @click="copyCanvasAsSVG">
-					<span class="material-symbols-outlined">content_copy</span>Copy
-				</button>
-				<button @click="pasteSVGToCanvas">
-					<span class="material-symbols-outlined">content_paste</span>Paste
-				</button>
+			<div class="inspector">
+				<div class="actions">
+					<button class="play" @click="autoRefresh = !autoRefresh">
+						<span class="material-symbols-outlined">{{
+							autoRefresh ? 'pause_circle' : 'play_circle'
+						}}</span>
+						{{ autoRefresh ? 'Pause' : 'Resume' }}
+					</button>
+					<div class="spacer" />
+					<button @click="copyCanvasAsSVG">
+						<span class="material-symbols-outlined">content_copy</span>Copy
+					</button>
+					<button @click="pasteSVGToCanvas">
+						<span class="material-symbols-outlined">content_paste</span>Paste
+					</button>
+				</div>
+				<div class="editor-wrapper">
+					<MonacoEditor
+						class="editor"
+						v-model="code"
+						v-model:cursorIndex="cursorIndex"
+						v-model:cursorPosition="cursorPosition"
+					/>
+					<OverlayColorPicker
+						v-model:code="code"
+						:cursorIndex="cursorIndex"
+						:cursorPosition="cursorPosition"
+						v-model:visible="colorPickerVisible"
+					/>
+					<OverlayNumberSlider
+						v-show="!colorPickerVisible"
+						v-model:code="code"
+						v-model:cursorIndex="cursorIndex"
+						:cursorPosition="cursorPosition"
+					/>
+				</div>
 			</div>
-			<div class="editor-wrapper">
-				<MonacoEditor
-					class="editor"
-					v-model="code"
-					v-model:cursorIndex="cursorIndex"
-					v-model:cursorPosition="cursorPosition"
-				/>
-				<OverlayColorPicker
-					v-model:code="code"
-					:cursorIndex="cursorIndex"
-					:cursorPosition="cursorPosition"
-					v-model:visible="colorPickerVisible"
-				/>
-				<OverlayNumberSlider
-					v-show="!colorPickerVisible"
-					v-model:code="code"
-					v-model:cursorIndex="cursorIndex"
-					:cursorPosition="cursorPosition"
-				/>
-			</div>
-		</div>
+		</main>
 	</div>
 </template>
 
 <style lang="stylus" scoped>
 .App
 	display flex
+	flex-direction column
+.title
+	display none
+
+	@media (display-mode: window-controls-overlay)
+		margin-left env(titlebar-area-x, 0)
+		margin-top env(titlebar-area-y, 0)
+		width env(titlebar-area-width, 100%)
+		height env(titlebar-area-height, 33px)
+
+		display flex
+		gap .6rem
+		padding .4rem 0
+		-webkit-app-region: drag;
+		app-region: drag;
+
+		line-height calc(env(titlebar-area-height, 33px) - 0.8rem)
+		.icon
+			height calc(env(titlebar-area-height, 33px) - .8rem)
+.main
+	flex-grow 1
+	display flex
 	box-sizing border-box
-	margin 0
 	padding 1rem
 	height 100vh
 	gap 1rem
+
+	@media (display-mode: window-controls-overlay), (display-mode: standalone)
+		padding-top 0
 
 	& > div
 		position relative
@@ -147,7 +177,7 @@ async function pasteSVGToCanvas() {
 	width 100%
 	height 100%
 	// draws dotted grid
-	background-image radial-gradient(circle at 0 0, black 1px, transparent 0)
+	background-image radial-gradient(circle at 0 0, var(--ui-color) 1px, transparent 0)
 	background-size 20px 20px
 
 .inspector
@@ -166,9 +196,9 @@ async function pasteSVGToCanvas() {
 	button
 		display inline-flex
 		align-items center
-		background #eee
-		color black
-		padding 0 12px 0 6px
+		background var(--ui-button)
+		color var(--ui-color)
+		padding 0 12px
 		height 32px
 		border-radius 9999px
 		vertical-align middle
@@ -176,14 +206,12 @@ async function pasteSVGToCanvas() {
 		transition all ease .2s
 
 		&.play
-			background black
-			color white
+			background var(--ui-color)
+			color var(--ui-bg)
 
 		&:hover
-			background blue
-			color white
-
-
+			background var(--ui-accent)
+			color var(--ui-bg)
 .editor-wrapper
 	position relative
 	flex-grow 1

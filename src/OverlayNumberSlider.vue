@@ -89,11 +89,11 @@ function onPointerup(e: PointerEvent) {
 	transform translateX(-50%)
 	width 8rem
 	height 1.6rem
-	background #eee
+	background var(--ui-button)
 	border-radius 9999px
 	cursor col-resize
 
-	background-image linear-gradient(to right, black 4%, transparent 4%)
+	background-image linear-gradient(to right, var(--ui-color) 4%, transparent 4%)
 	background-size 25px 40%
 	background-repeat repeat-x
 </style>

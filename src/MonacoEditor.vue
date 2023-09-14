@@ -64,14 +64,26 @@ onMounted(() => {
 	})
 
 	// fetch the theme file and apply to the editor
-	fetch(
-		'https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/Tomorrow.json'
-	)
-		.then((res) => res.json())
-		.then((data) => {
-			monaco.editor.defineTheme('tomorrow', data)
-			monaco.editor.setTheme('tomorrow')
-		})
+	const lightTheme = `https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/Tomorrow.json`
+	const darkTheme = `https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/Tomorrow-Night.json`
+
+	Promise.all([
+		fetch(lightTheme).then((res) => res.json()),
+		fetch(darkTheme).then((res) => res.json()),
+	]).then(([light, dark]) => {
+		monaco.editor.defineTheme('light', light)
+		monaco.editor.defineTheme('dark', dark)
+
+		const preferColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
+
+		function update() {
+			const theme = preferColorScheme.matches ? 'dark' : 'light'
+			monaco.editor.setTheme(theme)
+		}
+
+		preferColorScheme.addEventListener('change', update)
+		update()
+	})
 
 	// resize editor to match its parent element size
 	new ResizeObserver((entries) => {
@@ -149,4 +161,7 @@ onMounted(() => {
 	</div>
 </template>
 
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+:deep(.monaco-editor)
+	--vscode-editor-background: transparent
+</style>

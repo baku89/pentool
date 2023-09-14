@@ -5,6 +5,17 @@
 	-webkit-font-smoothing antialiased
 	-moz-osx-font-smoothing grayscale
 	-webkit-text-size-adjust 100%
+	// Color scheme
+	--ui-bg #fff
+	--ui-color #000
+	--ui-button #eee
+	--ui-accent blue
+
+	@media (prefers-color-scheme dark)
+		--ui-bg #222
+		--ui-color #fff
+		--ui-button #333
+		--ui-accent skyblue
 
 *, *:before, *:after
 	box-sizing border-box
@@ -21,4 +32,7 @@ button, input
 
 body
 	overflow hidden
+	margin 0
 	height 100vh
+	background var(--ui-bg)
+	color var(--ui-color)
