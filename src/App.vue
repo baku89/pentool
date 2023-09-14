@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, nextTick, computed } from 'vue'
-import { vec2 } from 'linearly'
+import { ref, onMounted, watch, nextTick, computed, watchEffect } from 'vue'
+import { Mat2d, mat2d, vec2 } from 'linearly'
 import { useLocalStorage, useTitle } from '@vueuse/core'
 // needs to import the latest version of acorn to use ES6 syntax in PaperScript
 import * as acorn from 'acorn'
@@ -17,6 +17,7 @@ import MonacoEditor, { ErrorInfo } from './MonacoEditor.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
 import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
+import { useZUI } from './useZUI'
 
 const code = useLocalStorage('code', '')
 
@@ -101,12 +102,27 @@ watch([code, autoRefresh], () => nextTick(executeCode))
 // Setup paper.js
 const $canvas = ref<HTMLCanvasElement | null>(null)
 
+const viewTransform = ref<Mat2d>([...mat2d.identity])
+
 onMounted(() => {
 	// setup paper.js
 	if (!$canvas.value) return
 	paper.setup($canvas.value)
 
 	executeCode()
+
+	const { cursor } = useZUI($canvas.value, (xform) => {
+		viewTransform.value = mat2d.multiply(xform, viewTransform.value)
+	})
+
+	watch(viewTransform, () => {
+		paper.view.matrix.set(viewTransform.value)
+		paper.view.update()
+	})
+
+	watchEffect(() => {
+		document.body.style.cursor = cursor.value
+	})
 })
 
 const colorPickerVisible = ref(false)

@@ -1590,6 +1590,16 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+bndr-js@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.5.0.tgz#f11e1056b2ab034c6e8f4e600f796e01abe622dc"
+  integrity sha512-ZLGH3MU/hVYjtAqH8ztFDlK/N7R+gtJaCLXs/DH10PZTFXIW51nn2qmQYcnHE/zng8+cb6gsjBg8LJ+PmUUS/w==
+  dependencies:
+    hotkeys-js "^3.10.2"
+    linearly "^0.6.0"
+    lodash "^4.17.21"
+    typescript-memoize "^1.1.1"
+
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
@@ -2296,6 +2306,11 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+hotkeys-js@^3.10.2:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.12.0.tgz#5534a7ffdba923df489ffbd876b991979beb2c77"
+  integrity sha512-Z+N573ycUKIGwFYS3ID1RzMJiGmtWMGKMiaNLyJS8B1ei+MllF4ZYmKS2T0kMWBktOz+WZLVNikftEgnukOrXg==
+
 idb@^7.0.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.1.1.tgz#d910ded866d32c7ced9befc5bfdf36f572ced72b"
@@ -2596,10 +2611,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-linearly@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.4.2.tgz#4057196752ebcf58f87251218f1f342e3f49e879"
-  integrity sha512-N124gVwh/vqzdXJ3NaSLFXP0TVac3Nr0MNtg8Zw1+uHW5rh+wN/gz8G9MWW2JoST3wCATrxY4fTdZKBt8Rwcjg==
+linearly@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.6.0.tgz#5c32798d040ec21f89158d8056ce65c44614894e"
+  integrity sha512-R3Wj6zCHGSZZ4JPLyZtmBdIKyzQp3LUAP2GdOjiRqAVYTuRRdtlxsnt0m7GfK55ROXmOIpv3/fa2NHEHDihb1Q==
 
 locate-path@^6.0.0:
   version "6.0.0"
@@ -2623,7 +2638,7 @@ lodash.sortby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==
 
-lodash@^4.17.20:
+lodash@^4.17.20, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -3300,6 +3315,11 @@ typed-array-length@^1.0.4:
     call-bind "^1.0.2"
     for-each "^0.3.3"
     is-typed-array "^1.1.9"
+
+typescript-memoize@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/typescript-memoize/-/typescript-memoize-1.1.1.tgz#02737495d5df6ebf72c07ba0d002e8f4cf5ccfa0"
+  integrity sha512-GQ90TcKpIH4XxYTI2F98yEQYZgjNMOGPpOgdjIBhaLaWji5HPWlRnZ4AeA1hfBxtY7bCGDJsqDDHk/KaHOl5bA==
 
 typescript@^5.2.2:
   version "5.2.2"
