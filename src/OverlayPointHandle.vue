@@ -68,7 +68,7 @@ const viewTransformInv = computed(() => {
 })
 
 const zoom = computed(() => {
-	return mat2d.determinant(props.viewTransform)
+	return Math.sqrt(mat2d.determinant(props.viewTransform))
 })
 
 onMounted(() => {
