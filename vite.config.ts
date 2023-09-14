@@ -9,6 +9,7 @@ const monacoEditorPluginDefault = (monacoEditorPlugin as any).default as (
 ) => any
 
 export default defineConfig({
+	base: './',
 	plugins: [
 		vue(),
 		monacoEditorPluginDefault({
