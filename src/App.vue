@@ -81,6 +81,66 @@ async function pasteSVGToCanvas() {
 		svgCode
 	)
 }
+
+const fileHandle = ref<FileSystemFileHandle | null>(null)
+
+const filePickerOptions: FilePickerOptions = {
+	types: [
+		{
+			description: 'Paper.js Project',
+			accept: {
+				'text/plain': ['.js'],
+			},
+		},
+	],
+}
+
+async function saveProject() {
+	if (!fileHandle.value) {
+		fileHandle.value = await window.showSaveFilePicker(filePickerOptions)
+	}
+
+	const writable = await fileHandle.value.createWritable()
+	await writable.write(code.value)
+	await writable.close()
+}
+
+async function openProject() {
+	const handles = await window.showOpenFilePicker(filePickerOptions)
+
+	fileHandle.value = handles[0]
+
+	const file = await fileHandle.value.getFile()
+	const text = await file.text()
+	code.value = text
+}
+
+// Register shotcuts
+window.addEventListener('keydown', (e) => {
+	if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+		e.preventDefault()
+		saveProject()
+	} else if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
+		e.preventDefault()
+		openProject()
+	}
+})
+
+window.addEventListener('drop', async (e) => {
+	e.preventDefault()
+
+	if (!e.dataTransfer) return
+
+	const handle = await e.dataTransfer.items[0].getAsFileSystemHandle()
+
+	if (!handle || handle.kind !== 'file') return
+
+	fileHandle.value = handle as FileSystemFileHandle
+
+	const file = await fileHandle.value.getFile()
+	const text = await file.text()
+	code.value = text
+})
 </script>
 
 <template>
@@ -105,10 +165,13 @@ async function pasteSVGToCanvas() {
 					</button>
 					<div class="spacer" />
 					<button @click="copyCanvasAsSVG">
-						<span class="material-symbols-outlined">content_copy</span>Copy
+						<span class="material-symbols-outlined">content_copy</span>
 					</button>
 					<button @click="pasteSVGToCanvas">
-						<span class="material-symbols-outlined">content_paste</span>Paste
+						<span class="material-symbols-outlined">content_paste</span>
+					</button>
+					<button @click="saveProject">
+						<span class="material-symbols-outlined">download</span>
 					</button>
 				</div>
 				<div class="editor-wrapper">
