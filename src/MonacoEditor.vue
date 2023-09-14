@@ -153,8 +153,11 @@ onMounted(() => {
 	watch(
 		() => props.cursorIndex,
 		(value) => {
+			const prevPosition = editor.getPosition()
 			const position = editor.getModel()?.getPositionAt(value)
-			if (!position) return
+			if (!prevPosition || !position || position.equals(prevPosition)) {
+				return
+			}
 
 			editor.setPosition(position)
 		}
