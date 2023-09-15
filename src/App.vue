@@ -169,12 +169,21 @@ async function pasteSVGToCanvas() {
 }
 
 const fileHandle = ref<FileSystemFileHandle | null>(null)
+const lastSavedCode = ref('')
 
 const fileName = computed(() => {
 	return fileHandle.value?.name || 'Untitled'
 })
 
-useTitle(fileName)
+const hasModified = computed(() => {
+	return fileHandle.value && code.value !== lastSavedCode.value
+})
+
+const title = computed(() => {
+	return fileName.value + (hasModified.value ? '*' : '')
+})
+
+useTitle(title)
 
 const filePickerOptions: FilePickerOptions = {
 	types: [
@@ -195,6 +204,8 @@ async function saveProject() {
 	const writable = await fileHandle.value.createWritable()
 	await writable.write(code.value)
 	await writable.close()
+
+	lastSavedCode.value = code.value
 }
 
 async function openProject() {
@@ -204,7 +215,7 @@ async function openProject() {
 
 	const file = await fileHandle.value.getFile()
 	const text = await file.text()
-	code.value = text
+	code.value = lastSavedCode.value = text
 }
 
 // Register shotcuts
@@ -239,7 +250,7 @@ window.addEventListener('drop', async e => {
 	<div class="App">
 		<div class="title">
 			<img class="icon" src="/favicon.svg" />
-			{{ fileName }}
+			{{ title }}
 		</div>
 		<main class="main">
 			<div class="canvas-wrapper" :style="canvasStyle">
