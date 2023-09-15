@@ -1,16 +1,17 @@
 // https://10print.org
 
-const size = 68
-
-const col = 10
-const row = 10
-
-Math.seedrandom(13)
+const size = +25
+const col = +38
+const row = +20
+const seed = -1.1
 
 for (let y = 0; y < row; y++) {
 	for (let x = 0; x < col; x++) {
 		const left = x * size
 		const top = y * size
+
+		const index = ((x + y) * (x + y + 1)) / 2 + y
+		Math.seedrandom(index + seed)
 
 		const inverted = Math.random() > 0.5
 
@@ -20,6 +21,6 @@ for (let y = 0; y < row; y++) {
 
 		line.strokeColor = 'pink'
 		line.strokeCap = 'round'
-		line.strokeWidth = 10
+		line.strokeWidth = +5
 	}
 }
