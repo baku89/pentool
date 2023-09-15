@@ -25,6 +25,7 @@
 		"eslint-plugin-vue": "^9.17.0",
 		"linearly": "^0.6.1",
 		"monaco-editor": "^0.43.0",
+		"monaco-themes": "^0.4.4",
 		"paper": "^0.12.17",
 		"paperjs-offset": "^1.0.8",
 		"stylus": "^0.60.0",

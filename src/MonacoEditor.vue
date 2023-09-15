@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {Vec2} from 'linearly'
 import * as monaco from 'monaco-editor'
+import Tomorrow from 'monaco-themes/themes/Tomorrow.json'
+import TomorrowNight from 'monaco-themes/themes/Tomorrow-Night.json'
 import {defineProps, onMounted, ref, watch} from 'vue'
 
 export interface ErrorInfo {
@@ -72,26 +74,18 @@ onMounted(() => {
 	})
 
 	// fetch the theme file and apply to the editor
-	const lightTheme = `https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/Tomorrow.json`
-	const darkTheme = `https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/Tomorrow-Night.json`
+	monaco.editor.defineTheme('light', Tomorrow as any)
+	monaco.editor.defineTheme('dark', TomorrowNight as any)
 
-	Promise.all([
-		fetch(lightTheme).then(res => res.json()),
-		fetch(darkTheme).then(res => res.json()),
-	]).then(([light, dark]) => {
-		monaco.editor.defineTheme('light', light)
-		monaco.editor.defineTheme('dark', dark)
+	const preferColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
 
-		const preferColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
+	function update() {
+		const theme = preferColorScheme.matches ? 'dark' : 'light'
+		monaco.editor.setTheme(theme)
+	}
 
-		function update() {
-			const theme = preferColorScheme.matches ? 'dark' : 'light'
-			monaco.editor.setTheme(theme)
-		}
-
-		preferColorScheme.addEventListener('change', update)
-		update()
-	})
+	preferColorScheme.addEventListener('change', update)
+	update()
 
 	// resize editor to match its parent element size
 	new ResizeObserver(entries => {
