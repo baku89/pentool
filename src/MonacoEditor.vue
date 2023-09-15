@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useColorMode} from '@vueuse/core'
+import {useColorMode, useResizeObserver} from '@vueuse/core'
 import {Vec2} from 'linearly'
 import * as monaco from 'monaco-editor'
 import Tomorrow from 'monaco-themes/themes/Tomorrow.json'
@@ -84,13 +84,13 @@ onMounted(() => {
 	})
 
 	// resize editor to match its parent element size
-	new ResizeObserver(entries => {
+	useResizeObserver($root.value, entries => {
 		const {
 			contentRect: {width, height},
 		} = entries[0]
 
 		editor.layout({width, height})
-	}).observe($root.value)
+	})
 
 	// allow ES5 JavaScript linting
 	const options =
