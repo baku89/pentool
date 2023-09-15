@@ -1590,10 +1590,10 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
-bndr-js@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.5.1.tgz#12ef0d81f6d0c0d2a0f3977b68d154999a0de346"
-  integrity sha512-lI8sgh8a0NtTPkMBfDNSvnNnWwF2yoE3C9lg/M+mf9L0PXHBW7QZ8sHHoz1myNC8whV6EZagU1cTY/B0m6QOpg==
+bndr-js@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.6.0.tgz#c1fefeac70ce1e260ae76cb93de0dd0ad208da67"
+  integrity sha512-yGzWf0/pDiY6UvAWa4vEXwgvgNnd8cCVDLIRiRKLXNTBjTPLMkwbI6RXERN2sLNn12CZc93o36YCezxpy1algQ==
   dependencies:
     hotkeys-js "^3.10.2"
     lodash "^4.17.21"

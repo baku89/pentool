@@ -32,10 +32,6 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 		.on(onTransform)
 
 	// Zoom
-	const zoomOrigin = position.stash(
-		Bndr.combine(lmbPressed.down(), scroll.constant(true as const))
-	)
-
 	const zoomByDragReady = Bndr.cascade(zPressed, lmbPressed)
 
 	const zoomByScroll = scroll.while(altPressed, false).map(([, y]) => y)
@@ -43,8 +39,17 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 		.while(zoomByDragReady)
 		.delta()
 		.map(([x]) => -x)
+	const zoomByPinch = pointer.pinch().map((x) => x * 2)
 
-	Bndr.combine(zoomByScroll, zoomByDrag)
+	const zoomOrigin = position.stash(
+		Bndr.combine(
+			lmbPressed.down(),
+			scroll.constant(true as const),
+			zoomByPinch.constant(true as const)
+		)
+	)
+
+	Bndr.combine(zoomByScroll, zoomByDrag, zoomByPinch)
 		.map((delta) => {
 			return mat2d.mul(
 				mat2d.fromTranslation(zoomOrigin.value),
