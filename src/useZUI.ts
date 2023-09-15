@@ -13,6 +13,7 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 	const lmbPressed = pointer.left.pressed()
 	const zPressed = Bndr.keyboard.key('z')
 	const altPressed = Bndr.keyboard.key('alt')
+	const ctrlPressed = Bndr.keyboard.key('control')
 	const spacePressed = Bndr.keyboard.key('space')
 
 	const panByDragReady = Bndr.or(
@@ -66,7 +67,7 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 	})
 
 	const zoomActive = ref(false)
-	Bndr.or(altPressed, zPressed, zoomByDragReady).on(active => {
+	Bndr.or(altPressed, zPressed, zoomByDragReady, ctrlPressed).on(active => {
 		zoomActive.value = active
 	})
 
