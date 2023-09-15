@@ -120,6 +120,10 @@ const zoom = computed(() => {
 	return Math.sqrt(mat2d.determinant(viewTransform.value))
 })
 
+function resetZoom() {
+	viewTransform.value = mat2d.identity
+}
+
 const canvasStyle = computed(() => {
 	const [x, y] = vec2.transformMat2d(vec2.zero, viewTransform.value)
 
@@ -250,7 +254,13 @@ window.addEventListener('drop', async e => {
 	<div class="App">
 		<div class="title">
 			<img class="icon" src="/favicon.svg" />
-			{{ title }}
+			<span>
+				{{ title }}
+			</span>
+			<div class="spacer" />
+			<button class="zoom" @click="resetZoom">
+				{{ (zoom * 100).toFixed(0) + '%' }}
+			</button>
 		</div>
 		<main class="main">
 			<div class="canvas-wrapper" :style="canvasStyle">
@@ -320,7 +330,7 @@ window.addEventListener('drop', async e => {
 	user-select none
 
 	position fixed
-	background 'linear-gradient(to bottom, rgba(%s, .5) 20%, transparent)' % var(--ui-bg-rgb)
+	background 'linear-gradient(to bottom, rgba(%s, .7) 0, transparent)' % var(--ui-bg-rgb)
 	backdrop-filter blur(2px)
 	gap .6rem
 	padding .4rem .4rem
@@ -330,10 +340,27 @@ window.addEventListener('drop', async e => {
 	line-height calc(var(--titlebar-area-height) - 0.8rem)
 
 	@media (display-mode: window-controls-overlay)
-		padding-left 0
+		background 'linear-gradient(to bottom, rgba(%s, .5) 20%, transparent)' % var(--ui-bg-rgb), linear-gradient(to right, var(--ui-bg) 0, transparent 15%, transparent 85%, var(--ui-bg) 100%)
 
 	.icon
 		height calc(var(--titlebar-area-height) - .8rem)
+
+	.spacer
+		flex-grow 1
+
+	.zoom
+		font-variant-numeric: tabular-nums;
+		font-size 11px
+		border 1px solid transparent
+		border-radius 4px
+		padding 0 .6rem
+		-webkit-app-region: no-drag;
+		app-region: no-drag;
+		transition all ease .1s
+
+		&:hover
+			border-color var(--ui-button)
+
 .main
 	position relative
 	height 100vh
