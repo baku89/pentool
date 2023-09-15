@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useLocalStorage, useTitle} from '@vueuse/core'
+import {useCssVar, useLocalStorage, useTitle} from '@vueuse/core'
 import * as acorn from 'acorn'
 import {mat2d, vec2} from 'linearly'
 import {
@@ -111,7 +111,15 @@ watch([code, autoRefresh], () => nextTick(executeCode))
 // Setup paper.js
 const $canvas = ref<HTMLCanvasElement | null>(null)
 
-const viewTransform = shallowRef(mat2d.identity)
+const titleBarOffset = computed(() => {
+	return parseFloat(useCssVar('--titlebar-area-height').value)
+})
+
+const initialViewTransform = computed(() => {
+	return mat2d.fromTranslation([0, titleBarOffset.value])
+})
+
+const viewTransform = shallowRef(initialViewTransform.value)
 const {cursor} = useZUI(xform => {
 	viewTransform.value = mat2d.mul(xform, viewTransform.value)
 })
@@ -121,7 +129,7 @@ const zoom = computed(() => {
 })
 
 function resetZoom() {
-	viewTransform.value = mat2d.identity
+	viewTransform.value = initialViewTransform.value
 }
 
 const canvasStyle = computed(() => {
