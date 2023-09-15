@@ -281,7 +281,7 @@ window.addEventListener('drop', async (e) => {
 						v-model:code="code"
 						:cursorIndex="cursorIndex"
 						:cursorPosition="cursorPosition"
-						:visible="colorPickerVisible"
+						v-model:visible="colorPickerVisible"
 					/>
 					<OverlayNumberSlider
 						v-show="!colorPickerVisible"
