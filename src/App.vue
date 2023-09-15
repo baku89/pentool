@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useCssVar, useLocalStorage, useTitle} from '@vueuse/core'
+import {useCssVar, useTitle} from '@vueuse/core'
 import * as acorn from 'acorn'
 import {mat2d, vec2} from 'linearly'
 import {
@@ -24,10 +24,13 @@ import MonacoEditor, {ErrorInfo} from './MonacoEditor.vue'
 import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
+import {useAppStorage} from './useAppStorage'
 import {useZUI} from './useZUI'
 import {replaceTextBetween} from './utils'
 
-const code = useLocalStorage('code', '')
+const {refAppStorage} = useAppStorage('com.baku89.paperjs-editor')
+
+const code = refAppStorage('code', '')
 
 if (code.value === '') {
 	code.value = `const path = new Path()
@@ -42,7 +45,7 @@ path.lineTo(start + [200, 50])`
 const cursorIndex = ref(0)
 const cursorPosition = ref(vec2.zero)
 
-const autoRefresh = useLocalStorage('autoRefresh', true)
+const autoRefresh = refAppStorage('autoRefresh', true)
 
 const errors = ref<ErrorInfo[] | null>(null)
 
@@ -116,7 +119,7 @@ const titleBarOffset = computed(() => {
 })
 
 const initialViewTransform = computed(() => {
-	return mat2d.fromTranslation([0, titleBarOffset.value])
+	return mat2d.fromTranslation([20, 20 + titleBarOffset.value])
 })
 
 const viewTransform = shallowRef(initialViewTransform.value)
