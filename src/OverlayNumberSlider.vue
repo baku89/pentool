@@ -34,7 +34,7 @@ const style = computed(() => {
 		visibility: 'visible',
 		left: x + 'px',
 		top: y + 'px',
-		backgroundPosition: `${Math.round(selection.value.value)}px 50%`,
+		backgroundPosition: `${Math.round(-selection.value.value)}px 50%`,
 	}
 })
 
@@ -48,18 +48,22 @@ function onPointerdown(e: PointerEvent) {
 function onPointermove(e: PointerEvent) {
 	if (!selection.value) return
 
-	const {precision, startIndex, endIndex} = selection.value
+	const {precision, startIndex, endIndex, isUnsigned} = selection.value
 
 	const dx = e.movementX
-	const delta = dx * Math.pow(10, -precision)
+	const delta = -dx * Math.pow(10, -precision)
 
-	const value = selection.value.value + delta
+	let value = selection.value.value + delta
+
+	if (isUnsigned) {
+		value = Math.max(0, value)
+	}
 
 	const code = replaceTextBetween(
 		props.code,
 		startIndex,
 		endIndex,
-		value.toFixed(precision)
+		(isUnsigned ? '+' : '') + value.toFixed(precision)
 	)
 
 	emits('update:cursorIndex', selection.value.startIndex)

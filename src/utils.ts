@@ -42,6 +42,7 @@ export function findNumericLiteralAtColumn(subject: string, index: number) {
 	const text = match[1].replace('🍡', '')
 	const startIndex = match.index
 	const endIndex = startIndex + text.length
+	const isUnsigned = text.startsWith('+')
 
 	if (/^[+-]?\d+$/.test(text)) {
 		return {
@@ -49,6 +50,7 @@ export function findNumericLiteralAtColumn(subject: string, index: number) {
 			precision: 0,
 			startIndex,
 			endIndex,
+			isUnsigned,
 		}
 	}
 
@@ -60,6 +62,7 @@ export function findNumericLiteralAtColumn(subject: string, index: number) {
 			value: parseFloat(text),
 			startIndex,
 			endIndex,
+			isUnsigned,
 		}
 	}
 
