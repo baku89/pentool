@@ -10,7 +10,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"preversion": "npm run test",
-		"postversion": "git push && git push --tags -f"
+		"postversion": "git push && git push --tags"
 	},
 	"devDependencies": {
 		"@types/wicg-file-system-access": "^2020.9.6",
