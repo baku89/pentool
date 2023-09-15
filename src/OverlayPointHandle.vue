@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { defineProps, computed, ref, onMounted, watchEffect } from 'vue'
-import { findTextBetweenDelimiters, replaceTextBetween } from './utils'
-import { vec2, type Mat2d, Vec2, mat2d } from 'linearly'
 import Bndr from 'bndr-js'
+import {type Mat2d, mat2d, vec2} from 'linearly'
+import {computed, defineProps, onMounted, ref} from 'vue'
+
+import {findTextBetweenDelimiters, replaceTextBetween} from './utils'
 
 interface Props {
 	code: string
@@ -34,7 +35,7 @@ const selection = computed(() => {
 
 		if (match2DCoord) {
 			const [x, y] = match2DCoord.slice(1, 3).map(parseFloat)
-			const { startIndex, endIndex } = matchBracket
+			const {startIndex, endIndex} = matchBracket
 
 			return {
 				position: vec2.of(x, y),
@@ -50,7 +51,7 @@ const selection = computed(() => {
 const style = computed(() => {
 	if (!selection.value) return {} as Record<string, string>
 
-	const { position } = selection.value
+	const {position} = selection.value
 
 	const [x, y] = vec2.transformMat2d(position, props.viewTransform)
 
@@ -78,13 +79,13 @@ onMounted(() => {
 
 	pointer
 		.position()
-		.while(pointer.pressed({ pointerCapture: true }))
+		.while(pointer.pressed({pointerCapture: true}))
 		.map(
-			(pos) => vec2.transformMat2d(pos, viewTransformInv.value),
+			pos => vec2.transformMat2d(pos, viewTransformInv.value),
 			Bndr.type.vec2
 		)
 		.delta()
-		.on((delta) => {
+		.on(delta => {
 			if (!selection.value) return
 
 			const [x, y] = vec2.add(selection.value.position, delta)
@@ -107,7 +108,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="OverlayPointHandle" ref="$handle" :style="style"></div>
+	<div ref="$handle" class="OverlayPointHandle" :style="style"></div>
 </template>
 
 <style lang="stylus" scoped>

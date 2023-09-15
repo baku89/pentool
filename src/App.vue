@@ -1,31 +1,31 @@
 <script lang="ts" setup>
-import {
-	ref,
-	onMounted,
-	watch,
-	nextTick,
-	computed,
-	watchEffect,
-	shallowRef,
-} from 'vue'
-import { Mat2d, mat2d, vec2 } from 'linearly'
-import { useLocalStorage, useTitle } from '@vueuse/core'
-// needs to import the latest version of acorn to use ES6 syntax in PaperScript
+import {useLocalStorage, useTitle} from '@vueuse/core'
 import * as acorn from 'acorn'
+import {mat2d, vec2} from 'linearly'
+import {
+	computed,
+	nextTick,
+	onMounted,
+	ref,
+	shallowRef,
+	watch,
+	watchEffect,
+} from 'vue'
+
+// needs to import the latest version of acorn to use ES6 syntax in PaperScript
 ;(window as any).acorn = acorn
 
 import paper from 'paper'
-
 // Add offset functions for global paper.js object
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
-import { replaceTextBetween } from './utils'
-import MonacoEditor, { ErrorInfo } from './MonacoEditor.vue'
-import OverlayPointHandle from './OverlayPointHandle.vue'
+import MonacoEditor, {ErrorInfo} from './MonacoEditor.vue'
 import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
-import { useZUI } from './useZUI'
+import OverlayPointHandle from './OverlayPointHandle.vue'
+import {useZUI} from './useZUI'
+import {replaceTextBetween} from './utils'
 
 const code = useLocalStorage('code', '')
 
@@ -56,13 +56,13 @@ function executeCode() {
 
 	try {
 		paper.project.activeLayer.removeChildren()
-		paper.tools.forEach((t) => t.remove())
+		paper.tools.forEach(t => t.remove())
 		paper.PaperScript.execute(code.value, paper)
 	} catch (e) {
 		if (e instanceof SyntaxError) {
 			const match = e.stack?.match(/(\d+):(\d+)/)
 			if (match) {
-				let [line, column] = match.slice(1).map(Number)
+				const [line, column] = match.slice(1).map(Number)
 				errors.value = [
 					{
 						message: e.message,
@@ -75,7 +75,8 @@ function executeCode() {
 			const match = e.stack?.match(/<anonymous>:(\d+):(\d+)/)
 
 			if (match) {
-				let [line, column] = match.slice(1).map(Number)
+				const line = Number(match[1])
+				let column = Number(match[2])
 
 				if (line === 1) {
 					column -= 70
@@ -111,7 +112,7 @@ watch([code, autoRefresh], () => nextTick(executeCode))
 const $canvas = ref<HTMLCanvasElement | null>(null)
 
 const viewTransform = shallowRef(mat2d.identity)
-const { cursor } = useZUI((xform) => {
+const {cursor} = useZUI(xform => {
 	viewTransform.value = mat2d.mul(xform, viewTransform.value)
 })
 
@@ -151,7 +152,7 @@ onMounted(() => {
 const colorPickerVisible = ref(false)
 
 function copyCanvasAsSVG() {
-	const svg = paper.project.exportSVG({ asString: true })
+	const svg = paper.project.exportSVG({asString: true})
 	navigator.clipboard.writeText(svg.toString())
 }
 
@@ -207,7 +208,7 @@ async function openProject() {
 }
 
 // Register shotcuts
-window.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', e => {
 	if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
 		e.preventDefault()
 		saveProject()
@@ -217,7 +218,7 @@ window.addEventListener('keydown', (e) => {
 	}
 })
 
-window.addEventListener('drop', async (e) => {
+window.addEventListener('drop', async e => {
 	e.preventDefault()
 
 	if (!e.dataTransfer) return
@@ -242,11 +243,11 @@ window.addEventListener('drop', async (e) => {
 		</div>
 		<main class="main">
 			<div class="canvas-wrapper" :style="canvasStyle">
-				<canvas class="canvas" ref="$canvas" resize></canvas>
+				<canvas ref="$canvas" class="canvas" resize></canvas>
 				<OverlayPointHandle
 					v-model:code="code"
-					:cursorIndex="cursorIndex"
-					:viewTransform="viewTransform"
+					:cursor-index="cursorIndex"
+					:view-transform="viewTransform"
 				/>
 			</div>
 
@@ -271,23 +272,23 @@ window.addEventListener('drop', async (e) => {
 				</div>
 				<div class="editor-wrapper">
 					<MonacoEditor
-						class="editor"
 						v-model="code"
 						v-model:cursorIndex="cursorIndex"
 						v-model:cursorPosition="cursorPosition"
+						class="editor"
 						:errors="errors"
 					/>
 					<OverlayColorPicker
 						v-model:code="code"
-						:cursorIndex="cursorIndex"
-						:cursorPosition="cursorPosition"
 						v-model:visible="colorPickerVisible"
+						:cursor-index="cursorIndex"
+						:cursor-position="cursorPosition"
 					/>
 					<OverlayNumberSlider
 						v-show="!colorPickerVisible"
 						v-model:code="code"
 						v-model:cursorIndex="cursorIndex"
-						:cursorPosition="cursorPosition"
+						:cursor-position="cursorPosition"
 					/>
 				</div>
 			</div>

@@ -27,7 +27,7 @@ export function findTextBetweenDelimiters(
 	const startIndex = match.index + 1
 	const endIndex = startIndex + text.length
 
-	return { text, startIndex, endIndex }
+	return {text, startIndex, endIndex}
 }
 
 export function findNumericLiteralAtColumn(subject: string, index: number) {

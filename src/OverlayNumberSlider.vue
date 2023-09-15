@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { Vec2 } from 'linearly'
-import { computed } from 'vue'
-import { findNumericLiteralAtColumn, replaceTextBetween } from './utils'
+import {Vec2} from 'linearly'
+import {computed} from 'vue'
+
+import {findNumericLiteralAtColumn, replaceTextBetween} from './utils'
 
 interface Props {
 	code: string
@@ -47,7 +48,7 @@ function onPointerdown(e: PointerEvent) {
 function onPointermove(e: PointerEvent) {
 	if (!selection.value) return
 
-	const { precision, startIndex, endIndex } = selection.value
+	const {precision, startIndex, endIndex} = selection.value
 
 	const dx = e.movementX
 	const delta = dx * Math.pow(10, -precision)

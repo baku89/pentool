@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import {Vec2} from 'linearly'
 import * as monaco from 'monaco-editor'
-import { defineProps, ref, onMounted, watch } from 'vue'
-import { Vec2 } from 'linearly'
+import {defineProps, onMounted, ref, watch} from 'vue'
 
 export interface ErrorInfo {
 	message: string
@@ -45,6 +45,7 @@ onMounted(() => {
 
 		// make the editor look prettier
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		'bracketPairColorization.enabled': false,
 		fontLigatures: true,
@@ -75,8 +76,8 @@ onMounted(() => {
 	const darkTheme = `https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/Tomorrow-Night.json`
 
 	Promise.all([
-		fetch(lightTheme).then((res) => res.json()),
-		fetch(darkTheme).then((res) => res.json()),
+		fetch(lightTheme).then(res => res.json()),
+		fetch(darkTheme).then(res => res.json()),
 	]).then(([light, dark]) => {
 		monaco.editor.defineTheme('light', light)
 		monaco.editor.defineTheme('dark', dark)
@@ -93,12 +94,12 @@ onMounted(() => {
 	})
 
 	// resize editor to match its parent element size
-	new ResizeObserver((entries) => {
+	new ResizeObserver(entries => {
 		const {
-			contentRect: { width, height },
+			contentRect: {width, height},
 		} = entries[0]
 
-		editor.layout({ width, height })
+		editor.layout({width, height})
 	}).observe($root.value)
 
 	// allow ES5 JavaScript linting
@@ -125,14 +126,14 @@ onMounted(() => {
 		// Convert monaco editor's position to pixel-based position
 		const cursorInfo = editor.getScrolledVisiblePosition(position)
 		if (cursorInfo) {
-			const { top, left, height } = cursorInfo
+			const {top, left, height} = cursorInfo
 			emits('update:cursorPosition', [left, top + height])
 		}
 	})
 
 	watch(
 		() => props.modelValue,
-		(value) => {
+		value => {
 			if (editor.getValue() === value) return
 
 			const model = editor.getModel()
@@ -152,7 +153,7 @@ onMounted(() => {
 
 	watch(
 		() => props.cursorIndex,
-		(value) => {
+		value => {
 			const prevPosition = editor.getPosition()
 			const position = editor.getModel()?.getPositionAt(value)
 			if (!prevPosition || !position || position.equals(prevPosition)) {
@@ -165,7 +166,7 @@ onMounted(() => {
 
 	watch(
 		() => props.errors,
-		(errors) => {
+		errors => {
 			const model = editor.getModel()
 			if (!model) return
 
@@ -173,7 +174,7 @@ onMounted(() => {
 			monaco.editor.setModelMarkers(
 				model,
 				'my-source',
-				(errors ?? []).map((error) => ({
+				(errors ?? []).map(error => ({
 					message: error.message,
 					severity: monaco.MarkerSeverity.Error,
 					startLineNumber: error.line,
@@ -188,8 +189,8 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="MonacoEditor" ref="$root">
-		<div class="editor" ref="$editor"></div>
+	<div ref="$root" class="MonacoEditor">
+		<div ref="$editor" class="editor"></div>
 	</div>
 </template>
 

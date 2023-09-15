@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { Vec2 } from 'linearly'
-import { computed, watchEffect } from 'vue'
+import {Vec2} from 'linearly'
+import {computed, watchEffect} from 'vue'
+
 import {
 	findTextBetweenDelimiters,
 	normalizeColorToHexCode,
@@ -30,7 +31,7 @@ const selection = computed(() => {
 		findTextBetweenDelimiters(props.code, props.cursorIndex, "'", "'")
 
 	if (matchStringLiteral && CSS.supports('color', matchStringLiteral.text)) {
-		const { text } = matchStringLiteral
+		const {text} = matchStringLiteral
 
 		const color = normalizeColorToHexCode(text)
 
