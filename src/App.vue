@@ -20,6 +20,7 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
+import FloatingPane from './FloatingPane.vue'
 import MonacoEditor, {ErrorInfo} from './MonacoEditor.vue'
 import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
@@ -109,8 +110,6 @@ function executeCode() {
 	}
 }
 
-watch([code, autoRefresh], () => nextTick(executeCode))
-
 // Setup paper.js
 const $canvas = ref<HTMLCanvasElement | null>(null)
 
@@ -198,11 +197,10 @@ onMounted(() => {
 	if (!$canvas.value) return
 	paper.setup($canvas.value)
 
-	executeCode()
+	watch([code, autoRefresh], () => nextTick(executeCode), {immediate: true})
 
-	watch(viewTransform, () => {
+	watchEffect(() => {
 		paper.view.matrix.set(viewTransform.value)
-		paper.view.update()
 	})
 
 	watchEffect(() => {
@@ -328,48 +326,49 @@ window.addEventListener('drop', async e => {
 					:view-transform="viewTransform"
 				/>
 			</div>
-
-			<div class="inspector">
-				<div class="actions">
-					<button class="play" @click="autoRefresh = !autoRefresh">
-						<span class="material-symbols-outlined">{{
-							autoRefresh ? 'pause_circle' : 'play_circle'
-						}}</span>
-						{{ autoRefresh ? 'Pause' : 'Resume' }}
-					</button>
-					<div class="spacer" />
-					<button @click="copyCanvasAsSVG">
-						<span class="material-symbols-outlined">content_copy</span>
-					</button>
-					<button @click="pasteSVGToCanvas">
-						<span class="material-symbols-outlined">content_paste</span>
-					</button>
-					<button @click="saveProject">
-						<span class="material-symbols-outlined">download</span>
-					</button>
+			<FloatingPane name="inspector">
+				<div class="inspector">
+					<div class="actions">
+						<button class="play" @click="autoRefresh = !autoRefresh">
+							<span class="material-symbols-outlined">{{
+								autoRefresh ? 'pause_circle' : 'play_circle'
+							}}</span>
+							{{ autoRefresh ? 'Pause' : 'Resume' }}
+						</button>
+						<div class="spacer" />
+						<button @click="copyCanvasAsSVG">
+							<span class="material-symbols-outlined">content_copy</span>
+						</button>
+						<button @click="pasteSVGToCanvas">
+							<span class="material-symbols-outlined">content_paste</span>
+						</button>
+						<button @click="saveProject">
+							<span class="material-symbols-outlined">download</span>
+						</button>
+					</div>
+					<div class="editor-wrapper">
+						<MonacoEditor
+							v-model="code"
+							v-model:cursorIndex="cursorIndex"
+							v-model:cursorPosition="cursorPosition"
+							class="editor"
+							:errors="errors"
+						/>
+						<OverlayColorPicker
+							v-model:code="code"
+							v-model:visible="colorPickerVisible"
+							:cursor-index="cursorIndex"
+							:cursor-position="cursorPosition"
+						/>
+						<OverlayNumberSlider
+							v-show="!colorPickerVisible"
+							v-model:code="code"
+							v-model:cursorIndex="cursorIndex"
+							:cursor-position="cursorPosition"
+						/>
+					</div>
 				</div>
-				<div class="editor-wrapper">
-					<MonacoEditor
-						v-model="code"
-						v-model:cursorIndex="cursorIndex"
-						v-model:cursorPosition="cursorPosition"
-						class="editor"
-						:errors="errors"
-					/>
-					<OverlayColorPicker
-						v-model:code="code"
-						v-model:visible="colorPickerVisible"
-						:cursor-index="cursorIndex"
-						:cursor-position="cursorPosition"
-					/>
-					<OverlayNumberSlider
-						v-show="!colorPickerVisible"
-						v-model:code="code"
-						v-model:cursorIndex="cursorIndex"
-						:cursor-position="cursorPosition"
-					/>
-				</div>
-			</div>
+			</FloatingPane>
 		</main>
 	</div>
 </template>
@@ -438,23 +437,11 @@ window.addEventListener('drop', async e => {
 	width 100%
 
 .inspector
-	position absolute
-	padding 1rem
-	border 1px solid 'rgba(%s, .1)' % var(--ui-color-rgb)
-	outline  'rgba(%s, .5)' % var(--ui-bg-rgb) 1px solid
-	background 'rgba(%s, .95)' % var(--ui-bg-rgb)
-	backdrop-filter blur(4px)
-	width 50%
-	right 0
-	bottom 0
+	position relative
+	height 100%
 	display flex
 	flex-direction column
 	gap 1rem
-
-	top calc(env(titlebar-area-y, 0px) + var(--titlebar-area-height))
-	border-width 1px 0 0 1px
-	border-radius 1.4rem 0 0 0
-
 
 .actions
 	display flex
@@ -487,9 +474,11 @@ window.addEventListener('drop', async e => {
 		&:hover
 			background var(--ui-accent)
 			color var(--ui-bg)
+
 .editor-wrapper
 	position relative
 	flex-grow 1
+	min-height 0
 
 .editor
 	width 100%

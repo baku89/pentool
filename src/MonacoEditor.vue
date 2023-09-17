@@ -84,7 +84,7 @@ onMounted(() => {
 	})
 
 	// resize editor to match its parent element size
-	useResizeObserver($root.value, entries => {
+	useResizeObserver($root.value.parentElement, entries => {
 		const {
 			contentRect: {width, height},
 		} = entries[0]
