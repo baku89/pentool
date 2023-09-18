@@ -96,13 +96,19 @@ onMounted(() => {
 
 .resize
 	position absolute
-	opacity 0
-	border-radius 9999px
 
-	--gradient transparent 40%, blue 40%, blue 60%, transparent 60%
+	&:before
+		content ''
+		position absolute
+		width 100%
+		height 100%
+		background blue
+		transition opacity .2s ease
+		opacity 0
 
-	&:hover
-		opacity 1
+	&:hover:before
+			opacity 1
+			transition opacity .2s ease .4s
 
 .left
 	left 0
@@ -110,8 +116,11 @@ onMounted(() => {
 	width var(--resize-width)
 	bottom var(--border-radius)
 	cursor ew-resize
-	transform translateX(-50%)
-	background linear-gradient(to right, var(--gradient))
+	margin-left calc(-0.5 * var(--resize-width))
+
+	&:before
+		width 5px
+		left calc(50% - 2.5px)
 
 .bottom
 	left var(--border-radius)
@@ -119,8 +128,12 @@ onMounted(() => {
 	right 0
 	height var(--resize-width)
 	cursor ns-resize
-	transform translateY(50%)
 	background linear-gradient(to bottom, var(--gradient))
+	margin-top calc(-0.5 * var(--resize-width))
+
+	&:before
+		height 5px
+		top calc(50% - 2.5px)
 
 .content
 	position relative

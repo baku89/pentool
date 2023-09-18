@@ -41,7 +41,7 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 	const zoomByDrag = position
 		.while(zoomByDragReady)
 		.delta((prev, curt) => vec2.sub(curt, prev))
-		.map(([x]) => -x)
+		.map(([x]) => x)
 	const zoomByPinch = pointer.pinch().map(x => x * 2)
 
 	const zoomOrigin = position.stash(
