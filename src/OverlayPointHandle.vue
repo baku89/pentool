@@ -75,16 +75,13 @@ const zoom = computed(() => {
 onMounted(() => {
 	if (!$handle.value) return
 
-	const pointer = Bndr.pointer.target($handle.value)
+	const pointer = Bndr.pointer($handle.value)
 
 	pointer
 		.position()
 		.while(pointer.pressed({pointerCapture: true}))
-		.map(
-			pos => vec2.transformMat2d(pos, viewTransformInv.value),
-			Bndr.type.vec2
-		)
-		.delta()
+		.map(pos => vec2.transformMat2d(pos, viewTransformInv.value))
+		.delta((prev, curt) => vec2.sub(curt, prev))
 		.on(delta => {
 			if (!selection.value) return
 

@@ -21,6 +21,7 @@ const style = computed(() => {
 })
 
 import Bndr from 'bndr-js'
+import {vec2} from 'linearly'
 
 const $left = ref<HTMLElement | null>(null)
 const $bottom = ref<HTMLElement | null>(null)
@@ -34,17 +35,17 @@ const maxHeight = computed(() => {
 onMounted(() => {
 	if (!$left.value || !$bottom.value) return
 
-	const leftPointer = Bndr.pointer.target($left.value)
+	const leftPointer = Bndr.pointer($left.value)
 
 	leftPointer
 		.position()
 		.while(leftPointer.pressed({pointerCapture: true}), true)
-		.delta()
+		.delta(vec2.sub)
 		.on(([x]) => {
-			width.value -= x
+			width.value += x
 		})
 
-	const bottomPointer = Bndr.pointer.target($bottom.value)
+	const bottomPointer = Bndr.pointer($bottom.value)
 	const bottomPointerPressed = bottomPointer.pressed({pointerCapture: true})
 
 	bottomPointerPressed.up().on(() => {
@@ -54,9 +55,9 @@ onMounted(() => {
 	bottomPointer
 		.position()
 		.while(bottomPointerPressed, true)
-		.delta()
+		.delta(vec2.sub)
 		.on(([, y]) => {
-			height.value += y
+			height.value -= y
 			virtualHeight.value = Math.min(maxHeight.value, height.value)
 		})
 })

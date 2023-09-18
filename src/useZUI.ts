@@ -6,7 +6,7 @@ import {computed, ref} from 'vue'
  * Provides a zoomable and pannable interface for an element.
  */
 export function useZUI(onTransform: (xform: Mat2d) => void) {
-	const pointer = Bndr.pointer
+	const pointer = Bndr.pointer()
 	const position = pointer.position()
 	const scroll = pointer.scroll({preventDefault: true})
 
@@ -21,7 +21,9 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 		pointer.middle.pressed({pointerCapture: true})
 	)
 
-	const panByDrag = position.while(panByDragReady).delta()
+	const panByDrag = position
+		.while(panByDragReady)
+		.delta((prev, curt) => vec2.sub(curt, prev))
 
 	const panByScroll = scroll.map(vec2.negate).while(
 		altPressed.map(v => !v),
@@ -38,7 +40,7 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 	const zoomByScroll = scroll.while(altPressed, false).map(([, y]) => y)
 	const zoomByDrag = position
 		.while(zoomByDragReady)
-		.delta()
+		.delta((prev, curt) => vec2.sub(curt, prev))
 		.map(([x]) => -x)
 	const zoomByPinch = pointer.pinch().map(x => x * 2)
 
@@ -51,13 +53,7 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 	)
 
 	Bndr.combine(zoomByScroll, zoomByDrag, zoomByPinch)
-		.map(delta => {
-			return mat2d.mul(
-				mat2d.fromTranslation(zoomOrigin.value),
-				mat2d.fromScaling(vec2.of(1.003 ** -delta)),
-				mat2d.fromTranslation(vec2.negate(zoomOrigin.value))
-			)
-		})
+		.map(delta => mat2d.fromScaling(vec2.of(1.003 ** delta), zoomOrigin.value))
 		.on(onTransform)
 
 	// Computes the cursor style

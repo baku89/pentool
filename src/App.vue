@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useCssVar, useTitle} from '@vueuse/core'
 import * as acorn from 'acorn'
-import {Mat2, mat2, Mat2d, mat2d, Vec2, vec2} from 'linearly'
+import {mat2d, vec2} from 'linearly'
 import {
 	computed,
 	nextTick,
@@ -121,26 +121,6 @@ const initialViewTransform = computed(() => {
 	return mat2d.fromTranslation([20, 20 + titleBarOffset.value])
 })
 
-function findFixedPoint(m: Mat2d): Vec2 | null {
-	const [a, b, c, d, tx, ty] = m
-
-	// Computes (I - A)
-	const iMinusA: Mat2 = [1 - a, -c, -b, 1 - d]
-
-	// Computes an inverse matrix
-	const iMinusAInv = mat2.invert(iMinusA)
-
-	if (!iMinusAInv) {
-		return null
-	}
-
-	// Computes a fixed point
-	const x = iMinusAInv[0] * tx + iMinusAInv[1] * ty
-	const y = iMinusAInv[2] * tx + iMinusAInv[3] * ty
-
-	return [x, y]
-}
-
 const viewTransform = shallowRef(initialViewTransform.value)
 const {cursor} = useZUI(xform => {
 	const currentZoom = Math.sqrt(mat2d.determinant(viewTransform.value))
@@ -158,15 +138,10 @@ const {cursor} = useZUI(xform => {
 	}
 
 	if (z !== null) {
-		const fp = findFixedPoint(xform)
+		const fp = mat2d.fixedPoint(xform)
 		if (!fp) return
 
-		const scale = mat2d.fromScaling([z, z])
-		xform = mat2d.multiply(
-			mat2d.fromTranslation(fp),
-			scale,
-			mat2d.fromTranslation(vec2.negate(fp))
-		)
+		xform = mat2d.scale(xform, [z, z], fp)
 	}
 
 	viewTransform.value = mat2d.mul(xform, viewTransform.value)

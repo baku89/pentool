@@ -1660,10 +1660,10 @@ big-integer@^1.6.44:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
   integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
-bndr-js@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.6.0.tgz#c1fefeac70ce1e260ae76cb93de0dd0ad208da67"
-  integrity sha512-yGzWf0/pDiY6UvAWa4vEXwgvgNnd8cCVDLIRiRKLXNTBjTPLMkwbI6RXERN2sLNn12CZc93o36YCezxpy1algQ==
+bndr-js@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.7.1.tgz#28713012515f717d7951c27579410c84a4e731ab"
+  integrity sha512-asBaIRxBxrCMi+ms2Kg5LQOmRlWDN5aGy8aR0eKper9/EYtgkDE+znEeUBFEnm+Ii9tEAAghew0y+NbdNzoQ/Q==
   dependencies:
     hotkeys-js "^3.10.2"
     lodash "^4.17.21"
@@ -2855,10 +2855,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-linearly@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.6.1.tgz#5ddcf05b2797dd0abfd2faa5525eb9e606d3894e"
-  integrity sha512-GnvY2V9fBZjMuzUewTup7Pd180eGz4kcH5M9XxrUvzrJUBvOtRe+UGXXeUlqAD91JtFa+oTIFX40C0a9o2dHDg==
+linearly@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.8.2.tgz#c3926dc791812880cd39413dca95c623015decdf"
+  integrity sha512-wLkFSfueSc8j1D2bwGlPfwsFg/ck8pOCeQ65QGpLE6aYR7ysqsUht5d5CHDw7PhbHMbSlYvFyZHH76iwt107kA==
 
 locate-path@^6.0.0:
   version "6.0.0"
