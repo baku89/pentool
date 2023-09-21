@@ -1,4 +1,4 @@
-import Bndr from 'bndr-js'
+import * as Bndr from 'bndr-js'
 import {type Mat2d, mat2d, vec2} from 'linearly'
 import {computed, ref} from 'vue'
 
@@ -7,14 +7,15 @@ import {computed, ref} from 'vue'
  */
 export function useZUI(onTransform: (xform: Mat2d) => void) {
 	const pointer = Bndr.pointer()
+	const touch = Bndr.touch()
 	const position = pointer.position()
 	const scroll = pointer.scroll({preventDefault: true})
 
 	const lmbPressed = pointer.left.pressed()
-	const zPressed = Bndr.keyboard.key('z')
-	const altPressed = Bndr.keyboard.key('alt')
-	const ctrlPressed = Bndr.keyboard.key('control')
-	const spacePressed = Bndr.keyboard.key('space')
+	const zPressed = Bndr.keyboard().pressed('z')
+	const altPressed = Bndr.keyboard().pressed('alt')
+	const ctrlPressed = Bndr.keyboard().pressed('control')
+	const spacePressed = Bndr.keyboard().pressed('space')
 
 	const panByDragReady = Bndr.or(
 		Bndr.cascade(spacePressed, lmbPressed),
@@ -25,19 +26,20 @@ export function useZUI(onTransform: (xform: Mat2d) => void) {
 		.while(panByDragReady)
 		.delta((prev, curt) => vec2.sub(curt, prev))
 
-	const panByScroll = scroll.map(vec2.negate).while(
-		altPressed.map(v => !v),
-		false
-	)
+	const panByScroll = scroll.map(vec2.negate).while(altPressed.not, false)
 
-	Bndr.combine(panByDrag, panByScroll)
+	const panByTouch = touch.drag({preventDefault: true}).map(e => e.delta)
+
+	touch.gestureTransform().on(e => console.log(e.current))
+
+	Bndr.combine(panByDrag, panByScroll, panByTouch)
 		.map(mat2d.fromTranslation)
 		.on(onTransform)
 
 	// Zoom
 	const zoomByDragReady = Bndr.cascade(zPressed, lmbPressed)
 
-	const zoomByScroll = scroll.while(altPressed, false).map(([, y]) => y)
+	const zoomByScroll = scroll.while(altPressed, false).map(([, y]) => -y)
 	const zoomByDrag = position
 		.while(zoomByDragReady)
 		.delta((prev, curt) => vec2.sub(curt, prev))
