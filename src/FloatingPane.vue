@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import {useCssVar, useLocalStorage} from '@vueuse/core'
+import * as Bndr from 'bndr-js'
+import {vec2} from 'linearly'
 import {computed, onMounted, ref} from 'vue'
 
 interface Props {
@@ -19,10 +21,6 @@ const style = computed(() => {
 		height: height.value + 'px',
 	}
 })
-
-import * as Bndr from 'bndr-js'
-import {vec2} from 'linearly'
-
 const $left = ref<HTMLElement | null>(null)
 const $bottom = ref<HTMLElement | null>(null)
 

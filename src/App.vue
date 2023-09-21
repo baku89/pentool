@@ -121,8 +121,10 @@ const initialViewTransform = computed(() => {
 	return mat2d.fromTranslation([20, 20 + titleBarOffset.value])
 })
 
+// Viewport navigation
+const $canvasWrapper = ref<HTMLElement | null>(null)
 const viewTransform = shallowRef(initialViewTransform.value)
-const {cursor} = useZUI(xform => {
+const {cursor} = useZUI($canvasWrapper, xform => {
 	const currentZoom = Math.sqrt(mat2d.determinant(viewTransform.value))
 	const zoomDelta = Math.sqrt(mat2d.determinant(xform))
 
@@ -293,7 +295,7 @@ window.addEventListener('drop', async e => {
 			</button>
 		</div>
 		<main class="main">
-			<div class="canvas-wrapper" :style="canvasStyle">
+			<div ref="$canvasWrapper" class="canvas-wrapper" :style="canvasStyle">
 				<canvas ref="$canvas" class="canvas" resize></canvas>
 				<OverlayPointHandle
 					v-model:code="code"
