@@ -1660,12 +1660,13 @@ big-integer@^1.6.44:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
   integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
-bndr-js@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.7.1.tgz#28713012515f717d7951c27579410c84a4e731ab"
-  integrity sha512-asBaIRxBxrCMi+ms2Kg5LQOmRlWDN5aGy8aR0eKper9/EYtgkDE+znEeUBFEnm+Ii9tEAAghew0y+NbdNzoQ/Q==
+bndr-js@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.9.0.tgz#c1b94e17b8564793f1e70dd4502f88cb13bad55f"
+  integrity sha512-Cdx/B12tJ9x/JjGNURL4lHlnnypAk1i/9MvaZYs3QZnOml6KSFRF1n387MPlfz00DaErvGv5NEtsDz3GBJQeRw==
   dependencies:
     hotkeys-js "^3.10.2"
+    linearly "^0.11.0"
     lodash "^4.17.21"
     typescript-memoize "^1.1.1"
 
@@ -2854,6 +2855,11 @@ levn@^0.4.1:
   dependencies:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
+
+linearly@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.11.0.tgz#72c6d9d6e0214249b0fcdfe1914ff019143bb8dc"
+  integrity sha512-kIQ6V1Pwv00V3k+C+a6770i09P+uGUswg6N1CfZFAuvZWwvteBAODH5irxR3YeV2gLnGaUk5yGISmq3gs++DCQ==
 
 linearly@^0.8.2:
   version "0.8.2"

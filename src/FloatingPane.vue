@@ -20,7 +20,7 @@ const style = computed(() => {
 	}
 })
 
-import Bndr from 'bndr-js'
+import * as Bndr from 'bndr-js'
 import {vec2} from 'linearly'
 
 const $left = ref<HTMLElement | null>(null)
