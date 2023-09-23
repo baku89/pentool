@@ -20,14 +20,15 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
+import {useAppStorage} from '@/use/useAppStorage'
+import {useZUI} from '@/use/useZUI'
+import {replaceTextBetween} from '@/utils'
+
 import FloatingPane from './FloatingPane.vue'
 import MonacoEditor, {ErrorInfo} from './MonacoEditor.vue'
 import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
-import {useAppStorage} from './useAppStorage'
-import {useZUI} from './useZUI'
-import {replaceTextBetween} from './utils'
 
 const {refAppStorage} = useAppStorage('com.baku89.paperjs-editor')
 

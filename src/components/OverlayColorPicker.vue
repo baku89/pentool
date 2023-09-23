@@ -6,7 +6,7 @@ import {
 	findTextBetweenDelimiters,
 	normalizeColorToHexCode,
 	replaceTextBetween,
-} from './utils'
+} from '@/utils'
 
 interface Props {
 	code: string

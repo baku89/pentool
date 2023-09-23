@@ -2,7 +2,7 @@
 import {Vec2} from 'linearly'
 import {computed} from 'vue'
 
-import {findNumericLiteralAtColumn, replaceTextBetween} from './utils'
+import {findNumericLiteralAtColumn, replaceTextBetween} from '@/utils'
 
 interface Props {
 	code: string
