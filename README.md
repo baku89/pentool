@@ -8,10 +8,10 @@ This tool is built deeply based on [Paper.js](http://paperjs.org). I'd like to t
 ## Developemnt
 
 ```
-git clone https://github.com/baku89/pentool
-cd pentool
+git clone https://github.com/baku89/paper-editor
+cd paper-editor
 yarn install
-gulp
+yarn dev
 ```
 
 ## TODO
