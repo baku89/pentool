@@ -20,13 +20,11 @@ export function useZUI(
 		const position = pointer.position()
 		const scroll = pointer.scroll({preventDefault: true})
 
-		const lmbPressed = pointer.left.pressed()
+		const lmbPressed = pointer.left.pressed({pointerCapture: true})
 		const zPressed = keyboard.pressed('z')
 		const altPressed = keyboard.pressed('alt')
 		const ctrlPressed = keyboard.pressed('control')
 		const spacePressed = keyboard.pressed('space')
-
-		alert(zPressed.value)
 
 		const panByDragReady = Bndr.or(
 			Bndr.cascade(spacePressed, lmbPressed),
