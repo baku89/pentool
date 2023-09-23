@@ -1,70 +1,125 @@
 <script lang="ts" setup>
-import {useCssVar, useLocalStorage} from '@vueuse/core'
+import {
+	useCssVar,
+	useElementBounding,
+	useLocalStorage,
+	useWindowSize,
+} from '@vueuse/core'
 import * as Bndr from 'bndr-js'
-import {vec2} from 'linearly'
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 
 interface Props {
 	name: string
+	icon: string
 }
-
 defineProps<Props>()
 
-const width = useLocalStorage('FloatingPane.width', 400)
-const height = useLocalStorage('FloatingPane.height', 400)
+type FloatingWidth = number | 'fill' | 'minimized'
+type FloatingHeight = number | 'fill'
 
-const virtualHeight = ref(height.value)
+const minimizeThreshold = 150
+const minHeight = 200
+const resizeWidth = 12
 
-const style = computed(() => {
+const width = useLocalStorage<FloatingWidth>('FloatingPane.width', 400)
+const height = useLocalStorage<FloatingHeight>('FloatingPane.height', 400)
+
+const windowSize = useWindowSize()
+
+const classes = computed(() => {
 	return {
-		width: width.value + 'px',
-		height: height.value + 'px',
+		minimized: width.value === 'minimized',
+		'w-fill': width.value === 'fill',
+		'h-fill': height.value === 'fill',
 	}
 })
+
+const style = computed(() => {
+	const w = width.value
+	const h = height.value
+	return {
+		width: typeof w === 'number' ? w + 'px' : '',
+		height: typeof h === 'number' ? h + 'px' : '',
+	}
+})
+
+const $root = ref<HTMLElement | null>(null)
 const $left = ref<HTMLElement | null>(null)
 const $bottom = ref<HTMLElement | null>(null)
 
-const maxHeight = computed(() => {
-	return (
-		window.innerHeight - parseFloat(useCssVar('--titlebar-area-height').value)
-	)
+const bound = useElementBounding($root)
+
+watch([windowSize.width, windowSize.height], ([ww, wh]) => {
+	if (typeof width.value === 'number' && width.value > ww) {
+		width.value = ww
+	}
+
+	if (typeof height.value === 'number' && height.value > wh) {
+		height.value = wh
+	}
 })
 
 onMounted(() => {
 	if (!$left.value || !$bottom.value) return
 
-	const leftPointer = Bndr.pointer($left.value)
+	let wOrigin = 0
+	Bndr.pointer($left.value)
+		.drag({pointerCapture: true, preventDefault: true})
+		.on(e => {
+			if (e.justStarted) {
+				if (width.value === 'fill') {
+					wOrigin = window.innerWidth
+				} else if (width.value === 'minimized') {
+					wOrigin = bound.width.value
+				} else {
+					wOrigin = width.value
+				}
+			}
+			const current = wOrigin - (e.current[0] - e.start[0])
 
-	leftPointer
-		.position()
-		.while(leftPointer.pressed({pointerCapture: true}), true)
-		.delta(vec2.sub)
-		.on(([x]) => {
-			width.value += x
+			if (current <= minimizeThreshold) {
+				width.value = 'minimized'
+			} else if (current >= window.innerWidth - resizeWidth) {
+				width.value = 'fill'
+			} else {
+				width.value = current
+			}
 		})
 
-	const bottomPointer = Bndr.pointer($bottom.value)
-	const bottomPointerPressed = bottomPointer.pressed({pointerCapture: true})
+	let hOrigin = 0
+	const titleBarAreaHeight = useCssVar('--titlebar-area-height')
+	const maxHeight = computed(
+		() => windowSize.height.value - parseFloat(titleBarAreaHeight.value)
+	)
 
-	bottomPointerPressed.up().on(() => {
-		height.value = virtualHeight.value
-	})
+	Bndr.pointer($bottom.value)
+		.drag({pointerCapture: true, preventDefault: true})
+		.on(e => {
+			if (e.justStarted) {
+				if (height.value === 'fill') {
+					hOrigin = maxHeight.value
+				} else {
+					hOrigin = height.value
+				}
+			}
+			const current = hOrigin + (e.current[1] - e.start[1])
 
-	bottomPointer
-		.position()
-		.while(bottomPointerPressed, true)
-		.delta(vec2.sub)
-		.on(([, y]) => {
-			height.value -= y
-			virtualHeight.value = Math.min(maxHeight.value, height.value)
+			if (current >= maxHeight.value - resizeWidth) {
+				height.value = 'fill'
+			} else {
+				height.value = Math.max(current, minHeight)
+			}
 		})
 })
 </script>
 
 <template>
-	<div class="FloatingPane" :style="style">
+	<div ref="$root" class="FloatingPane" :class="classes" :style="style">
 		<div ref="$left" class="resize left" />
 		<div ref="$bottom" class="resize bottom" />
+		<span class="minimized-title material-symbols-outlined">
+			{{ icon }}
+		</span>
 		<div class="content">
 			<slot />
 		</div>
@@ -74,8 +129,7 @@ onMounted(() => {
 <style lang="stylus" scoped>
 
 .FloatingPane
-	--resize-width 1rem
-	--border-radius 1.4rem
+	--resize-width 2rem
 
 	position absolute
 	padding 1rem
@@ -86,14 +140,44 @@ onMounted(() => {
 	right 0
 
 	top calc(env(titlebar-area-y, 0px) + var(--titlebar-area-height))
-	border-width 1px 0 1px 1px
-	border-radius var(--border-radius) 0 0 var(--border-radius)
+	border-width 1px
+	border-radius var(--ui-pane-border-radius) 0 0 var(--ui-pane-border-radius)
 	display grid
 	grid-template-columns 1fr
 	grid-template-rows 1fr
+	transition border-radius .2s ease, border-color .2s ease
+
+	&.minimized
+		width 3rem
+		transition width .2s ease
+
+		& > .minimized-title
+			opacity 1
+		& > .content
+			opacity 0
+
+	&.w-fill
+		width 100vw
+		--ui-pane-border-radius 0rem
+
+		& > .left:before
+			left calc(50% - 1px)
+
+		& > .bottom:before
+			top calc(50% + 1px)
+
+
+
+	&.h-fill
+		height calc(100vh - var(--titlebar-area-height))
+		border-bottom-left-radius 0rem
+
+		& > .bottom
+			left 0
 
 .resize
 	position absolute
+	transition all .2s ease
 
 	&:before
 		content ''
@@ -101,7 +185,7 @@ onMounted(() => {
 		width 100%
 		height 100%
 		background blue
-		transition opacity .2s ease
+		transition all .2s ease
 		opacity 0
 
 	&:hover:before
@@ -110,10 +194,10 @@ onMounted(() => {
 
 .left
 	left 0
-	top var(--border-radius)
+	top var(--ui-pane-border-radius)
 	width var(--resize-width)
-	bottom var(--border-radius)
-	cursor ew-resize
+	bottom var(--ui-pane-border-radius)
+	cursor col-resize
 	margin-left calc(-0.5 * var(--resize-width))
 
 	&:before
@@ -121,20 +205,29 @@ onMounted(() => {
 		left calc(50% - 2.5px)
 
 .bottom
-	left var(--border-radius)
+	left var(--ui-pane-border-radius)
 	bottom 0
 	right 0
 	height var(--resize-width)
-	cursor ns-resize
+	cursor row-resize
 	background linear-gradient(to bottom, var(--gradient))
-	margin-top calc(-0.5 * var(--resize-width))
+	margin-bottom calc(-0.5 * var(--resize-width))
 
 	&:before
 		height 5px
 		top calc(50% - 2.5px)
 
+.minimized-title
+	position absolute
+	top 50%
+	left 1.5rem
+	transform translate(-50%, -50%)
+	pointer-events none
+	opacity 0
+	transition opacity .2s ease
 .content
 	position relative
 	height 100%
 	overflow	hidden
+	transition opacity .2s ease
 </style>

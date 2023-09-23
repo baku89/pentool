@@ -303,7 +303,7 @@ window.addEventListener('drop', async e => {
 					:view-transform="viewTransform"
 				/>
 			</div>
-			<FloatingPane name="inspector">
+			<FloatingPane name="inspector" icon="code">
 				<div class="inspector">
 					<div class="actions">
 						<button class="play" @click="autoRefresh = !autoRefresh">
