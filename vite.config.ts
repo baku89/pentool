@@ -1,4 +1,5 @@
 import vue from '@vitejs/plugin-vue'
+import {fileURLToPath} from 'url'
 import {defineConfig} from 'vite'
 import monacoEditorPlugin, {
 	type IMonacoEditorOpts,
@@ -38,4 +39,12 @@ export default defineConfig({
 			},
 		}),
 	],
+	resolve: {
+		alias: [
+			{
+				find: '@',
+				replacement: fileURLToPath(new URL('./src', import.meta.url)),
+			},
+		],
+	},
 })
