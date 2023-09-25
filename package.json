@@ -31,6 +31,7 @@
 		"monaco-themes": "^0.4.4",
 		"paper": "^0.12.17",
 		"paperjs-offset": "^1.0.8",
+		"reset-css": "^5.0.2",
 		"stylus": "^0.60.0",
 		"typescript": "^5.2.2",
 		"vite": "^4.4.9",
