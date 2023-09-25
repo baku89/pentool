@@ -101,6 +101,8 @@ onMounted(() => {
 
 	// run the code on change
 	editor.getModel()?.onDidChangeContent(() => {
+		const value = editor.getValue()
+		if (value === props.modelValue) return
 		emits('update:modelValue', editor.getValue())
 	})
 
