@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useCssVar, useTitle} from '@vueuse/core'
 import * as acorn from 'acorn'
-import {mat2d, vec2} from 'linearly'
+import {mat2d, scalar, vec2} from 'linearly'
 import {
 	computed,
 	nextTick,
@@ -33,10 +33,30 @@ import OverlayPointHandle from './OverlayPointHandle.vue'
 
 const {refAppStorage} = useAppStorage('com.baku89.paperjs-editor')
 
-const code = refAppStorage('code', '')
+interface PaperDesc {
+	id?: string
+	name?: string
+	icon?: string
+	clearOnUpdate?: boolean
+	parameters?: {
+		[key: string]:
+			| {type: 'number'; default: number}
+			| {type: 'color'; default: string}
+			| {type: 'boolean'; default: boolean}
+	}
+}
 
-if (code.value === '') {
-	code.value = `const path = new Path()
+const source = refAppStorage('source', '')
+
+if (source.value === '') {
+	source.value = `/*
+{
+	"id": "path",
+	"clearOnUpdate": true,
+	"parameters": []
+}
+*/
+const path = new Path()
 path.strokeColor = "red"
 
 const start = new Point(100, 100)
@@ -145,9 +165,9 @@ const {cursor} = useZUI($canvasWrapper, xform => {
 
 	if (z !== null) {
 		const fp = mat2d.fixedPoint(xform)
-		if (!fp) return
-
-		xform = mat2d.scale(xform, [z, z], fp)
+		if (fp) {
+			xform = mat2d.mul(xform, mat2d.fromScaling([z, z], fp))
+		}
 	}
 
 	viewTransform.value = mat2d.mul(xform, viewTransform.value)
@@ -161,15 +181,18 @@ function resetZoom() {
 	viewTransform.value = initialViewTransform.value
 }
 
-const canvasStyle = computed(() => {
+const canvasGridStyle = computed(() => {
 	const [x, y] = vec2.transformMat2d(vec2.zero, viewTransform.value)
 
 	const size = `${zoom.value * 20}px ${zoom.value * 20}px, 2px 2px, 2px 2px`
 	const offset = `${x}px ${y}px, ${x}px ${y}px, ${x}px ${y}px`
 
+	const opacity = scalar.smoothstep(0.1, 0.4, zoom.value)
+
 	return {
 		backgroundSize: size,
 		backgroundPosition: offset,
+		'--dot-color': `rgba(var(--ui-color-rgb), ${opacity})`,
 	}
 })
 
@@ -289,6 +312,7 @@ window.addEventListener('drop', async e => {
 	<div class="App">
 		<div class="title">
 			<img class="icon" src="/favicon.svg" />
+			<span class="app-name">Paper.js Editor</span>
 			<span>
 				{{ title }}
 			</span>
@@ -298,7 +322,8 @@ window.addEventListener('drop', async e => {
 			</button>
 		</div>
 		<main class="main">
-			<div ref="$canvasWrapper" class="canvas-wrapper" :style="canvasStyle">
+			<div ref="$canvasWrapper" class="canvas-wrapper">
+				<div class="canvas-grid" :style="canvasGridStyle" />
 				<canvas ref="$canvas" class="canvas" resize></canvas>
 				<OverlayPointHandle
 					v-model:code="code"
@@ -369,7 +394,7 @@ window.addEventListener('drop', async e => {
 	background 'linear-gradient(to bottom, rgba(%s, .7) 0, transparent)' % var(--ui-bg-rgb)
 	backdrop-filter blur(2px)
 	gap .6rem
-	padding .4rem .4rem
+	padding .4rem .4rem .4rem .6rem
 	-webkit-app-region: drag;
 	app-region: drag;
 
@@ -378,6 +403,8 @@ window.addEventListener('drop', async e => {
 	@media (display-mode: window-controls-overlay)
 		background 'linear-gradient(to bottom, rgba(%s, .5) 20%, transparent)' % var(--ui-bg-rgb), linear-gradient(to right, var(--ui-bg) 0, transparent 15%, transparent 85%, var(--ui-bg) 100%)
 
+	.app-name
+		font-weight bold
 	.icon
 		height calc(var(--titlebar-area-height) - .8rem)
 
@@ -407,14 +434,21 @@ window.addEventListener('drop', async e => {
 .canvas-wrapper
 	position relative
 	height 100%
-	// draws dotted grid
-	--axis-color 'rgba(%s, .1)' % var(--ui-color-rgb)
-	background-image radial-gradient(circle at 0 0, var(--ui-color) 1px, transparent 0), linear-gradient(to bottom, var(--axis-color) 1px, transparent 0), linear-gradient(to right, var(--axis-color) 1px, transparent 0)
-	background-repeat repeat, repeat-x, repeat-y
 
-.canvas
+.canvas-grid, .canvas
+	position absolute
+	top 0
+	left 0
 	height 100%
 	width 100%
+
+.canvas-grid
+	// draws dotted grid
+	--axis-color 'rgba(%s, .1)' % var(--ui-color-rgb)
+	background-image radial-gradient(circle at 0 0, var(--dot-color) 1px, transparent 0), linear-gradient(to bottom, var(--axis-color) 1px, transparent 0), linear-gradient(to right, var(--axis-color) 1px, transparent 0)
+	background-repeat repeat, repeat-x, repeat-y
+
+
 
 .inspector
 	position relative
@@ -480,4 +514,4 @@ window.addEventListener('drop', async e => {
 		border 0
 		border-radius 0.8rem
 </style>
-./utils
+./utils @/use/useCommentMeta
