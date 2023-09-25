@@ -21,6 +21,7 @@ import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
 import {useAppStorage} from '@/use/useAppStorage'
+import {useCommentMeta} from '@/use/useCommentMeta'
 import {useZUI} from '@/use/useZUI'
 import {replaceTextBetween} from '@/utils'
 
@@ -43,6 +44,8 @@ const start = new Point(100, 100)
 path.moveTo(start)
 path.lineTo(start + [200, 50])`
 }
+
+const {content: code} = useCommentMeta(source)
 
 const cursorIndex = ref(0)
 const cursorPosition = ref(vec2.zero)
@@ -206,14 +209,14 @@ async function pasteSVGToCanvas() {
 }
 
 const fileHandle = ref<FileSystemFileHandle | null>(null)
-const lastSavedCode = ref('')
+const lastSavedSource = ref('')
 
 const fileName = computed(() => {
 	return fileHandle.value?.name || 'Untitled'
 })
 
 const hasModified = computed(() => {
-	return fileHandle.value && code.value !== lastSavedCode.value
+	return fileHandle.value && source.value !== lastSavedSource.value
 })
 
 const title = computed(() => {
@@ -239,10 +242,10 @@ async function saveProject() {
 	}
 
 	const writable = await fileHandle.value.createWritable()
-	await writable.write(code.value)
+	await writable.write(source.value)
 	await writable.close()
 
-	lastSavedCode.value = code.value
+	lastSavedSource.value = source.value
 }
 
 async function openProject() {
@@ -252,7 +255,7 @@ async function openProject() {
 
 	const file = await fileHandle.value.getFile()
 	const text = await file.text()
-	code.value = lastSavedCode.value = text
+	source.value = lastSavedSource.value = text
 }
 
 // Register shotcuts
@@ -278,8 +281,7 @@ window.addEventListener('drop', async e => {
 	fileHandle.value = handle as FileSystemFileHandle
 
 	const file = await fileHandle.value.getFile()
-	const text = await file.text()
-	code.value = text
+	source.value = await file.text()
 })
 </script>
 
