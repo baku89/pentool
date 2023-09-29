@@ -20,8 +20,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emits = defineEmits<{
-	(e: 'update:code', value: string): void
-	(e: 'update:visible', value: boolean): void
+	'update:code': [value: string]
+	'update:visible': [value: boolean]
 }>()
 
 const selection = computed(() => {

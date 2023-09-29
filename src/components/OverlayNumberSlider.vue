@@ -16,8 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emits = defineEmits<{
-	(e: 'update:code', value: string): void
-	(e: 'update:cursorIndex', value: number): void
+	'update:code': [value: string]
+	'update:cursorIndex': [value: number]
 }>()
 
 const selection = computed(() => {

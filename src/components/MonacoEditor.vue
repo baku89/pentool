@@ -24,9 +24,9 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emits = defineEmits<{
-	(e: 'update:modelValue', value: string): void
-	(e: 'update:cursorIndex', value: number): void
-	(e: 'update:cursorPosition', value: Vec2): void
+	'update:modelValue': [value: string]
+	'update:cursorIndex': [value: number]
+	'update:cursorPosition': [value: Vec2]
 }>()
 
 const $root = ref<HTMLElement | null>(null)
