@@ -14,7 +14,7 @@ export default defineConfig({
 	plugins: [
 		vue(),
 		monacoEditorPluginDefault({
-			languageWorkers: ['editorWorkerService', 'typescript'],
+			languageWorkers: ['editorWorkerService', 'typescript', 'json'],
 		}),
 		VitePWA({
 			registerType: 'autoUpdate',

@@ -14,16 +14,14 @@ export interface ErrorInfo {
 
 interface Props {
 	modelValue: string
-	cursorIndex: number
-	errors: ErrorInfo[] | null
+	lang: string
+	cursorIndex?: number
+	errors?: ErrorInfo[] | null
 }
 
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: '',
-	cursorIndex: 0,
-})
+const props = withDefaults(defineProps<Props>(), {})
 
-const emits = defineEmits<{
+const emit = defineEmits<{
 	'update:modelValue': [value: string]
 	'update:cursorIndex': [value: number]
 	'update:cursorPosition': [value: Vec2]
@@ -44,7 +42,7 @@ onMounted(() => {
 	// Initialize the editor
 	const editor = monaco.editor.create($editor.value, {
 		value: props.modelValue,
-		language: 'javascript',
+		language: props.lang,
 
 		// make the editor look prettier
 
@@ -103,7 +101,7 @@ onMounted(() => {
 	editor.getModel()?.onDidChangeContent(() => {
 		const value = editor.getValue()
 		if (value === props.modelValue) return
-		emits('update:modelValue', editor.getValue())
+		emit('update:modelValue', editor.getValue())
 	})
 
 	editor.onDidChangeCursorPosition(() => {
@@ -113,16 +111,17 @@ onMounted(() => {
 
 		// Convert monaco editor's position to character-based index
 		const index = editor.getModel()?.getOffsetAt(position) ?? 0
-		emits('update:cursorIndex', index)
+		emit('update:cursorIndex', index)
 
 		// Convert monaco editor's position to pixel-based position
 		const cursorInfo = editor.getScrolledVisiblePosition(position)
 		if (cursorInfo) {
 			const {top, left, height} = cursorInfo
-			emits('update:cursorPosition', [left, top + height])
+			emit('update:cursorPosition', [left, top + height])
 		}
 	})
 
+	// Watch props and reflect the changes
 	watch(
 		() => props.modelValue,
 		value => {
@@ -144,21 +143,35 @@ onMounted(() => {
 	)
 
 	watch(
+		() => props.lang,
+		lang => {
+			const model = editor.getModel()
+			if (!model) return
+			monaco.editor.setModelLanguage(model, lang)
+		}
+	)
+
+	watch(
 		() => props.cursorIndex,
-		value => {
+		cursorIndex => {
+			if (cursorIndex === undefined) return
+
 			const prevPosition = editor.getPosition()
-			const position = editor.getModel()?.getPositionAt(value)
+			const position = editor.getModel()?.getPositionAt(cursorIndex)
 			if (!prevPosition || !position || position.equals(prevPosition)) {
 				return
 			}
 
 			editor.setPosition(position)
-		}
+		},
+		{immediate: true}
 	)
 
 	watch(
 		() => props.errors,
 		errors => {
+			if (!errors) return
+
 			const model = editor.getModel()
 			if (!model) return
 
@@ -166,7 +179,7 @@ onMounted(() => {
 			monaco.editor.setModelMarkers(
 				model,
 				'my-source',
-				(errors ?? []).map(error => ({
+				errors.map(error => ({
 					message: error.message,
 					severity: monaco.MarkerSeverity.Error,
 					startLineNumber: error.line,
@@ -175,7 +188,8 @@ onMounted(() => {
 					endColumn: error.column,
 				}))
 			)
-		}
+		},
+		{immediate: true}
 	)
 })
 </script>
