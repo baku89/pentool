@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {defineProps, onMounted, provide, reactive, withDefaults} from 'vue'
+import {onMounted, provide, reactive, withDefaults} from 'vue'
 
-import {useAppStorage} from '@/use/useAppStorage'
+import {useAppStorage} from '@/tweeq/useAppStorage'
 
 import {AddTabKey, DeleteTabKey, TabsProviderKey, UpdateTabKey} from './symbols'
 import {Tab, TabsState} from './types'
@@ -180,3 +180,4 @@ onMounted(() => {
 .panels-wrapper
 	position relative
 </style>
+@/tweeq/useAppStorage

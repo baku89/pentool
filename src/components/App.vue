@@ -20,18 +20,18 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
-import {provideAppStorage} from '@/use/useAppStorage'
+import FloatingPane from '@/tweeq/FloatingPane'
+import MonacoEditor, {ErrorInfo} from '@/tweeq/MonacoEditor'
+import {Tab, Tabs} from '@/tweeq/Tabs'
+import TitleBar from '@/tweeq/TitleBar'
+import {provideAppStorage} from '@/tweeq/useAppStorage'
 import {useCommentMeta} from '@/use/useCommentMeta'
 import {useZUI} from '@/use/useZUI'
 import {replaceTextBetween} from '@/utils'
 
-import FloatingPane from './FloatingPane.vue'
-import MonacoEditor, {ErrorInfo} from './MonacoEditor.vue'
 import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
-import {Tab, Tabs} from './Tabs'
-import TitleBar from './TitleBar.vue'
 
 const {appStorage} = provideAppStorage('com.baku89.paperjs-editor')
 
@@ -459,3 +459,5 @@ window.addEventListener('drop', async e => {
 		border 0
 		border-radius 0.8rem
 </style>
+@/tweeq/useAppStorage ../tweeq/Tabs
+@/tweeq/FloatingPane@/tweeq/MonacoEditor@/tweeq/useAppStorage
