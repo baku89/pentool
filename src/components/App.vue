@@ -360,45 +360,45 @@ window.addEventListener('drop', async e => {
 					:view-transform="viewTransform"
 				/>
 			</div>
-			<FloatingPane name="inspector" icon="code">
-				<Tabs class="inspector-tab" name="inspector.tab">
-					<template #before-tablist>
-						<RoundButton
-							class="play"
-							:icon="autoRefresh ? 'pause_circle' : 'play_circle'"
-							:label="autoRefresh ? 'Pause' : 'Resume'"
-							longest-label="Resume"
-							@click="autoRefresh = !autoRefresh"
-						/>
-					</template>
-					<Tab name="Settings">
-						<MonacoEditor v-model="meta" class="editor" lang="text" />
-					</Tab>
-					<Tab name="Code">
-						<MonacoEditor
-							v-model="code"
-							v-model:cursorIndex="cursorIndex"
-							v-model:cursorPosition="cursorPosition"
-							class="editor"
-							lang="javascript"
-							:errors="errors"
-						/>
-						<OverlayColorPicker
-							v-model:code="code"
-							v-model:visible="colorPickerVisible"
-							:cursor-index="cursorIndex"
-							:cursor-position="cursorPosition"
-						/>
-						<OverlayNumberSlider
-							v-show="!colorPickerVisible"
-							v-model:code="code"
-							v-model:cursorIndex="cursorIndex"
-							:cursor-position="cursorPosition"
-						/>
-					</Tab>
-				</Tabs>
-			</FloatingPane>
 		</main>
+		<FloatingPane name="inspector-pane" icon="code">
+			<Tabs class="inspector-tab" name="inspector.tab">
+				<template #before-tablist>
+					<RoundButton
+						class="play"
+						:icon="autoRefresh ? 'pause_circle' : 'play_circle'"
+						:label="autoRefresh ? 'Pause' : 'Resume'"
+						longest-label="Resume"
+						@click="autoRefresh = !autoRefresh"
+					/>
+				</template>
+				<Tab name="Settings">
+					<MonacoEditor v-model="meta" class="editor" lang="text" />
+				</Tab>
+				<Tab name="Code">
+					<MonacoEditor
+						v-model="code"
+						v-model:cursorIndex="cursorIndex"
+						v-model:cursorPosition="cursorPosition"
+						class="editor"
+						lang="javascript"
+						:errors="errors"
+					/>
+					<OverlayColorPicker
+						v-model:code="code"
+						v-model:visible="colorPickerVisible"
+						:cursor-index="cursorIndex"
+						:cursor-position="cursorPosition"
+					/>
+					<OverlayNumberSlider
+						v-show="!colorPickerVisible"
+						v-model:code="code"
+						v-model:cursorIndex="cursorIndex"
+						:cursor-position="cursorPosition"
+					/>
+				</Tab>
+			</Tabs>
+		</FloatingPane>
 	</div>
 </template>
 

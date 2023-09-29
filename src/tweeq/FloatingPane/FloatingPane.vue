@@ -5,37 +5,59 @@ import {computed, onMounted, ref, watch} from 'vue'
 
 import {useAppStorage} from '../useAppStorage'
 
+type PaneDimension = number | 'minimized'
+
+type Position =
+	| {anchor: 'maximized'}
+	| {anchor: 'top'; height: PaneDimension}
+	| {anchor: 'left-top'; width: PaneDimension; height: PaneDimension}
+	| {anchor: 'left'; width: PaneDimension}
+	| {anchor: 'left-bottom'; width: PaneDimension; height: PaneDimension}
+	| {anchor: 'bottom'; height: PaneDimension}
+	| {anchor: 'right-bottom'; width: PaneDimension; height: PaneDimension}
+	| {anchor: 'right'; width: PaneDimension}
+	| {anchor: 'right-top'; width: PaneDimension; height: PaneDimension}
+
 interface Props {
 	name: string
 	icon: string
+	position?: Position
 }
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+	position: () => {
+		return {
+			anchor: 'right-top',
+			width: 400,
+			height: 400,
+		}
+	},
+})
 
-type FloatingWidth = number | 'fill' | 'minimized'
-type FloatingHeight = number | 'fill'
-
-const minimizeThreshold = 150
-const minHeight = 200
+const minimizeThreshold = 90
 const resizeWidth = 12
 
 const appStorage = useAppStorage()
 
-const width = appStorage<FloatingWidth>(`${props.name}.width`, 400)
-const height = appStorage<FloatingHeight>(`${props.name}.height`, 400)
+const position = appStorage<Position>(`${props.name}.position`, props.position)
 
 const windowSize = useWindowSize()
 
 const classes = computed(() => {
+	const p = position.value
 	return {
-		minimized: width.value === 'minimized',
-		'w-fill': width.value === 'fill',
-		'h-fill': height.value === 'fill',
+		'anchor-maximized': p.anchor === 'maximized',
+		'anchor-top': p.anchor.includes('top'),
+		'anchor-right': p.anchor.includes('right'),
+		'anchor-bottom': p.anchor.includes('bottom'),
+		'anchor-left': p.anchor.includes('left'),
+		'w-minimized': 'width' in p && p.width === 'minimized',
+		'h-minimized': 'height' in p && p.height === 'minimized',
 	}
 })
 
 const style = computed(() => {
-	const w = width.value
-	const h = height.value
+	const w = 'width' in position.value ? position.value.width : null
+	const h = 'height' in position.value ? position.value.height : null
 	return {
 		width: typeof w === 'number' ? w + 'px' : '',
 		height: typeof h === 'number' ? h + 'px' : '',
@@ -43,77 +65,147 @@ const style = computed(() => {
 })
 
 const $root = ref<HTMLElement | null>(null)
+const $top = ref<HTMLElement | null>(null)
+const $right = ref<HTMLElement | null>(null)
 const $left = ref<HTMLElement | null>(null)
 const $bottom = ref<HTMLElement | null>(null)
 
 const bound = useElementBounding($root)
 
 watch([windowSize.width, windowSize.height], ([ww, wh]) => {
-	if (typeof width.value === 'number' && width.value > ww) {
-		width.value = ww
+	const p = position.value
+
+	if ('width' in p && typeof p.width === 'number' && p.width > ww) {
+		position.value = {...p, width: ww}
 	}
 
-	if (typeof height.value === 'number' && height.value > wh) {
-		height.value = wh
+	if ('height' in p && typeof p.height === 'number' && p.height > wh) {
+		position.value = {...p, height: wh}
 	}
 })
 
 onMounted(() => {
-	if (!$left.value || !$bottom.value) return
+	if (!$top.value || !$right.value || !$left.value || !$bottom.value) return
 
-	let wOrigin = 0
 	Bndr.pointer($left.value)
 		.drag({pointerCapture: true, preventDefault: true})
-		.on(e => {
-			if (e.justStarted) {
-				if (width.value === 'fill') {
-					wOrigin = window.innerWidth
-				} else if (width.value === 'minimized') {
-					wOrigin = bound.width.value
-				} else {
-					wOrigin = width.value
+		.on(e => onDragHoriz(e, true))
+
+	Bndr.pointer($right.value)
+		.drag({pointerCapture: true, preventDefault: true})
+		.on(e => onDragHoriz(e, false))
+
+	let widthAtDragStart = 0
+
+	function onDragHoriz(e: Bndr.DragData, isLeft: boolean) {
+		const p = position.value
+
+		if (e.justStarted) {
+			widthAtDragStart = bound.width.value
+		}
+
+		const dir = isLeft ? -1 : 1
+		const current = Math.round(
+			widthAtDragStart + (e.current[0] - e.start[0]) * dir
+		)
+
+		if (current <= minimizeThreshold) {
+			if ('width' in p) {
+				position.value = {...p, width: 'minimized'}
+			}
+		} else if (current >= window.innerWidth - resizeWidth) {
+			if (p.anchor === 'right' || p.anchor === 'left') {
+				position.value = {anchor: 'maximized'}
+			} else if (p.anchor === 'right-top' || p.anchor === 'left-top') {
+				position.value = {anchor: 'top', height: p.height}
+			} else if (p.anchor === 'right-bottom' || p.anchor === 'left-bottom') {
+				position.value = {anchor: 'bottom', height: p.height}
+			}
+		} else if ('width' in p) {
+			position.value = {...p, width: current}
+		} else {
+			const opposite = isLeft ? 'right' : 'left'
+			if (p.anchor === 'maximized') {
+				position.value = {
+					anchor: opposite,
+					width: current,
+				}
+			} else if (p.anchor === 'top' || p.anchor === 'bottom') {
+				position.value = {
+					anchor: `${opposite}-${p.anchor}` as any,
+					width: current,
+					height: p.height,
 				}
 			}
-			const current = wOrigin - (e.current[0] - e.start[0])
+		}
+	}
 
-			if (current <= minimizeThreshold) {
-				width.value = 'minimized'
-			} else if (current >= window.innerWidth - resizeWidth) {
-				width.value = 'fill'
-			} else {
-				width.value = current
-			}
-		})
+	let heightAtDragStart = 0
 
-	let hOrigin = 0
-	const titleBarAreaHeight = useCssVar('--titlebar-area-height')
-	const maxHeight = computed(
-		() => windowSize.height.value - parseFloat(titleBarAreaHeight.value)
-	)
+	const maxHeight = computed(() => {
+		return (
+			windowSize.height.value -
+			parseFloat(useCssVar('--titlebar-area-height').value)
+		)
+	})
+
+	Bndr.pointer($top.value)
+		.drag({pointerCapture: true, preventDefault: true})
+		.on(e => onDragVert(e, true))
 
 	Bndr.pointer($bottom.value)
 		.drag({pointerCapture: true, preventDefault: true})
-		.on(e => {
-			if (e.justStarted) {
-				if (height.value === 'fill') {
-					hOrigin = maxHeight.value
-				} else {
-					hOrigin = height.value
+		.on(e => onDragVert(e, false))
+
+	function onDragVert(e: Bndr.DragData, isTop: boolean) {
+		const p = position.value
+
+		if (e.justStarted) {
+			heightAtDragStart = bound.height.value
+		}
+
+		const dir = isTop ? -1 : 1
+		const current = Math.round(
+			heightAtDragStart + (e.current[1] - e.start[1]) * dir
+		)
+
+		if (current <= minimizeThreshold) {
+			if ('height' in p) {
+				position.value = {...p, height: 'minimized'}
+			}
+		} else if (current >= maxHeight.value - resizeWidth) {
+			if (p.anchor === 'top' || p.anchor === 'bottom') {
+				position.value = {anchor: 'maximized'}
+			} else if (p.anchor === 'right-top' || p.anchor === 'right-bottom') {
+				position.value = {anchor: 'right', width: p.width}
+			} else if (p.anchor === 'left-top' || p.anchor === 'left-bottom') {
+				position.value = {anchor: 'left', width: p.width}
+			}
+		} else if ('height' in p) {
+			position.value = {...p, height: current}
+		} else {
+			const opposite = isTop ? 'bottom' : 'top'
+			if (p.anchor === 'maximized') {
+				position.value = {
+					anchor: opposite,
+					height: current,
+				}
+			} else if (p.anchor === 'right' || p.anchor === 'left') {
+				position.value = {
+					anchor: `${p.anchor}-${opposite}` as any,
+					width: p.width,
+					height: current,
 				}
 			}
-			const current = hOrigin + (e.current[1] - e.start[1])
-
-			if (current >= maxHeight.value - resizeWidth) {
-				height.value = 'fill'
-			} else {
-				height.value = Math.max(current, minHeight)
-			}
-		})
+		}
+	}
 })
 </script>
 
 <template>
 	<div ref="$root" class="FloatingPane" :class="classes" :style="style">
+		<div ref="$top" class="resize top" />
+		<div ref="$right" class="resize right" />
 		<div ref="$left" class="resize left" />
 		<div ref="$bottom" class="resize bottom" />
 		<span class="minimized-title material-symbols-outlined">
@@ -130,47 +222,89 @@ onMounted(() => {
 
 .FloatingPane
 	pane()
-	--resize-width 2rem
+	--resize-width 1rem
+	--border 5px
 
-	position absolute
+	--br-top-left var(--tq-pane-border-radius)
+	--br-top-right var(--tq-pane-border-radius)
+	--br-bottom-right var(--tq-pane-border-radius)
+	--br-bottom-left var(--tq-pane-border-radius)
+
+	position fixed
 	padding 1rem
-	right 0
-
-	top calc(env(titlebar-area-y, 0px) + var(--titlebar-area-height))
 	border-width 1px
-	border-radius var(--tq-pane-border-radius) 0 0 var(--tq-pane-border-radius)
+	border-radius var(--br-top-left) var(--br-top-right) var(--br-bottom-right) var(--br-bottom-left)
 	display grid
 	grid-template-columns 1fr
 	grid-template-rows 1fr
 	hover-transition(border-radius, border-color)
+	z-index 101
+	top var(--app-margin-top)
+	right 0
+	bottom 0
+	left 0
 
-	&.minimized
-		width 3rem
-		hover-transition(width)
+	&:has(.resize:hover)
+		border-color var(--tq-color-primary)
 
-		& > .minimized-title
+	&.anchor-maximized
+		--br-bottom-right 0px
+		--br-bottom-left 0px
+
+	&.anchor-left
+		--br-top-left 0px
+		--br-bottom-left 0px
+		border-left-color transparent !important
+
+	&.anchor-right
+		--br-top-right 0px
+		--br-bottom-right 0px
+		border-right-color transparent !important
+
+	&.anchor-bottom
+		--br-bottom-left 0px
+		--br-bottom-right 0px
+		border-bottom-color transparent !important
+
+	&.w-minimized, &.h-minimized
+		background var(--tq-color-primary-container)
+		hover-transition(width, height, background)
+
+		.minimized-title
 			opacity 1
-		& > .content
+		.content
 			opacity 0
 
-	&.w-fill
-		width 100vw
-		--tq-pane-border-radius 0rem
+	&.w-minimized
+		width 4rem
 
-		& > .left:before
-			left calc(50% - 1px)
+	&.h-minimized
+		height 4rem
 
-		& > .bottom:before
-			top calc(50% + 1px)
+	&.anchor-top
+		bottom unset
 
+		.top
+			display none
 
+	&.anchor-right
+		left unset
 
-	&.h-fill
-		height calc(100vh - var(--titlebar-area-height))
-		border-bottom-left-radius 0rem
+		.right
+			display none
 
-		& > .bottom
-			left 0
+	&.anchor-bottom
+		top unset
+
+		.bottom
+			display none
+
+	&.anchor-left
+		right unset
+
+		.left
+			display none
+
 
 .resize
 	position absolute
@@ -181,46 +315,64 @@ onMounted(() => {
 		position absolute
 		width 100%
 		height 100%
-		background blue
+		background var(--tq-color-primary)
 		hover-transition()
 		opacity 0
 
 	&:hover:before
 			opacity 1
-			transition opacity var(--tq-hover-transition-duration) ease .1s
+			transition opacity var(--tq-hover-transition-duration) ease
+
+
+.top, .bottom
+	cursor row-resize
+	height var(--resize-width)
+
+	&:before
+		height var(--border)
+
+.top
+	left var(--br-top-left)
+	right var(--br-top-right)
+	top calc(-0.5 * var(--resize-width))
+	&:before
+		top calc(50%)
+.bottom
+	left var(--br-bottom-left)
+	right var(--br-bottom-right)
+	bottom calc(-0.5 * var(--resize-width))
+	&:before
+		bottom calc(50%)
+
+.left, .right
+	width var(--resize-width)
+	cursor col-resize
+
+	&:before
+		width var(--border)
 
 .left
-	left 0
-	top var(--tq-pane-border-radius)
-	width var(--resize-width)
-	bottom var(--tq-pane-border-radius)
-	cursor col-resize
-	margin-left calc(-0.5 * var(--resize-width))
-
+	top var(--br-top-left)
+	bottom var(--br-bottom-left)
+	left calc(-0.5 * var(--resize-width))
 	&:before
-		width 5px
-		left calc(50% - 2.5px)
+		left calc(50%)
 
-.bottom
-	left var(--tq-pane-border-radius)
-	bottom 0
-	right 0
-	height var(--resize-width)
-	cursor row-resize
-	background linear-gradient(to bottom, var(--gradient))
-	margin-bottom calc(-0.5 * var(--resize-width))
-
+.right
+	top var(--br-top-right)
+	bottom var(--br-bottom-right)
+	right calc(-0.5 * var(--resize-width))
 	&:before
-		height 5px
-		top calc(50% - 2.5px)
+		right calc(50%)
 
 .minimized-title
 	position absolute
 	top 50%
-	left 1.5rem
+	left 50%
 	transform translate(-50%, -50%)
 	pointer-events none
 	opacity 0
+	color var(--tq-color-on-primary-container)
 	hover-transition(opacity)
 
 .content

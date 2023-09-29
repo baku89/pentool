@@ -1660,10 +1660,10 @@ big-integer@^1.6.44:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
   integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
-bndr-js@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.10.0.tgz#403ec68c127a64affb5e5ca28b3d9484235a7c87"
-  integrity sha512-Ce3b1bpTPAWzQW2BePhC0jB5MiJueqShkOiXxdRW1cuvXM7MKwhZX7e2igaqz8T3uxdHEJnnkXwobWBlZMyGXg==
+bndr-js@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.11.1.tgz#69e19b8b88c266e656c31de61e853571f54461a4"
+  integrity sha512-vlFGGWxiO/FR3e529Lbn+QY5rtIqa7IAAqQWsxpoqhKfuq0m2o0v/AZ7O1WqQLnQCVzKgeUSAaxZ7OnnzZk0EQ==
   dependencies:
     hotkeys-js "^3.10.2"
     linearly "^0.11.0"
