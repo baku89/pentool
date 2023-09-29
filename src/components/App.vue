@@ -39,18 +39,18 @@ const {appStorage, registerActions, performAction} = useTweeq(
 	'com.baku89.paperjs-editor'
 )
 
-interface PaperDesc {
-	id?: string
-	name?: string
-	icon?: string
-	clearOnUpdate?: boolean
-	parameters?: {
-		[key: string]:
-			| {type: 'number'; default: number}
-			| {type: 'color'; default: string}
-			| {type: 'boolean'; default: boolean}
-	}
-}
+// interface PaperDesc {
+// 	id?: string
+// 	name?: string
+// 	icon?: string
+// 	clearOnUpdate?: boolean
+// 	parameters?: {
+// 		[key: string]:
+// 			| {type: 'number'; default: number}
+// 			| {type: 'color'; default: string}
+// 			| {type: 'boolean'; default: boolean}
+// 	}
+// }
 
 const source = appStorage('source', '')
 
