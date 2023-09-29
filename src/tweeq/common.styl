@@ -19,6 +19,7 @@ hover-transition(prop = all)
 	transition unquote(join(',', values))
 
 input-base()
+	position relative
 	padding 4px 12px
 	width 188px
 	height var(--tq-input-height)
@@ -27,11 +28,13 @@ input-base()
 	color var(--tq-color-on-input)
 	font-size 12px
 	hover-transition()
+	overflow hidden
 
 	&:hover
 		background-color var(--tq-color-input-hover)
 
-	&:focus-within
+	&:focus-within, &.tweaking
+		z-index 1
 		background var(--tq-color-primary-container)
 		box-shadow 0 0 0 1px var(--tq-color-primary)
 
@@ -40,6 +43,12 @@ input-base()
 		--tq-color-primary var(--tq-color-error)
 		--tq-color-primary-container var(--tq-color-error-container)
 
-	input::selection
-		background var(--tq-color-primary)
-		color var(--tq-color-on-primary)
+	input
+		width 100%
+
+		&::selection
+			background transparent
+
+		&:focus::selection
+			background var(--tq-color-primary)
+			color var(--tq-color-on-primary)

@@ -23,6 +23,7 @@ PaperOffset(paper)
 import {useTweeq} from '@/tweeq'
 import CommandPalette from '@/tweeq/CommandPalette'
 import FloatingPane from '@/tweeq/FloatingPane'
+import InputNumber from '@/tweeq/InputNumber'
 import InputString from '@/tweeq/InputString'
 import MonacoEditor, {ErrorInfo} from '@/tweeq/MonacoEditor'
 import RoundButton from '@/tweeq/RoundButton'
@@ -41,6 +42,7 @@ const {appStorage, registerActions, performAction} = useTweeq(
 )
 
 const testString = ref('Hello World')
+const testNumber = ref(100)
 
 // interface PaperDesc {
 // 	id?: string
@@ -411,6 +413,7 @@ window.addEventListener('drop', async e => {
 			:position="{anchor: 'bottom', height: 200}"
 		>
 			<InputString v-model="testString" />
+			<InputNumber v-model="testNumber" :min="0" :max="100" />
 		</FloatingPane>
 	</div>
 </template>

@@ -101,7 +101,7 @@ export function provideTheme(
 				colorShadow: toColor(colors.shadow),
 				colorInput: toColor(materialTheme.palettes.neutral.tone(97)),
 				colorInputHover: toColor(
-					materialTheme.palettes.neutralVariant.tone(90)
+					materialTheme.palettes.neutralVariant.tone(95)
 				),
 				colorOnInput: toColor(colors.onBackground),
 				colorError: toColor(colors.error),
