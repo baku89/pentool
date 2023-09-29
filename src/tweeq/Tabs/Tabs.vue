@@ -142,6 +142,8 @@ onMounted(() => {
 </template>
 
 <style lang="stylus" scoped>
+@import '../common.styl'
+
 .Tabs
 	display grid
 	gap .5rem
@@ -160,19 +162,26 @@ onMounted(() => {
 
 .tablist-item
 	line-height 2rem
-	padding 0 .4rem
+	padding 2px .4rem 0
 	font-weight bold
 	border-bottom 3px solid transparent
-	transition border-bottom-color .2s ease
+	hover-transition(border-bottom-color)
 
 	&.active
 		border-bottom-color var(--tq-color-text)
+
+		&:hover
+			border-bottom-color var(--tq-color-primary)
 
 .tablist-link
 	text-decoration none
 	color var(--tq-color-text)
 	opacity .4
-	transition opacity .2s ease
+	hover-transition(opacity)
+
+	&:hover
+		color var(--tq-color-primary)
+		opacity 1
 
 	&.active
 		opacity 1

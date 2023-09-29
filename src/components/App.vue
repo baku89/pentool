@@ -413,8 +413,8 @@ window.addEventListener('drop', async e => {
 		border-radius 4px
 		padding 0 .6rem
 		-webkit-app-region: no-drag;
-		app-region: no-drag;
-		transition all ease .1s
+		app-region: no-drag
+		hover-transition(border-color)
 
 		&:hover
 			border-color var(--tq-color-primary)

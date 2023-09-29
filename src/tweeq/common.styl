@@ -6,3 +6,14 @@ pane()
 	border 1px solid var(--tq-color-pane-border)
 	background var(--tq-color-pane)
 	backdrop-filter blur(4px)
+
+hover-transition(prop = all)
+	values = ()
+
+	for p in arguments
+		push(
+			values,
+			p + ' var(--tq-hover-transition-duration) ease'
+		)
+
+	transition unquote(join(',', values))

@@ -142,11 +142,11 @@ onMounted(() => {
 	display grid
 	grid-template-columns 1fr
 	grid-template-rows 1fr
-	transition border-radius .2s ease, border-color .2s ease
+	hover-transition(border-radius, border-color)
 
 	&.minimized
 		width 3rem
-		transition width .2s ease
+		hover-transition(width)
 
 		& > .minimized-title
 			opacity 1
@@ -174,7 +174,7 @@ onMounted(() => {
 
 .resize
 	position absolute
-	transition all .2s ease
+	hover-transition()
 
 	&:before
 		content ''
@@ -182,12 +182,12 @@ onMounted(() => {
 		width 100%
 		height 100%
 		background blue
-		transition all .2s ease
+		hover-transition()
 		opacity 0
 
 	&:hover:before
 			opacity 1
-			transition opacity .2s ease .4s
+			transition opacity var(--tq-hover-transition-duration) ease .1s
 
 .left
 	left 0
@@ -221,11 +221,12 @@ onMounted(() => {
 	transform translate(-50%, -50%)
 	pointer-events none
 	opacity 0
-	transition opacity .2s ease
+	hover-transition(opacity)
+
 .content
 	position relative
 	height 100%
 	overflow	hidden
-	transition opacity .2s ease
+	hover-transition(opacity)
 </style>
 @/tweaq/useAppStorage

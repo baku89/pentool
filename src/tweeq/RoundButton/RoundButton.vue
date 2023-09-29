@@ -21,6 +21,7 @@ defineProps<Props>()
 </template>
 
 <style lang="stylus" scoped>
+@import '../common.styl'
 
 .RoundButton
 	height 32px
@@ -30,11 +31,11 @@ defineProps<Props>()
 	justify-content center
 	align-items center
 	gap .4em
-	transition all ease .2s
 	width auto
 	padding 0 12px 0 6px
 	background var(--tq-color-primary-container)
 	color var(--md-sys-color-on-primary-container)
+	hover-transition(background, color)
 
 	&:hover
 		background var(--tq-color-primary)

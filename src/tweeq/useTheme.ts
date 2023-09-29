@@ -44,6 +44,7 @@ export interface Theme {
 	// UI Metrics
 	paneBorderRadius: string
 	inputHeight: string
+	hoverTransitionDuration: string
 }
 
 const ThemeKey: InjectionKey<Readonly<Ref<Theme>>> = Symbol('tqTheme')
@@ -98,6 +99,7 @@ export function provideTheme(
 
 				paneBorderRadius: '20px',
 				inputHeight: '16px',
+				hoverTransitionDuration: '0.15s',
 			}
 
 			// Promote all as CSS variabbles
