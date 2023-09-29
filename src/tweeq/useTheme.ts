@@ -30,6 +30,10 @@ export interface Theme {
 	colorText: string
 	colorPane: string
 	colorPaneBorder: string
+	colorInverseSurface: string
+	colorInverseOnSurface: string
+	colorInversePrimary: string
+	colorShadow: string
 
 	// Font
 	fontCode: string
@@ -79,9 +83,13 @@ export function provideTheme(
 				colorOnPrimaryContainer: toColor(colors.onPrimaryContainer),
 				colorOnPrimary: toColor(colors.onPrimary),
 				colorText: toColor(colors.onBackground),
-				colorBg: toColor(colors.background),
-				colorPane: toColor(colors.background, 0.95),
+				colorBg: dark ? '#000000' : '#ffffff',
+				colorPane: toColor(dark ? 0x000000 : 0xffffff, 0.95),
 				colorPaneBorder: toColor(colors.onBackground, 0.12),
+				colorInverseSurface: toColor(colors.inverseSurface),
+				colorInverseOnSurface: toColor(colors.inverseOnSurface),
+				colorInversePrimary: toColor(colors.inversePrimary),
+				colorShadow: toColor(colors.shadow),
 
 				fontCode: "'Fira Code', monospace",
 				fontHeading: 'Inter, sans-serif',

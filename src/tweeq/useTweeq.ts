@@ -1,3 +1,4 @@
+import {provideActions} from './action'
 import {provideAppStorage} from './useAppStorage'
 import {ColorMode, provideTheme} from './useTheme'
 
@@ -18,5 +19,7 @@ export function useTweeq(appId: string, options: TweeqOptions = {}) {
 
 	const theme = provideTheme(accentColor, colorMode)
 
-	return {appStorage, theme}
+	const actions = provideActions()
+
+	return {appStorage, theme, ...actions}
 }

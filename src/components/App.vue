@@ -21,6 +21,7 @@ import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
 import {useTweeq} from '@/tweeq'
+import CommandPalette from '@/tweeq/CommandPalette'
 import FloatingPane from '@/tweeq/FloatingPane'
 import MonacoEditor, {ErrorInfo} from '@/tweeq/MonacoEditor'
 import RoundButton from '@/tweeq/RoundButton'
@@ -34,7 +35,9 @@ import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
 
-const {appStorage} = useTweeq('com.baku89.paperjs-editor')
+const {appStorage, registerActions, performAction} = useTweeq(
+	'com.baku89.paperjs-editor'
+)
 
 interface PaperDesc {
 	id?: string
@@ -180,10 +183,6 @@ const zoom = computed(() => {
 	return Math.sqrt(mat2d.determinant(viewTransform.value))
 })
 
-function resetZoom() {
-	viewTransform.value = initialViewTransform.value
-}
-
 const canvasGridStyle = computed(() => {
 	const [x, y] = vec2.transformMat2d(vec2.zero, viewTransform.value)
 
@@ -219,23 +218,6 @@ onMounted(() => {
 
 const colorPickerVisible = ref(false)
 
-function copyCanvasAsSVG() {
-	const svg = paper.project.exportSVG({asString: true})
-	navigator.clipboard.writeText(svg.toString())
-}
-
-async function pasteSVGToCanvas() {
-	const svg = await navigator.clipboard.readText()
-	const svgCode = `project.importSVG(\`${svg}\`)\n`
-
-	code.value = replaceTextBetween(
-		code.value,
-		cursorIndex.value,
-		cursorIndex.value,
-		svgCode
-	)
-}
-
 const fileHandle = ref<FileSystemFileHandle | null>(null)
 const lastSavedSource = ref('')
 
@@ -264,36 +246,78 @@ const filePickerOptions: FilePickerOptions = {
 	],
 }
 
-async function saveProject() {
-	if (!fileHandle.value) {
-		fileHandle.value = await window.showSaveFilePicker(filePickerOptions)
-	}
+registerActions([
+	{
+		id: 'reset-zoom',
+		label: 'Reset Zoom',
+		icon: 'zoom_out_map',
+		perform() {
+			viewTransform.value = initialViewTransform.value
+		},
+	},
+	{
+		id: 'copy-canvas-as-svg',
+		label: 'Copy Canvas as SVG',
+		icon: 'content_copy',
+		perform() {
+			const svg = paper.project.exportSVG({asString: true})
+			navigator.clipboard.writeText(svg.toString())
+		},
+	},
+	{
+		id: 'paste-svg-to-canvas',
+		label: 'Paste SVG to Canvas',
+		icon: 'content_paste',
+		async perform() {
+			const svg = await navigator.clipboard.readText()
+			const svgCode = `project.importSVG(\`${svg}\`)\n`
 
-	const writable = await fileHandle.value.createWritable()
-	await writable.write(source.value)
-	await writable.close()
+			code.value = replaceTextBetween(
+				code.value,
+				cursorIndex.value,
+				cursorIndex.value,
+				svgCode
+			)
+		},
+	},
+	{
+		id: 'open-project',
+		label: 'Open Project',
+		async perform() {
+			const handles = await window.showOpenFilePicker(filePickerOptions)
 
-	lastSavedSource.value = source.value
-}
+			fileHandle.value = handles[0]
 
-async function openProject() {
-	const handles = await window.showOpenFilePicker(filePickerOptions)
+			const file = await fileHandle.value.getFile()
+			const text = await file.text()
+			source.value = lastSavedSource.value = text
+		},
+	},
+	{
+		id: 'save-project',
+		label: 'Save Project',
+		async perform() {
+			if (!fileHandle.value) {
+				fileHandle.value = await window.showSaveFilePicker(filePickerOptions)
+			}
 
-	fileHandle.value = handles[0]
+			const writable = await fileHandle.value.createWritable()
+			await writable.write(source.value)
+			await writable.close()
 
-	const file = await fileHandle.value.getFile()
-	const text = await file.text()
-	source.value = lastSavedSource.value = text
-}
+			lastSavedSource.value = source.value
+		},
+	},
+])
 
 // Register shotcuts
 window.addEventListener('keydown', e => {
 	if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
 		e.preventDefault()
-		saveProject()
+		performAction('save-project')
 	} else if (e.key === 'o' && (e.ctrlKey || e.metaKey)) {
 		e.preventDefault()
-		openProject()
+		performAction('open-project')
 	}
 })
 
@@ -315,6 +339,7 @@ window.addEventListener('drop', async e => {
 
 <template>
 	<div class="App">
+		<CommandPalette />
 		<TitleBar name="Paper.js Editor" class="title" icon="favicon.svg">
 			<template #left>
 				{{ title }}
