@@ -31,6 +31,7 @@ import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
 import {Tab, Tabs} from './Tabs'
+import TitleBar from './TitleBar.vue'
 
 const {appStorage} = provideAppStorage('com.baku89.paperjs-editor')
 
@@ -311,17 +312,16 @@ window.addEventListener('drop', async e => {
 
 <template>
 	<div class="App">
-		<div class="title">
-			<img class="icon" src="/favicon.svg" />
-			<span class="app-name">Paper.js Editor</span>
-			<span>
+		<TitleBar name="Paper.js Editor" class="title" icon="favicon.svg">
+			<template #left>
 				{{ title }}
-			</span>
-			<div class="spacer" />
-			<button class="zoom" @click="resetZoom">
-				{{ (zoom * 100).toFixed(0) + '%' }}
-			</button>
-		</div>
+			</template>
+			<template #right>
+				<button class="zoom" @click="resetZoom">
+					{{ (zoom * 100).toFixed(0) + '%' }}
+				</button>
+			</template>
+		</TitleBar>
 		<main class="main">
 			<div ref="$canvasWrapper" class="canvas-wrapper">
 				<div class="canvas-grid" :style="canvasGridStyle" />
@@ -377,36 +377,6 @@ window.addEventListener('drop', async e => {
 <style lang="stylus" scoped>
 
 .title
-	display flex
-	left env(titlebar-area-x, 0)
-	top env(titlebar-area-y, 0)
-	width env(titlebar-area-width, 100%)
-	height var(--titlebar-area-height)
-	display flex
-	z-index 100
-	user-select none
-
-	position fixed
-	background 'linear-gradient(to bottom, rgba(%s, .7) 0, transparent)' % var(--ui-bg-rgb)
-	backdrop-filter blur(2px)
-	gap .6rem
-	padding .4rem .4rem .4rem .6rem
-	-webkit-app-region: drag;
-	app-region: drag;
-
-	line-height calc(var(--titlebar-area-height) - 0.8rem)
-
-	@media (display-mode: window-controls-overlay)
-		background 'linear-gradient(to bottom, rgba(%s, .5) 20%, transparent)' % var(--ui-bg-rgb), linear-gradient(to right, var(--ui-bg) 0, transparent 15%, transparent 85%, var(--ui-bg) 100%)
-
-	.app-name
-		font-weight bold
-	.icon
-		height calc(var(--titlebar-area-height) - .8rem)
-
-	.spacer
-		flex-grow 1
-
 	.zoom
 		font-variant-numeric: tabular-nums;
 		font-size 11px
