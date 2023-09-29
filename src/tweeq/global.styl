@@ -1,7 +1,11 @@
 @import '../../node_modules/reset-css/reset.css'
 
+::selection
+	background var(--tq-color-primary)
+	color var(--tq-color-on-primary)
+
 :root
-	font-size 13px
+	font-size 12px
 	font-family 'Inter'
 	font-synthesis none
 	-webkit-font-smoothing antialiased
@@ -35,3 +39,4 @@ body
 	height 100vh
 	background var(--tq-color-bg)
 	color var(--tq-color-text)
+	user-select none

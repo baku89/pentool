@@ -25,9 +25,10 @@ defineProps<Props>()
 
 .RoundButton
 	height 32px
+	font-size 14px
 	border-radius 9999px
 	vertical-align middle
-	display inline-flex
+	display flex
 	justify-content center
 	align-items center
 	gap .4em
@@ -36,6 +37,7 @@ defineProps<Props>()
 	background var(--tq-color-primary-container)
 	color var(--md-sys-color-on-primary-container)
 	hover-transition(background, color)
+	line-height 32px
 
 	&:hover
 		background var(--tq-color-primary)

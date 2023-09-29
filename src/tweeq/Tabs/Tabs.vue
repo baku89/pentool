@@ -163,6 +163,7 @@ onMounted(() => {
 .tablist-item
 	line-height 2rem
 	padding 2px .4rem 0
+	font-size 14px
 	font-weight bold
 	border-bottom 3px solid transparent
 	hover-transition(border-bottom-color)

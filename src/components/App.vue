@@ -20,15 +20,7 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
-import {useTweeq} from '@/tweeq'
-import CommandPalette from '@/tweeq/CommandPalette'
-import FloatingPane from '@/tweeq/FloatingPane'
-import InputNumber from '@/tweeq/InputNumber'
-import InputString from '@/tweeq/InputString'
-import MonacoEditor, {ErrorInfo} from '@/tweeq/MonacoEditor'
-import RoundButton from '@/tweeq/RoundButton'
-import {Tab, Tabs} from '@/tweeq/Tabs'
-import TitleBar from '@/tweeq/TitleBar'
+import Tq, {ErrorInfo, useTweeq} from '@/tweeq'
 import {useCommentMeta} from '@/use/useCommentMeta'
 import {useZUI} from '@/use/useZUI'
 import {replaceTextBetween} from '@/utils'
@@ -296,8 +288,7 @@ registerActions([
 			fileHandle.value = handles[0]
 
 			const file = await fileHandle.value.getFile()
-			const text = await file.text()
-			source.value = lastSavedSource.value = text
+			source.value = lastSavedSource.value = await file.text()
 		},
 	},
 	{
@@ -341,14 +332,14 @@ window.addEventListener('drop', async e => {
 	fileHandle.value = handle as FileSystemFileHandle
 
 	const file = await fileHandle.value.getFile()
-	source.value = await file.text()
+	source.value = lastSavedSource.value = await file.text()
 })
 </script>
 
 <template>
 	<div class="App">
 		<CommandPalette />
-		<TitleBar name="Paper.js Editor" class="title" icon="favicon.svg">
+		<Tq.TitleBar name="Paper.js Editor" class="title" icon="favicon.svg">
 			<template #left>
 				{{ title }}
 			</template>
@@ -357,7 +348,7 @@ window.addEventListener('drop', async e => {
 					{{ (zoom * 100).toFixed(0) + '%' }}
 				</button>
 			</template>
-		</TitleBar>
+		</Tq.TitleBar>
 		<main class="main">
 			<div ref="$canvasWrapper" class="canvas-wrapper">
 				<div class="canvas-grid" :style="canvasGridStyle" />
@@ -369,10 +360,10 @@ window.addEventListener('drop', async e => {
 				/>
 			</div>
 		</main>
-		<FloatingPane name="inspector-pane" icon="code">
-			<Tabs class="inspector-tab" name="inspector.tab">
+		<Tq.FloatingPane name="inspector-pane" icon="code">
+			<Tq.Tabs class="inspector-tab" name="inspector.tab">
 				<template #before-tablist>
-					<RoundButton
+					<Tq.RoundButton
 						class="play"
 						:icon="autoRefresh ? 'pause_circle' : 'play_circle'"
 						:label="autoRefresh ? 'Pause' : 'Resume'"
@@ -380,11 +371,11 @@ window.addEventListener('drop', async e => {
 						@click="autoRefresh = !autoRefresh"
 					/>
 				</template>
-				<Tab name="Settings">
-					<MonacoEditor v-model="meta" class="editor" lang="text" />
-				</Tab>
-				<Tab name="Code">
-					<MonacoEditor
+				<Tq.Tab name="Settings">
+					<Tq.MonacoEditor v-model="meta" class="editor" lang="text" />
+				</Tq.Tab>
+				<Tq.Tab name="Code">
+					<Tq.MonacoEditor
 						v-model="code"
 						v-model:cursorIndex="cursorIndex"
 						v-model:cursorPosition="cursorPosition"
@@ -404,17 +395,23 @@ window.addEventListener('drop', async e => {
 						v-model:cursorIndex="cursorIndex"
 						:cursor-position="cursorPosition"
 					/>
-				</Tab>
-			</Tabs>
-		</FloatingPane>
-		<FloatingPane
+				</Tq.Tab>
+			</Tq.Tabs>
+		</Tq.FloatingPane>
+		<Tq.FloatingPane
 			name="timeline"
 			icon="timeline"
 			:position="{anchor: 'bottom', height: 200}"
 		>
-			<InputString v-model="testString" />
-			<InputNumber v-model="testNumber" :min="0" :max="100" />
-		</FloatingPane>
+			<Tq.ParameterGrid>
+				<Tq.Parameter label="Distance">
+					<Tq.InputString v-model="testString" />
+				</Tq.Parameter>
+				<Tq.Parameter label="Grow">
+					<Tq.InputNumber v-model="testNumber" :min="0" :max="100" />
+				</Tq.Parameter>
+			</Tq.ParameterGrid>
+		</Tq.FloatingPane>
 	</div>
 </template>
 

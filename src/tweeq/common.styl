@@ -21,17 +21,17 @@ hover-transition(prop = all)
 input-base()
 	position relative
 	padding 4px 12px
-	width 188px
+	width 100%
 	height var(--tq-input-height)
 	border-radius var(--tq-input-border-radius)
-	background-color var(--tq-color-input)
+	background var(--tq-color-input)
 	color var(--tq-color-on-input)
-	font-size 12px
-	hover-transition()
+	font-size 1rem
+	hover-transition(background, box-shadow)
 	overflow hidden
 
 	&:hover
-		background-color var(--tq-color-input-hover)
+		background var(--tq-color-input-hover)
 
 	&:focus-within, &.tweaking
 		z-index 1
@@ -45,9 +45,10 @@ input-base()
 
 	input
 		width 100%
+		user-select none
 
 		&::selection
-			background transparent
+			color var(--tq-color-on-input)
 
 		&:focus::selection
 			background var(--tq-color-primary)

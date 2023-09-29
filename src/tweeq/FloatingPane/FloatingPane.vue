@@ -231,7 +231,7 @@ onMounted(() => {
 	--br-bottom-left var(--tq-pane-border-radius)
 
 	position fixed
-	padding 1rem
+	padding 12px
 	border-width 1px
 	border-radius var(--br-top-left) var(--br-top-right) var(--br-bottom-right) var(--br-bottom-left)
 	display grid

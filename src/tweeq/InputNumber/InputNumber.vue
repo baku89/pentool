@@ -5,7 +5,7 @@ import {scalar, Vec2} from 'linearly'
 import {computed, ref, watch, watchEffect} from 'vue'
 
 import {useDrag} from '../useDrag'
-import {toFixedWithNoTrailingZeros, unsignedMod} from '../util'
+import {toFixed, unsignedMod} from '../util'
 
 interface Props {
 	modelValue: number
@@ -15,8 +15,7 @@ interface Props {
 	clampMax?: boolean
 	invalid?: boolean
 	disabled?: boolean
-	maxSpeed?: number
-	minSpeed?: number
+	precision?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,8 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
 	max: Number.MAX_SAFE_INTEGER,
 	clampMin: true,
 	clampMax: true,
-	maxSpeed: 1000,
-	minSpeed: 0.001,
+	precision: 4,
 })
 
 const emit = defineEmits<{
@@ -149,8 +147,8 @@ const {dragging: tweaking, pointerLocked} = useDrag(root, {
 		} else {
 			speedMultiplierGesture.value = scalar.clamp(
 				speedMultiplierGesture.value * Math.pow(0.98, dy),
-				props.minSpeed,
-				props.maxSpeed
+				10 ** -props.precision,
+				1000
 			)
 		}
 
@@ -160,10 +158,7 @@ const {dragging: tweaking, pointerLocked} = useDrag(root, {
 		}
 	},
 	onDragEnd() {
-		display.value = toFixedWithNoTrailingZeros(
-			props.modelValue,
-			tweakPrecision.value
-		)
+		display.value = toFixed(props.modelValue, tweakPrecision.value)
 		tweakMode.value = null
 		speedMultiplierGesture.value = 1
 	},
@@ -213,14 +208,14 @@ const increment = (delta: number) => {
 	)
 	local.value += delta * speedMultiplierKey.value
 	local.value = scalar.clamp(local.value, validMin.value, validMax.value)
-	display.value = toFixedWithNoTrailingZeros(local.value, prec)
+	display.value = toFixed(local.value, prec)
 	hasChanged = true
 	emit('update:modelValue', local.value)
 }
 
 const onBlur = () => {
 	if (hasChanged) {
-		display.value = props.modelValue.toString()
+		display.value = toFixed(props.modelValue, props.precision)
 	} else {
 		// 変な文字を打ったときはhasChanged === falseなので、これでリセットをかける
 		display.value = initialDisplay
@@ -300,8 +295,8 @@ window.addEventListener('touchstart', (e: TouchEvent) => {
 		const mul = Math.abs((ox - cx) / (x - cx))
 		speedMultiplierGesture.value = scalar.clamp(
 			initialSpeedMultiplierGesture * mul,
-			props.minSpeed,
-			props.maxSpeed
+			10 ** -props.precision,
+			1000
 		)
 	}
 

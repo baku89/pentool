@@ -1,4 +1,4 @@
-export function toFixedWithNoTrailingZeros(value: number, precision: number) {
+export function toFixed(value: number, precision: number) {
 	return value
 		.toFixed(precision)
 		.replace(/\.(.*?)[0]+$/, '.$1')
