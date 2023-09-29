@@ -176,4 +176,7 @@ onMounted(() => {
 
 	&.active
 		opacity 1
+
+.panels-wrapper
+	position relative
 </style>

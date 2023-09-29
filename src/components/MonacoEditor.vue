@@ -195,12 +195,22 @@ onMounted(() => {
 </script>
 
 <template>
-	<div ref="$root" class="MonacoEditor">
-		<div ref="$editor" class="editor"></div>
+	<div class="MonacoEditor-wrapper">
+		<div ref="$root" class="MonacoEditor">
+			<div ref="$editor" class="editor"></div>
+		</div>
 	</div>
 </template>
 
 <style lang="stylus" scoped>
+.MonacoEditor-wrapper
+	position relative
+	min-height 0
+
+.MonacoEditor
+	width 100%
+	height 100%
+
 :deep(.monaco-editor)
-	--vscode-editor-background: transparent
+	--vscode-editor-background transparent
 </style>

@@ -67,7 +67,7 @@ path.moveTo(start)
 path.lineTo(start + [200, 50])`
 }
 
-const {content: code} = useCommentMeta(source)
+const {meta, content: code} = useCommentMeta(source)
 
 const cursorIndex = ref(0)
 const cursorPosition = ref(vec2.zero)
@@ -343,30 +343,29 @@ window.addEventListener('drop', async e => {
 						</button>
 					</template>
 					<Tab name="Settings">
-						<div>Settings</div>
+						<MonacoEditor v-model="meta" class="editor" lang="text" />
 					</Tab>
-					<Tab name="Code" class="inspector">
-						<div class="editor-wrapper">
-							<MonacoEditor
-								v-model="code"
-								v-model:cursorIndex="cursorIndex"
-								v-model:cursorPosition="cursorPosition"
-								class="editor"
-								:errors="errors"
-							/>
-							<OverlayColorPicker
-								v-model:code="code"
-								v-model:visible="colorPickerVisible"
-								:cursor-index="cursorIndex"
-								:cursor-position="cursorPosition"
-							/>
-							<OverlayNumberSlider
-								v-show="!colorPickerVisible"
-								v-model:code="code"
-								v-model:cursorIndex="cursorIndex"
-								:cursor-position="cursorPosition"
-							/>
-						</div>
+					<Tab name="Code">
+						<MonacoEditor
+							v-model="code"
+							v-model:cursorIndex="cursorIndex"
+							v-model:cursorPosition="cursorPosition"
+							class="editor"
+							lang="javascript"
+							:errors="errors"
+						/>
+						<OverlayColorPicker
+							v-model:code="code"
+							v-model:visible="colorPickerVisible"
+							:cursor-index="cursorIndex"
+							:cursor-position="cursorPosition"
+						/>
+						<OverlayNumberSlider
+							v-show="!colorPickerVisible"
+							v-model:code="code"
+							v-model:cursorIndex="cursorIndex"
+							:cursor-position="cursorPosition"
+						/>
 					</Tab>
 				</Tabs>
 			</FloatingPane>
@@ -439,20 +438,10 @@ window.addEventListener('drop', async e => {
 		background var(--ui-accent)
 		color var(--ui-bg)
 
-.inspector
-	position relative
-	height 100%
-	display flex
-	flex-direction column
-	gap 1rem
-.editor-wrapper
-	position relative
-	flex-grow 1
-	min-height 0
 
 .editor
-	width 100%
 	height 100%
+
 
 /* Direct Manipulation */
 #color-picker
@@ -470,4 +459,3 @@ window.addEventListener('drop', async e => {
 		border 0
 		border-radius 0.8rem
 </style>
-./utils @/use/useCommentMeta
