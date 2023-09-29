@@ -1660,16 +1660,6 @@ big-integer@^1.6.44:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
   integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
-bndr-js@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/bndr-js/-/bndr-js-0.11.1.tgz#69e19b8b88c266e656c31de61e853571f54461a4"
-  integrity sha512-vlFGGWxiO/FR3e529Lbn+QY5rtIqa7IAAqQWsxpoqhKfuq0m2o0v/AZ7O1WqQLnQCVzKgeUSAaxZ7OnnzZk0EQ==
-  dependencies:
-    hotkeys-js "^3.10.2"
-    linearly "^0.11.0"
-    lodash "^4.17.21"
-    typescript-memoize "^1.1.1"
-
 boolbase@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
@@ -2532,11 +2522,6 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-hotkeys-js@^3.10.2:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.12.0.tgz#5534a7ffdba923df489ffbd876b991979beb2c77"
-  integrity sha512-Z+N573ycUKIGwFYS3ID1RzMJiGmtWMGKMiaNLyJS8B1ei+MllF4ZYmKS2T0kMWBktOz+WZLVNikftEgnukOrXg==
-
 human-signals@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
@@ -2880,11 +2865,6 @@ levn@^0.4.1:
   dependencies:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
-
-linearly@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/linearly/-/linearly-0.11.0.tgz#72c6d9d6e0214249b0fcdfe1914ff019143bb8dc"
-  integrity sha512-kIQ6V1Pwv00V3k+C+a6770i09P+uGUswg6N1CfZFAuvZWwvteBAODH5irxR3YeV2gLnGaUk5yGISmq3gs++DCQ==
 
 linearly@^0.12.0:
   version "0.12.0"
@@ -3744,11 +3724,6 @@ typed-array-length@^1.0.4:
     call-bind "^1.0.2"
     for-each "^0.3.3"
     is-typed-array "^1.1.9"
-
-typescript-memoize@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/typescript-memoize/-/typescript-memoize-1.1.1.tgz#02737495d5df6ebf72c07ba0d002e8f4cf5ccfa0"
-  integrity sha512-GQ90TcKpIH4XxYTI2F98yEQYZgjNMOGPpOgdjIBhaLaWji5HPWlRnZ4AeA1hfBxtY7bCGDJsqDDHk/KaHOl5bA==
 
 typescript@^5.2.2:
   version "5.2.2"

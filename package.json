@@ -19,7 +19,6 @@
 		"@typescript-eslint/parser": "^6.7.0",
 		"@vitejs/plugin-vue": "^4.3.4",
 		"@vueuse/core": "^10.4.1",
-		"bndr-js": "^0.11.1",
 		"case": "^1.6.3",
 		"eslint": "^8.49.0",
 		"eslint-config-prettier": "^9.0.0",

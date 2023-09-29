@@ -21,7 +21,8 @@
 
 		/* For consistency with Vite */
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"bndr-js": ["./dev_modules/bndr-js/src/index.ts"]
 		}
 	},
 	"include": ["src"]

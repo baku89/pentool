@@ -45,6 +45,12 @@ export default defineConfig({
 				find: '@',
 				replacement: fileURLToPath(new URL('./src', import.meta.url)),
 			},
+			{
+				find: 'bndr-js',
+				replacement: fileURLToPath(
+					new URL('./dev_modules/bndr-js/src', import.meta.url)
+				),
+			},
 		],
 	},
 })
