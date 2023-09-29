@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ColorIcon from '../ColorIcon'
+
 interface Props {
 	name: string
 	icon: string
@@ -13,7 +15,7 @@ defineSlots<{
 
 <template>
 	<div class="TitleBar">
-		<img class="icon" :src="icon" />
+		<ColorIcon class="icon" :src="icon" />
 		<span class="app-name">{{ name }}</span>
 		<slot name="left" />
 		<div class="spacer" />
@@ -44,7 +46,6 @@ defineSlots<{
 
 
 .icon
-	aspect-ratio 1
 	height calc(var(--titlebar-area-height) - .8rem)
 
 .app-name
