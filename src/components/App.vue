@@ -34,7 +34,8 @@ const {appStorage, registerActions, performAction} = useTweeq(
 )
 
 const testString = ref('Hello World')
-const testNumber = ref(100)
+const testNumber = ref(Math.PI)
+const testBoolean = ref(false)
 
 // interface PaperDesc {
 // 	id?: string
@@ -408,10 +409,16 @@ window.addEventListener('drop', async e => {
 					<Tq.InputString v-model="testString" />
 				</Tq.Parameter>
 				<Tq.Parameter label="Grow">
-					<Tq.InputNumber v-model="testNumber" :min="0" :max="100" />
+					<Tq.InputNumber v-model="testNumber" :min="0" :max="Math.PI * 2" />
 				</Tq.Parameter>
 				<Tq.Parameter label="Degrees">
 					<Tq.InputRotery v-model="testNumber" />
+				</Tq.Parameter>
+				<Tq.Parameter label="Checkbox">
+					<Tq.InputCheckbox v-model="testBoolean" />
+				</Tq.Parameter>
+				<Tq.Parameter label="Seed">
+					<Tq.InputSeed v-model="testNumber" />
 				</Tq.Parameter>
 			</Tq.ParameterGrid>
 		</Tq.FloatingPane>

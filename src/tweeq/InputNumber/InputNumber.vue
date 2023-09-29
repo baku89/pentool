@@ -34,7 +34,7 @@ const root = ref<HTMLElement | null>(null)
 const input = ref<HTMLInputElement | null>(null)
 
 const local = ref(props.modelValue)
-const display = ref(props.modelValue.toString())
+const display = ref(toFixed(props.modelValue, props.precision))
 
 const {left, top, width, height, right} = useElementBounding(root)
 
