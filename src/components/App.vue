@@ -30,6 +30,7 @@ import MonacoEditor, {ErrorInfo} from './MonacoEditor.vue'
 import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
+import {Tab, Tabs} from './Tabs'
 
 const {appStorage} = provideAppStorage('com.baku89.paperjs-editor')
 
@@ -332,47 +333,42 @@ window.addEventListener('drop', async e => {
 				/>
 			</div>
 			<FloatingPane name="inspector" icon="code">
-				<div class="inspector">
-					<div class="actions">
+				<Tabs class="inspector-tab" name="inspector.tab">
+					<template #before-tablist>
 						<button class="play" @click="autoRefresh = !autoRefresh">
 							<span class="material-symbols-outlined">{{
 								autoRefresh ? 'pause_circle' : 'play_circle'
 							}}</span>
 							{{ autoRefresh ? 'Pause' : 'Resume' }}
 						</button>
-						<div class="spacer" />
-						<button @click="copyCanvasAsSVG">
-							<span class="material-symbols-outlined">content_copy</span>
-						</button>
-						<button @click="pasteSVGToCanvas">
-							<span class="material-symbols-outlined">content_paste</span>
-						</button>
-						<button @click="saveProject">
-							<span class="material-symbols-outlined">download</span>
-						</button>
-					</div>
-					<div class="editor-wrapper">
-						<MonacoEditor
-							v-model="code"
-							v-model:cursorIndex="cursorIndex"
-							v-model:cursorPosition="cursorPosition"
-							class="editor"
-							:errors="errors"
-						/>
-						<OverlayColorPicker
-							v-model:code="code"
-							v-model:visible="colorPickerVisible"
-							:cursor-index="cursorIndex"
-							:cursor-position="cursorPosition"
-						/>
-						<OverlayNumberSlider
-							v-show="!colorPickerVisible"
-							v-model:code="code"
-							v-model:cursorIndex="cursorIndex"
-							:cursor-position="cursorPosition"
-						/>
-					</div>
-				</div>
+					</template>
+					<Tab name="Settings">
+						<div>Settings</div>
+					</Tab>
+					<Tab name="Code" class="inspector">
+						<div class="editor-wrapper">
+							<MonacoEditor
+								v-model="code"
+								v-model:cursorIndex="cursorIndex"
+								v-model:cursorPosition="cursorPosition"
+								class="editor"
+								:errors="errors"
+							/>
+							<OverlayColorPicker
+								v-model:code="code"
+								v-model:visible="colorPickerVisible"
+								:cursor-index="cursorIndex"
+								:cursor-position="cursorPosition"
+							/>
+							<OverlayNumberSlider
+								v-show="!colorPickerVisible"
+								v-model:code="code"
+								v-model:cursorIndex="cursorIndex"
+								:cursor-position="cursorPosition"
+							/>
+						</div>
+					</Tab>
+				</Tabs>
 			</FloatingPane>
 		</main>
 	</div>
@@ -448,7 +444,30 @@ window.addEventListener('drop', async e => {
 	background-image radial-gradient(circle at 0 0, var(--dot-color) 1px, transparent 0), linear-gradient(to bottom, var(--axis-color) 1px, transparent 0), linear-gradient(to right, var(--axis-color) 1px, transparent 0)
 	background-repeat repeat, repeat-x, repeat-y
 
+.inspector-tab
+	height 100%
 
+.play
+	display inline-flex
+	justify-content center
+	align-items center
+	background var(--ui-button)
+	color var(--ui-color)
+	width 32px
+	height 32px
+	border-radius 9999px
+	vertical-align middle
+	padding 0 6px
+	gap .4em
+	transition all ease .2s
+	width auto
+	padding 0 12px 0 6px
+	background var(--ui-color)
+	color var(--ui-bg)
+
+	&:hover
+		background var(--ui-accent)
+		color var(--ui-bg)
 
 .inspector
 	position relative
@@ -456,39 +475,6 @@ window.addEventListener('drop', async e => {
 	display flex
 	flex-direction column
 	gap 1rem
-
-.actions
-	display flex
-	align-items center
-	gap 0.5rem
-
-	.spacer
-		flex-grow 1
-
-	button
-		display inline-flex
-		justify-content center
-		align-items center
-		background var(--ui-button)
-		color var(--ui-color)
-		width 32px
-		height 32px
-		border-radius 9999px
-		vertical-align middle
-		padding 0 6px
-		gap .4em
-		transition all ease .2s
-
-		&.play
-			width auto
-			padding 0 12px 0 6px
-			background var(--ui-color)
-			color var(--ui-bg)
-
-		&:hover
-			background var(--ui-accent)
-			color var(--ui-bg)
-
 .editor-wrapper
 	position relative
 	flex-grow 1
