@@ -410,6 +410,9 @@ window.addEventListener('drop', async e => {
 				<Tq.Parameter label="Grow">
 					<Tq.InputNumber v-model="testNumber" :min="0" :max="100" />
 				</Tq.Parameter>
+				<Tq.Parameter label="Degrees">
+					<Tq.InputRotery v-model="testNumber" />
+				</Tq.Parameter>
 			</Tq.ParameterGrid>
 		</Tq.FloatingPane>
 	</div>

@@ -4,6 +4,7 @@ import ColorIcon from './ColorIcon'
 import CommandPalette from './CommandPalette'
 import FloatingPane from './FloatingPane'
 import InputNumber from './InputNumber'
+import InputRotery from './InputRotery'
 import InputString from './InputString'
 import Markdown from './Markdown'
 import MonacoEditor, {ErrorInfo} from './MonacoEditor'
@@ -19,6 +20,7 @@ export default {
 	CommandPalette,
 	FloatingPane,
 	InputNumber,
+	InputRotery,
 	InputString,
 	Markdown,
 	MonacoEditor,

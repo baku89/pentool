@@ -53,3 +53,41 @@ input-base()
 		&:focus::selection
 			background var(--tq-color-primary)
 			color var(--tq-color-on-primary)
+
+tooltip()
+	padding 4px 11px
+	border-radius 9999px
+	background var(--tq-color-inverse-surface)
+	color var(--tq-color-inverse-on-surface)
+
+input-overlay()
+	position fixed
+	top 0
+	left 0
+	z-index 1000
+	width 100%
+	height 100%
+
+	.thin, .bold, .extra-bold
+		fill none
+		stroke var(--tq-color-primary)
+		stroke-linecap butt
+
+	.thin
+		stroke-width 1
+
+	.bold
+		stroke-width 2
+
+	.extra-bold
+		stroke-width 4
+
+	.dashed
+		fill none
+		stroke $color-frame
+		stroke-width 1
+
+	.label
+		font-size 1em
+		font-numeric()
+		fill var(--tq-color-primary)
