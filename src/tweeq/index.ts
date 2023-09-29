@@ -5,6 +5,7 @@ import CommandPalette from './CommandPalette'
 import FloatingPane from './FloatingPane'
 import InputNumber from './InputNumber'
 import InputString from './InputString'
+import Markdown from './Markdown'
 import MonacoEditor, {ErrorInfo} from './MonacoEditor'
 import {Parameter, ParameterGrid} from './ParameterGrid'
 import RoundButton from './RoundButton'
@@ -14,16 +15,17 @@ import TitleBar from './TitleBar'
 export {type ErrorInfo}
 
 export default {
+	ColorIcon,
 	CommandPalette,
 	FloatingPane,
 	InputNumber,
 	InputString,
+	Markdown,
+	MonacoEditor,
+	ParameterGrid,
+	Parameter,
 	RoundButton,
 	Tab,
 	Tabs,
 	TitleBar,
-	MonacoEditor,
-	ColorIcon,
-	ParameterGrid,
-	Parameter,
 }

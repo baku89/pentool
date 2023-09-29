@@ -338,7 +338,7 @@ window.addEventListener('drop', async e => {
 
 <template>
 	<div class="App">
-		<CommandPalette />
+		<Tq.CommandPalette />
 		<Tq.TitleBar name="Paper.js Editor" class="title" icon="favicon.svg">
 			<template #left>
 				{{ title }}
