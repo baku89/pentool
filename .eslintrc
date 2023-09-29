@@ -27,6 +27,7 @@
 		"prefer-arrow-callback": "off",
 		"no-console": "warn",
 		"no-debugger": "warn",
+		"no-undef": "off",
 		"eqeqeq": "error",
 		"prefer-const": "error",
 		"@typescript-eslint/no-explicit-any": "off",
