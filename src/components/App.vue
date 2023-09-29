@@ -20,12 +20,12 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
+import {useTweeq} from '@/tweeq'
 import FloatingPane from '@/tweeq/FloatingPane'
 import MonacoEditor, {ErrorInfo} from '@/tweeq/MonacoEditor'
 import RoundButton from '@/tweeq/RoundButton'
 import {Tab, Tabs} from '@/tweeq/Tabs'
 import TitleBar from '@/tweeq/TitleBar'
-import {provideAppStorage} from '@/tweeq/useAppStorage'
 import {useCommentMeta} from '@/use/useCommentMeta'
 import {useZUI} from '@/use/useZUI'
 import {replaceTextBetween} from '@/utils'
@@ -34,7 +34,7 @@ import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
 
-const {appStorage} = provideAppStorage('com.baku89.paperjs-editor')
+const {appStorage} = useTweeq('com.baku89.paperjs-editor')
 
 interface PaperDesc {
 	id?: string
@@ -192,10 +192,12 @@ const canvasGridStyle = computed(() => {
 
 	const opacity = scalar.smoothstep(0.1, 0.4, zoom.value)
 
+	const op = `${opacity * 100}%`
+
 	return {
 		backgroundSize: size,
 		backgroundPosition: offset,
-		'--dot-color': `rgba(var(--ui-color-rgb), ${opacity})`,
+		'--dot-color': `color-mix(in srgb, var(--tq-color-text) ${op}, transparent)`,
 	}
 })
 
@@ -376,10 +378,11 @@ window.addEventListener('drop', async e => {
 </template>
 
 <style lang="stylus" scoped>
+@import '../tweeq/common.styl'
 
 .title
 	.zoom
-		font-variant-numeric: tabular-nums;
+		font-numeric()
 		font-size 11px
 		border 1px solid transparent
 		border-radius 4px
@@ -389,7 +392,7 @@ window.addEventListener('drop', async e => {
 		transition all ease .1s
 
 		&:hover
-			border-color var(--ui-button)
+			border-color var(--tq-color-primary)
 
 .main
 	position relative
@@ -411,34 +414,12 @@ window.addEventListener('drop', async e => {
 
 .canvas-grid
 	// draws dotted grid
-	--axis-color 'rgba(%s, .1)' % var(--ui-color-rgb)
-	background-image radial-gradient(circle at 0 0, var(--dot-color) 1px, transparent 0), linear-gradient(to bottom, var(--axis-color) 1px, transparent 0), linear-gradient(to right, var(--axis-color) 1px, transparent 0)
+	--axis-color var(--tq-color-text)
+	background-image radial-gradient(circle at 0 0, var(--tq-color-text) 1px, transparent 0), linear-gradient(to bottom, var(--axis-color) 1px, transparent 0), linear-gradient(to right, var(--axis-color) 1px, transparent 0)
 	background-repeat repeat, repeat-x, repeat-y
 
 .inspector-tab
 	height 100%
-
-.play
-	display inline-flex
-	justify-content center
-	align-items center
-	background var(--ui-button)
-	color var(--ui-color)
-	width 32px
-	height 32px
-	border-radius 9999px
-	vertical-align middle
-	padding 0 6px
-	gap .4em
-	transition all ease .2s
-	width auto
-	padding 0 12px 0 6px
-	background var(--ui-color)
-	color var(--ui-bg)
-
-	&:hover
-		background var(--ui-accent)
-		color var(--ui-bg)
 
 
 .editor

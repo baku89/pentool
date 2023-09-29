@@ -116,9 +116,9 @@ onMounted(() => {
 	width 17px
 	height 17px
 	outline 1px solid rgba(255, 255, 255, 0.5)
-	border 1px solid var(--ui-accent)
+	border 1px solid var(--tq-color-primary)
 	border-radius 50%
-	background var(--ui-bg)
+	background var(--tq-color-bg)
 
 	&:before
 		content ''
@@ -127,5 +127,5 @@ onMounted(() => {
 		border-radius 50%
 
 	&:hover
-		background var(--ui-accent)
+		background var(--tq-color-primary)
 </style>

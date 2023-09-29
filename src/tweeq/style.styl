@@ -1,4 +1,4 @@
-@import '../node_modules/reset-css/reset.css'
+@import '../../node_modules/reset-css/reset.css'
 
 :root
 	font-size 13px
@@ -8,23 +8,8 @@
 	-moz-osx-font-smoothing grayscale
 	-webkit-text-size-adjust 100%
 	--titlebar-area-height env(titlebar-area-height, 38px)
-	// Color scheme
-	--ui-bg #ffffff
-	--ui-bg-rgb 255, 255, 255
-	--ui-color #000
-	--ui-color-rgb 0, 0, 0
-	--ui-button #eee
-	--ui-accent blue
 	// UI Metrics
-	--ui-pane-border-radius 1.4rem
-
-	@media (prefers-color-scheme dark)
-		--ui-bg #222
-		--ui-bg-rgb 34, 34, 34
-		--ui-color #fff
-		--ui-color-rgb 255, 255, 255
-		--ui-button #333
-		--ui-accent skyblue
+	--tq-pane-border-radius 1.4rem
 
 *, *:before, *:after
 	box-sizing border-box
@@ -46,5 +31,5 @@ body
 	overflow hidden
 	margin 0
 	height 100vh
-	background var(--ui-bg)
-	color var(--ui-color)
+	background var(--tq-color-bg)
+	color var(--tq-color-text)

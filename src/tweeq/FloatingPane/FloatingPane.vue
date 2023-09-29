@@ -126,21 +126,19 @@ onMounted(() => {
 </template>
 
 <style lang="stylus" scoped>
+@import '../common.styl'
 
 .FloatingPane
+	pane()
 	--resize-width 2rem
 
 	position absolute
 	padding 1rem
-	border 1px solid 'rgba(%s, .1)' % var(--ui-color-rgb)
-	outline 'rgba(%s, .5)' % var(--ui-bg-rgb) 1px solid
-	background 'rgba(%s, .95)' % var(--ui-bg-rgb)
-	backdrop-filter blur(4px)
 	right 0
 
 	top calc(env(titlebar-area-y, 0px) + var(--titlebar-area-height))
 	border-width 1px
-	border-radius var(--ui-pane-border-radius) 0 0 var(--ui-pane-border-radius)
+	border-radius var(--tq-pane-border-radius) 0 0 var(--tq-pane-border-radius)
 	display grid
 	grid-template-columns 1fr
 	grid-template-rows 1fr
@@ -157,7 +155,7 @@ onMounted(() => {
 
 	&.w-fill
 		width 100vw
-		--ui-pane-border-radius 0rem
+		--tq-pane-border-radius 0rem
 
 		& > .left:before
 			left calc(50% - 1px)
@@ -193,9 +191,9 @@ onMounted(() => {
 
 .left
 	left 0
-	top var(--ui-pane-border-radius)
+	top var(--tq-pane-border-radius)
 	width var(--resize-width)
-	bottom var(--ui-pane-border-radius)
+	bottom var(--tq-pane-border-radius)
 	cursor col-resize
 	margin-left calc(-0.5 * var(--resize-width))
 
@@ -204,7 +202,7 @@ onMounted(() => {
 		left calc(50% - 2.5px)
 
 .bottom
-	left var(--ui-pane-border-radius)
+	left var(--tq-pane-border-radius)
 	bottom 0
 	right 0
 	height var(--resize-width)

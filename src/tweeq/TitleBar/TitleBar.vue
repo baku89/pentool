@@ -31,7 +31,7 @@ defineSlots<{
 	z-index 100
 	user-select none
 	position fixed
-	background 'linear-gradient(to bottom, rgba(%s, .7) 0, transparent)' % var(--ui-bg-rgb)
+	background linear-gradient(to bottom, var(--tq-color-bg), transparent)
 	backdrop-filter blur(2px)
 	gap .6rem
 	padding .4rem .4rem .4rem .6rem
@@ -40,7 +40,7 @@ defineSlots<{
 	line-height calc(var(--titlebar-area-height) - 0.8rem)
 
 	@media (display-mode: window-controls-overlay)
-		background 'linear-gradient(to bottom, rgba(%s, .5) 20%, transparent)' % var(--ui-bg-rgb), linear-gradient(to right, var(--ui-bg) 0, transparent 15%, transparent 85%, var(--ui-bg) 100%)
+		background linear-gradient(to bottom, var(--tq-color-bg) 20%, transparent), linear-gradient(to right, var(--tq-color-bg) 0, transparent 15%, transparent 85%, var(--tq-color-bg) 100%)
 
 
 .icon

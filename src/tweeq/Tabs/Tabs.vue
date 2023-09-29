@@ -166,11 +166,11 @@ onMounted(() => {
 	transition border-bottom-color .2s ease
 
 	&.active
-		border-bottom-color var(--ui-color)
+		border-bottom-color var(--tq-color-text)
 
 .tablist-link
 	text-decoration none
-	color var(--ui-color)
+	color var(--tq-color-text)
 	opacity .4
 	transition opacity .2s ease
 

@@ -1,4 +1,4 @@
-import './style.styl'
+import '@/tweeq/style.styl'
 
 import {createApp} from 'vue'
 
