@@ -22,6 +22,7 @@ PaperOffset(paper)
 
 import FloatingPane from '@/tweeq/FloatingPane'
 import MonacoEditor, {ErrorInfo} from '@/tweeq/MonacoEditor'
+import RoundButton from '@/tweeq/RoundButton'
 import {Tab, Tabs} from '@/tweeq/Tabs'
 import TitleBar from '@/tweeq/TitleBar'
 import {provideAppStorage} from '@/tweeq/useAppStorage'
@@ -335,12 +336,13 @@ window.addEventListener('drop', async e => {
 			<FloatingPane name="inspector" icon="code">
 				<Tabs class="inspector-tab" name="inspector.tab">
 					<template #before-tablist>
-						<button class="play" @click="autoRefresh = !autoRefresh">
-							<span class="material-symbols-outlined">{{
-								autoRefresh ? 'pause_circle' : 'play_circle'
-							}}</span>
-							{{ autoRefresh ? 'Pause' : 'Resume' }}
-						</button>
+						<RoundButton
+							class="play"
+							:icon="autoRefresh ? 'pause_circle' : 'play_circle'"
+							:label="autoRefresh ? 'Pause' : 'Resume'"
+							longest-label="Resume"
+							@click="autoRefresh = !autoRefresh"
+						/>
 					</template>
 					<Tab name="Settings">
 						<MonacoEditor v-model="meta" class="editor" lang="text" />
