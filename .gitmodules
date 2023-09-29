@@ -1,3 +1,6 @@
 [submodule "dev_modules/bndr-js"]
 	path = dev_modules/bndr-js
 	url = https://github.com/baku89/bndr-js
+[submodule "dev_modules/linearly"]
+	path = dev_modules/linearly
+	url = https://github.com/baku89/linearly

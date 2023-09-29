@@ -51,6 +51,12 @@ export default defineConfig({
 					new URL('./dev_modules/bndr-js/src', import.meta.url)
 				),
 			},
+			{
+				find: 'linearly',
+				replacement: fileURLToPath(
+					new URL('./dev_modules/linearly/src', import.meta.url)
+				),
+			},
 		],
 	},
 })
