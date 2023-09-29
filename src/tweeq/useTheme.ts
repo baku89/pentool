@@ -17,8 +17,11 @@ import {
 	watch,
 } from 'vue'
 
+export type ColorMode = 'light' | 'dark' | 'auto'
+
 export interface Theme {
 	// Colors
+	colorMode: 'light' | 'dark'
 	colorPrimary: string
 	colorOnPrimary: string
 	colorPrimaryContainer: string
@@ -39,8 +42,6 @@ export interface Theme {
 	inputHeight: string
 }
 
-export type ColorMode = 'light' | 'dark' | 'auto'
-
 const ThemeKey: InjectionKey<Readonly<Ref<Theme>>> = Symbol('tqTheme')
 
 export function provideTheme(
@@ -49,9 +50,9 @@ export function provideTheme(
 ): Ref<Theme> {
 	const browserColorMode = useColorMode()
 
-	const computedColorMode = computed(() => {
+	const computedColorMode = computed<'light' | 'dark'>(() => {
 		if (colorMode.value === 'auto') {
-			return browserColorMode.value
+			return browserColorMode.value === 'dark' ? 'dark' : 'light'
 		} else {
 			return colorMode.value
 		}
@@ -72,6 +73,7 @@ export function provideTheme(
 				: materialTheme.schemes.light
 
 			theme.value = {
+				colorMode,
 				colorPrimary: toColor(colors.primary),
 				colorPrimaryContainer: toColor(colors.primaryContainer),
 				colorOnPrimaryContainer: toColor(colors.onPrimaryContainer),

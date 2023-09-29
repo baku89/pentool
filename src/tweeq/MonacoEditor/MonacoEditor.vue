@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {useColorMode, useResizeObserver} from '@vueuse/core'
+import {useResizeObserver} from '@vueuse/core'
 import {Vec2} from 'linearly'
 import * as monaco from 'monaco-editor'
 import Tomorrow from 'monaco-themes/themes/Tomorrow.json'
 import TomorrowNight from 'monaco-themes/themes/Tomorrow-Night.json'
 import {onMounted, ref, watch, watchEffect} from 'vue'
+
+import {useTheme} from '../useTheme'
 
 export interface ErrorInfo {
 	message: string
@@ -76,9 +78,10 @@ onMounted(() => {
 	monaco.editor.defineTheme('light', Tomorrow as any)
 	monaco.editor.defineTheme('dark', TomorrowNight as any)
 
-	const colorMode = useColorMode()
+	const theme = useTheme()
+
 	watchEffect(() => {
-		monaco.editor.setTheme(colorMode.value === 'dark' ? 'dark' : 'light')
+		monaco.editor.setTheme(theme.value.colorMode)
 	})
 
 	// resize editor to match its parent element size
