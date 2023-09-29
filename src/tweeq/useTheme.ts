@@ -34,6 +34,13 @@ export interface Theme {
 	colorInverseOnSurface: string
 	colorInversePrimary: string
 	colorShadow: string
+	colorInput: string
+	colorInputHover: string
+	colorOnInput: string
+	colorError: string
+	colorOnError: string
+	colorErrorContainer: string
+	colorOnErrorContainer: string
 
 	// Font
 	fontCode: string
@@ -43,6 +50,7 @@ export interface Theme {
 
 	// UI Metrics
 	paneBorderRadius: string
+	inputBorderRadius: string
 	inputHeight: string
 	hoverTransitionDuration: string
 }
@@ -91,6 +99,15 @@ export function provideTheme(
 				colorInverseOnSurface: toColor(colors.inverseOnSurface),
 				colorInversePrimary: toColor(colors.inversePrimary),
 				colorShadow: toColor(colors.shadow),
+				colorInput: toColor(materialTheme.palettes.neutral.tone(97)),
+				colorInputHover: toColor(
+					materialTheme.palettes.neutralVariant.tone(90)
+				),
+				colorOnInput: toColor(colors.onBackground),
+				colorError: toColor(colors.error),
+				colorOnError: toColor(colors.onError),
+				colorErrorContainer: toColor(colors.errorContainer),
+				colorOnErrorContainer: toColor(colors.onErrorContainer),
 
 				fontCode: "'Fira Code', monospace",
 				fontHeading: 'Inter, sans-serif',
@@ -98,7 +115,8 @@ export function provideTheme(
 				fontNumeric: 'Inter, system-ui, sans-serif',
 
 				paneBorderRadius: '20px',
-				inputHeight: '16px',
+				inputBorderRadius: '4px',
+				inputHeight: '24px',
 				hoverTransitionDuration: '0.15s',
 			}
 

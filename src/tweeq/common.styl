@@ -13,7 +13,33 @@ hover-transition(prop = all)
 	for p in arguments
 		push(
 			values,
-			p + ' var(--tq-hover-transition-duration) ease'
+			p + ' var(--tq-hover-transition-duration) cubic-bezier(0.4, 0, 0.2, 1)'
 		)
 
 	transition unquote(join(',', values))
+
+input-base()
+	padding 4px 12px
+	width 188px
+	height var(--tq-input-height)
+	border-radius var(--tq-input-border-radius)
+	background-color var(--tq-color-input)
+	color var(--tq-color-on-input)
+	font-size 12px
+	hover-transition()
+
+	&:hover
+		background-color var(--tq-color-input-hover)
+
+	&:focus-within
+		background var(--tq-color-primary-container)
+		box-shadow 0 0 0 1px var(--tq-color-primary)
+
+	&:has(input[invalid=true])
+		--tq-color-on-input var(--tq-color-error)
+		--tq-color-primary var(--tq-color-error)
+		--tq-color-primary-container var(--tq-color-error-container)
+
+	input::selection
+		background var(--tq-color-primary)
+		color var(--tq-color-on-primary)

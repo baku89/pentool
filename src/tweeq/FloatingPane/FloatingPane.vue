@@ -378,7 +378,6 @@ onMounted(() => {
 .content
 	position relative
 	height 100%
-	overflow	hidden
 	hover-transition(opacity)
 </style>
 @/tweaq/useAppStorage

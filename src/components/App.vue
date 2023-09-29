@@ -23,6 +23,7 @@ PaperOffset(paper)
 import {useTweeq} from '@/tweeq'
 import CommandPalette from '@/tweeq/CommandPalette'
 import FloatingPane from '@/tweeq/FloatingPane'
+import InputString from '@/tweeq/InputString'
 import MonacoEditor, {ErrorInfo} from '@/tweeq/MonacoEditor'
 import RoundButton from '@/tweeq/RoundButton'
 import {Tab, Tabs} from '@/tweeq/Tabs'
@@ -38,6 +39,8 @@ import OverlayPointHandle from './OverlayPointHandle.vue'
 const {appStorage, registerActions, performAction} = useTweeq(
 	'com.baku89.paperjs-editor'
 )
+
+const testString = ref('Hello World')
 
 // interface PaperDesc {
 // 	id?: string
@@ -401,6 +404,13 @@ window.addEventListener('drop', async e => {
 					/>
 				</Tab>
 			</Tabs>
+		</FloatingPane>
+		<FloatingPane
+			name="timeline"
+			icon="timeline"
+			:position="{anchor: 'bottom', height: 200}"
+		>
+			<InputString v-model="testString" />
 		</FloatingPane>
 	</div>
 </template>
