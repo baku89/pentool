@@ -1,4 +1,4 @@
-import {provideActions} from './action'
+import {provideActions} from './useActions'
 import {provideAppStorage} from './useAppStorage'
 import {ColorMode, provideTheme} from './useTheme'
 

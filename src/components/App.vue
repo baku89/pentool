@@ -251,6 +251,7 @@ registerActions([
 		id: 'reset-zoom',
 		label: 'Reset Zoom',
 		icon: 'zoom_out_map',
+		input: 'esc',
 		perform() {
 			viewTransform.value = initialViewTransform.value
 		},
@@ -283,6 +284,7 @@ registerActions([
 	{
 		id: 'open-project',
 		label: 'Open Project',
+		icon: 'file_open',
 		async perform() {
 			const handles = await window.showOpenFilePicker(filePickerOptions)
 
@@ -296,6 +298,7 @@ registerActions([
 	{
 		id: 'save-project',
 		label: 'Save Project',
+		icon: 'save',
 		async perform() {
 			if (!fileHandle.value) {
 				fileHandle.value = await window.showSaveFilePicker(filePickerOptions)

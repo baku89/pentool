@@ -3,11 +3,9 @@ import * as Bndr from 'bndr-js'
 import {search} from 'fast-fuzzy'
 import {computed, ref, watch} from 'vue'
 
-import {type Action, useActions} from '../action'
+import {type Action, useActions} from '../useActions'
 
 const {actions} = useActions()
-
-// console.log(toRaw(actions))
 
 const $popover = ref<HTMLElement | null>(null)
 const searchWord = ref('')
@@ -23,7 +21,7 @@ const selectedAction = ref<null | Action>(null)
 watch(filteredActions, () => {
 	if (filteredActions.value.length > 0) {
 		const notFoundInFiltered = !filteredActions.value.includes(
-			selectedAction.value!
+			selectedAction.value as any
 		)
 
 		if (notFoundInFiltered) {
@@ -51,7 +49,7 @@ function onKeydown(e: KeyboardEvent) {
 	}
 
 	if (selectedAction.value && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
-		const index = filteredActions.value.indexOf(selectedAction.value)
+		const index = filteredActions.value.indexOf(selectedAction.value as any)
 		const length = filteredActions.value.length
 
 		const move = e.key === 'ArrowDown' ? 1 : -1
@@ -157,3 +155,4 @@ function perform(action: Action) {
 	width 20px
 	font-size 20px
 </style>
+../useAction
