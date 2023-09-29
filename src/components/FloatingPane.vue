@@ -1,18 +1,15 @@
 <script lang="ts" setup>
-import {
-	useCssVar,
-	useElementBounding,
-	useLocalStorage,
-	useWindowSize,
-} from '@vueuse/core'
+import {useCssVar, useElementBounding, useWindowSize} from '@vueuse/core'
 import * as Bndr from 'bndr-js'
 import {computed, onMounted, ref, watch} from 'vue'
+
+import {useAppStorage} from '@/use/useAppStorage'
 
 interface Props {
 	name: string
 	icon: string
 }
-defineProps<Props>()
+const props = defineProps<Props>()
 
 type FloatingWidth = number | 'fill' | 'minimized'
 type FloatingHeight = number | 'fill'
@@ -21,8 +18,10 @@ const minimizeThreshold = 150
 const minHeight = 200
 const resizeWidth = 12
 
-const width = useLocalStorage<FloatingWidth>('FloatingPane.width', 400)
-const height = useLocalStorage<FloatingHeight>('FloatingPane.height', 400)
+const appStorage = useAppStorage()
+
+const width = appStorage<FloatingWidth>(`${props.name}.width`, 400)
+const height = appStorage<FloatingHeight>(`${props.name}.height`, 400)
 
 const windowSize = useWindowSize()
 

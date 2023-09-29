@@ -20,7 +20,7 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
-import {useAppStorage} from '@/use/useAppStorage'
+import {provideAppStorage} from '@/use/useAppStorage'
 import {useCommentMeta} from '@/use/useCommentMeta'
 import {useZUI} from '@/use/useZUI'
 import {replaceTextBetween} from '@/utils'
@@ -31,7 +31,7 @@ import OverlayColorPicker from './OverlayColorPicker.vue'
 import OverlayNumberSlider from './OverlayNumberSlider.vue'
 import OverlayPointHandle from './OverlayPointHandle.vue'
 
-const {refAppStorage} = useAppStorage('com.baku89.paperjs-editor')
+const {appStorage} = provideAppStorage('com.baku89.paperjs-editor')
 
 interface PaperDesc {
 	id?: string
@@ -46,7 +46,7 @@ interface PaperDesc {
 	}
 }
 
-const source = refAppStorage('source', '')
+const source = appStorage('source', '')
 
 if (source.value === '') {
 	source.value = `/*
@@ -70,7 +70,7 @@ const {content: code} = useCommentMeta(source)
 const cursorIndex = ref(0)
 const cursorPosition = ref(vec2.zero)
 
-const autoRefresh = refAppStorage('autoRefresh', true)
+const autoRefresh = appStorage('autoRefresh', true)
 
 const errors = ref<ErrorInfo[] | null>(null)
 
