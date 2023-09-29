@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as Bndr from 'bndr-js'
 import {type Mat2d, mat2d, vec2} from 'linearly'
-import {computed, defineProps, onMounted, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 
 import {findTextBetweenDelimiters, replaceTextBetween} from '@/utils'
 
