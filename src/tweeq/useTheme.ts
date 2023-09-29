@@ -4,8 +4,18 @@ import {
 	hexFromArgb,
 	themeFromSourceColor,
 } from '@material/material-color-utilities'
+import {useColorMode} from '@vueuse/core'
 import {kebab} from 'case'
-import {inject, InjectionKey, provide, Ref} from 'vue'
+import {
+	computed,
+	inject,
+	InjectionKey,
+	provide,
+	readonly,
+	Ref,
+	ref,
+	watch,
+} from 'vue'
 
 export interface Theme {
 	// Colors
@@ -29,47 +39,74 @@ export interface Theme {
 	inputHeight: string
 }
 
-const ThemeKey: InjectionKey<Theme> = Symbol('tqTheme')
+export type ColorMode = 'light' | 'dark' | 'auto'
 
-export function provideTheme(accentColor: Ref<string>) {
-	// Get the theme from a hex color
-	const materialTheme = themeFromSourceColor(argbFromHex(accentColor.value))
+const ThemeKey: InjectionKey<Readonly<Ref<Theme>>> = Symbol('tqTheme')
 
-	const dark = false
+export function provideTheme(
+	accentColor: Ref<string>,
+	colorMode: Ref<ColorMode>
+): Ref<Theme> {
+	const browserColorMode = useColorMode()
 
-	const scheme = dark ? materialTheme.schemes.dark : materialTheme.schemes.light
+	const computedColorMode = computed(() => {
+		if (colorMode.value === 'auto') {
+			return browserColorMode.value
+		} else {
+			return colorMode.value
+		}
+	})
 
-	const theme: Theme = {
-		colorPrimary: toColor(scheme.primary),
-		colorPrimaryContainer: toColor(scheme.primaryContainer),
-		colorOnPrimaryContainer: toColor(scheme.onPrimaryContainer),
-		colorOnPrimary: toColor(scheme.onPrimary),
-		colorText: toColor(scheme.onBackground),
-		colorBg: toColor(scheme.background),
-		colorPane: toColor(scheme.background, 0.95),
-		colorPaneBorder: toColor(scheme.onBackground, 0.12),
+	const theme = ref<Theme>(null as any)
 
-		fontCode: "'Fira Code', monospace",
-		fontHeading: 'Inter, sans-serif',
-		fontUi: 'Inter, system-ui, sans-serif',
-		fontNumeric: 'Inter, system-ui, sans-serif',
+	watch(
+		[accentColor, computedColorMode],
+		([accentColor, colorMode]) => {
+			// Get the theme from a hex color
+			const materialTheme = themeFromSourceColor(argbFromHex(accentColor))
 
-		paneBorderRadius: '20px',
-		inputHeight: '16px',
-	}
+			const dark = colorMode === 'dark'
 
-	// Promote all
-	for (const [key, value] of Object.entries(theme)) {
-		const varName = '--tq-' + kebab(key)
-		document.body.style.setProperty(varName, value)
-	}
+			const colors = dark
+				? materialTheme.schemes.dark
+				: materialTheme.schemes.light
 
-	provide(ThemeKey, theme)
+			theme.value = {
+				colorPrimary: toColor(colors.primary),
+				colorPrimaryContainer: toColor(colors.primaryContainer),
+				colorOnPrimaryContainer: toColor(colors.onPrimaryContainer),
+				colorOnPrimary: toColor(colors.onPrimary),
+				colorText: toColor(colors.onBackground),
+				colorBg: toColor(colors.background),
+				colorPane: toColor(colors.background, 0.95),
+				colorPaneBorder: toColor(colors.onBackground, 0.12),
 
-	// Apply the theme to the body by updating custom properties for material tokens
-	applyTheme(materialTheme, {target: document.body, dark})
+				fontCode: "'Fira Code', monospace",
+				fontHeading: 'Inter, sans-serif',
+				fontUi: 'Inter, system-ui, sans-serif',
+				fontNumeric: 'Inter, system-ui, sans-serif',
 
-	return theme
+				paneBorderRadius: '20px',
+				inputHeight: '16px',
+			}
+
+			// Promote all as CSS variabbles
+			for (const [key, value] of Object.entries(theme.value)) {
+				const varName = '--tq-' + kebab(key)
+				document.body.style.setProperty(varName, value)
+			}
+
+			// Apply the theme to the body by updating custom properties for material tokens
+			applyTheme(materialTheme, {target: document.body, dark})
+		},
+		{immediate: true}
+	)
+
+	const readonlyTheme = readonly(theme)
+
+	provide(ThemeKey, readonlyTheme)
+
+	return readonlyTheme
 }
 
 // function

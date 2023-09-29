@@ -1,8 +1,8 @@
 import {provideAppStorage} from './useAppStorage'
-import {provideTheme} from './useTheme'
+import {ColorMode, provideTheme} from './useTheme'
 
 interface TweeqOptions {
-	scheme?: 'dark' | 'light' | 'auto'
+	colorMode?: ColorMode
 	accentColor?: string
 }
 
@@ -14,7 +14,9 @@ export function useTweeq(appId: string, options: TweeqOptions = {}) {
 		options.accentColor || '#0000ff'
 	)
 
-	const theme = provideTheme(accentColor)
+	const colorMode = appStorage('colorMode', options.colorMode || 'auto')
+
+	const theme = provideTheme(accentColor, colorMode)
 
 	return {appStorage, theme}
 }
