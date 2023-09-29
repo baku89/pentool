@@ -345,7 +345,7 @@ window.addEventListener('drop', async e => {
 				{{ title }}
 			</template>
 			<template #right>
-				<button class="zoom" @click="resetZoom">
+				<button class="zoom" @click="performAction('reset-zoom')">
 					{{ (zoom * 100).toFixed(0) + '%' }}
 				</button>
 			</template>
@@ -439,8 +439,8 @@ window.addEventListener('drop', async e => {
 
 .canvas-grid
 	// draws dotted grid
-	--axis-color var(--tq-color-text)
-	background-image radial-gradient(circle at 0 0, var(--tq-color-text) 1px, transparent 0), linear-gradient(to bottom, var(--axis-color) 1px, transparent 0), linear-gradient(to right, var(--axis-color) 1px, transparent 0)
+	--axis-color var(--tq-color-pane-border)
+	background-image radial-gradient(circle at 0 0, var(--dot-color) 1px, transparent 0), linear-gradient(to bottom, var(--axis-color) 1px, transparent 0), linear-gradient(to right, var(--axis-color) 1px, transparent 0)
 	background-repeat repeat, repeat-x, repeat-y
 
 .inspector-tab
