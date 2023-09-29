@@ -1,13 +1,29 @@
-import {RemovableRef, useLocalStorage} from '@vueuse/core'
-import {inject, InjectionKey, provide} from 'vue'
+import {inject, InjectionKey, provide, Ref, ref, UnwrapRef, watch} from 'vue'
 
-type AppStorage = <T>(name: string, defaultValue: T) => RemovableRef<T>
+type AppStorage = <T>(name: string, defaultValue: T) => Ref<UnwrapRef<T>>
 
 const AppStorageKey: InjectionKey<AppStorage> = Symbol('refAppStorage')
 
 export function provideAppStorage(appId: string) {
 	const appStorage: AppStorage = <T>(name: string, defaultValue: T) => {
-		return useLocalStorage(`${appId}.${name}`, defaultValue)
+		const key = `${appId}.${name}`
+
+		const data = ref(defaultValue)
+
+		const stored = localStorage.getItem(key)
+		if (stored !== null) {
+			data.value = JSON.parse(stored)
+		}
+
+		watch(
+			data,
+			value => {
+				localStorage.setItem(key, JSON.stringify(value))
+			},
+			{immediate: true}
+		)
+
+		return data
 	}
 
 	const resetAppStorage = () => {
