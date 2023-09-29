@@ -4,7 +4,7 @@ import {Vec2} from 'linearly'
 import * as monaco from 'monaco-editor'
 import Tomorrow from 'monaco-themes/themes/Tomorrow.json'
 import TomorrowNight from 'monaco-themes/themes/Tomorrow-Night.json'
-import {defineProps, onMounted, ref, watch, watchEffect} from 'vue'
+import {onMounted, ref, watch, watchEffect} from 'vue'
 
 export interface ErrorInfo {
 	message: string
