@@ -1,9 +1,6 @@
 import {computed, Ref} from 'vue'
 
 export function useCommentMeta(source: Ref<string>) {
-	// const MetaAndContentPattern =
-	// 	/^(?<before>\s*)(?<open>\/\*\s*)(?<meta>[\S\s]*?)(?<close>\s*\*\/[\n\r]?)(?<content>[\S\s]*)/g
-
 	const split = computed(() => {
 		const metaAndContentPattern =
 			/^\s*\/\*\s*([\S\s]*?)\s*\*\/[\n\r]?([\S\s]*)$/g
