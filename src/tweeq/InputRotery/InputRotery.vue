@@ -337,16 +337,16 @@ const overlayLineFrom = computed(() => {
 
 		.arrows
 			position absolute
-			top 0
-			left 0
-			width 100%
-			height 100%
+			inset 0
+			color var(--tq-color-inverse-surface)
+
 
 			&:before, &:after
 				position absolute
 				top 50%
 				display block
 				width 1em
+				font-size 14px
 				text-align center
 				font-weight normal
 				transform translateY(-50%)

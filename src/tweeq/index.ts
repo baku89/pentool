@@ -3,8 +3,13 @@ export {useTweeq} from './useTweeq'
 import ColorIcon from './ColorIcon'
 import CommandPalette from './CommandPalette'
 import FloatingPane from './FloatingPane'
+import InputButton from './InputButton.vue'
 import InputCheckbox from './InputCheckbox'
+import InputColorPicker from './InputColorPicker'
+import InputCubicBezier from './InputCubicBezier'
+import InputDropdown from './InputDropdown.vue'
 import InputNumber from './InputNumber'
+import InputRadio from './InputRadio.vue'
 import InputRotery from './InputRotery'
 import InputSeed from './InputSeed'
 import InputString from './InputString'
@@ -21,8 +26,13 @@ export default {
 	ColorIcon,
 	CommandPalette,
 	FloatingPane,
+	InputButton,
+	InputColorPicker,
 	InputCheckbox,
+	InputCubicBezier,
+	InputDropdown,
 	InputNumber,
+	InputRadio,
 	InputRotery,
 	InputSeed,
 	InputString,

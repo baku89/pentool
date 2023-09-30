@@ -1,6 +1,7 @@
 import vue from '@vitejs/plugin-vue'
 import {fileURLToPath} from 'url'
 import {defineConfig} from 'vite'
+import glsl from 'vite-plugin-glsl'
 import monacoEditorPlugin, {
 	type IMonacoEditorOpts,
 } from 'vite-plugin-monaco-editor'
@@ -12,6 +13,7 @@ const monacoEditorPluginDefault = (monacoEditorPlugin as any).default as (
 export default defineConfig({
 	base: './',
 	plugins: [
+		glsl(),
 		vue(),
 		monacoEditorPluginDefault({
 			languageWorkers: ['editorWorkerService', 'typescript', 'json'],

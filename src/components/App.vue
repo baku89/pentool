@@ -36,6 +36,8 @@ const {appStorage, registerActions, performAction} = useTweeq(
 const testString = ref('Hello World')
 const testNumber = ref(Math.PI)
 const testBoolean = ref(false)
+const testAlign = ref<'left' | 'center' | 'right'>('left')
+const colorSpace = ref<'r|g|b' | 'svh' | 'hsv' | 'hvs' | 'hsvr'>('hsv')
 
 // interface PaperDesc {
 // 	id?: string
@@ -419,6 +421,22 @@ window.addEventListener('drop', async e => {
 				</Tq.Parameter>
 				<Tq.Parameter label="Seed">
 					<Tq.InputSeed v-model="testNumber" />
+				</Tq.Parameter>
+				<Tq.Parameter label="Radio">
+					<Tq.InputRadio
+						v-model="testAlign"
+						:items="['left', 'center', 'right']"
+					/>
+				</Tq.Parameter>
+				<Tq.Parameter label="Radio">
+					<Tq.InputDropdown
+						v-model="colorSpace"
+						:items="['r|g|b', 'svh', 'hsv', 'hvs', 'hsvr']"
+						:labels="['RGB', 'SVH', 'HSV', 'HVS', 'Radial']"
+					/>
+				</Tq.Parameter>
+				<Tq.Parameter label="Button">
+					<Tq.InputButton label="Hey" />
 				</Tq.Parameter>
 			</Tq.ParameterGrid>
 		</Tq.FloatingPane>

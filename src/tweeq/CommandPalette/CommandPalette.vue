@@ -4,6 +4,7 @@ import {search} from 'fast-fuzzy'
 import {computed, ref, watch} from 'vue'
 
 import {type Action, useActions} from '../useActions'
+import {unsignedMod} from '../util'
 
 const {actions} = useActions()
 
@@ -54,8 +55,7 @@ function onKeydown(e: KeyboardEvent) {
 
 		const move = e.key === 'ArrowDown' ? 1 : -1
 
-		const newIndex = (index + move + length) % length
-
+		const newIndex = unsignedMod(index + move, length)
 		selectedAction.value = filteredActions.value[newIndex]
 	}
 

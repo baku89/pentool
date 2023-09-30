@@ -115,7 +115,7 @@ export function provideTheme(
 				fontNumeric: 'Inter, system-ui, sans-serif',
 
 				paneBorderRadius: '20px',
-				inputBorderRadius: '4px',
+				inputBorderRadius: '6px',
 				inputHeight: '24px',
 				hoverTransitionDuration: '0.15s',
 			}
