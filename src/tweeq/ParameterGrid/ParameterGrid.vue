@@ -9,6 +9,6 @@
 .ParameterGrid
 	display grid
 	grid-template-columns minmax(60px, max-content) 1fr
-	grid-gap 9px
+	grid-gap var(--tq-input-gap)
 	padding-left 3px
 </style>

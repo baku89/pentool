@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import {some} from 'fp-ts/lib/Option'
 import {checkIntersection} from 'line-intersect'
 import {Vec2, vec2} from 'linearly'
 import _ from 'lodash'
@@ -7,7 +6,6 @@ import {computed, Ref, ref} from 'vue'
 
 import SvgIcon from '../SvgIcon.vue'
 import useDrag from '../useDragV1'
-import useModelLocalDisplay from '../useModelLocalDisplay'
 import {unsignedMod} from '../util'
 
 interface Props {
@@ -37,14 +35,10 @@ function addDirectionVector(from: Vec2, rads: number, radius: number): Vec2 {
 const PI = Math.PI
 const PI_2 = Math.PI * 2
 
-const {local, display} = useModelLocalDisplay({
-	props,
-	emit,
-	print(rad) {
-		const deg = (rad / PI) * 180
-		return deg.toFixed(1) + '°'
-	},
-	parse: v => some(parseFloat(v)),
+const local = ref(props.modelValue)
+const display = computed(() => {
+	const deg = (props.modelValue / PI) * 180
+	return deg.toFixed(1) + '°'
 })
 
 const el: Ref<null | HTMLElement> = ref(null)
@@ -52,8 +46,7 @@ const el: Ref<null | HTMLElement> = ref(null)
 const tweakMode = ref<'relative' | 'absolute'>('relative')
 
 let alreadyEmitted = false
-const tweakOrigin = ref(local.value)
-let tweakRawLocal = local.value
+const tweakOrigin = ref(props.modelValue)
 
 const {
 	isDragging: tweaking,
@@ -66,16 +59,13 @@ const {
 		if (tweakMode.value === 'absolute') {
 			const p = vec2.sub(pos, origin)
 			const angle = Math.atan2(p[1], p[0])
-			const delta = signedAngleBetween(angle, local.value)
-			tweakRawLocal = local.value + delta
-
-			tweakOrigin.value = tweakRawLocal
-			local.set(tweakRawLocal)
+			const delta = signedAngleBetween(angle, props.modelValue)
+			tweakOrigin.value = local.value = props.modelValue + delta
+			emit('update:modelValue', tweakOrigin.value)
 			alreadyEmitted = true
 		} else {
 			// Relative
-			tweakRawLocal = local.value
-			tweakOrigin.value = local.value
+			tweakOrigin.value = local.value = props.modelValue
 		}
 	},
 	onDrag({pos, prevPos, origin}) {
@@ -90,12 +80,12 @@ const {
 		const prevAngle = Math.atan2(pp[1], pp[0])
 		const alignedPos = vec2.rotate(p, -prevAngle)
 		const delta = Math.atan2(alignedPos[1], alignedPos[0])
-		tweakRawLocal += delta
-		local.set(tweakRawLocal)
+		local.value += delta
+
+		emit('update:modelValue', local.value)
 	},
 	onDragEnd() {
 		tweakMode.value = 'relative'
-		local.conform()
 	},
 })
 
@@ -113,7 +103,7 @@ const overlayArcPath = computed(() => {
 	const radiusStep = rem.value * 0.6
 
 	const start = tweakOrigin.value
-	const end = local.value
+	const end = props.modelValue
 
 	const tweakingPositive = end - start > 0
 
@@ -196,7 +186,7 @@ function clampPos(p: Vec2): Vec2 {
 
 const overlayLineTo = computed(() => {
 	const dist = vec2.distance(origin.value, pos.value)
-	const dir: Vec2 = [Math.cos(local.value), Math.sin(local.value)]
+	const dir: Vec2 = [Math.cos(props.modelValue), Math.sin(props.modelValue)]
 
 	const p = vec2.scaleAndAdd(origin.value, dir, dist)
 
@@ -231,7 +221,7 @@ const overlayLineFrom = computed(() => {
 			<line
 				class="InputRotery__scale"
 				:style="{
-					transform: `rotate(${local}rad)`,
+					transform: `rotate(${props.modelValue}rad)`,
 				}"
 				x1="20"
 				y1="16"
@@ -291,18 +281,12 @@ const overlayLineFrom = computed(() => {
 	border-radius var(--tq-input-border-radius)
 	hover-transition(transform)
 
-	&:hover, &.tweaking
-		z-index 1
-
-	&:focus:not(:hover):not(.tweaking)
-		hover-transition(transform, background)
-
 	&__rotery
 		width var(--tq-input-height)
 		height var(--tq-input-height)
 
-	// Enlarge
 	&:hover, &.tweaking
+		z-index 1
 		transform scale(3)
 
 	&__circle
@@ -310,8 +294,12 @@ const overlayLineFrom = computed(() => {
 		stroke none
 		hover-transition(fill)
 
+		~/:focus &
+			fill var(--tq-color-tinted-input-active)
+
 		&:hover, ~/.tweaking[data-mode=relative] &
 			fill var(--tq-color-primary)
+
 
 	&__scale
 		transform-origin 16px 16px

@@ -305,7 +305,6 @@ onMounted(() => {
 		.left
 			display none
 
-
 .resize
 	position absolute
 	hover-transition()
@@ -380,4 +379,3 @@ onMounted(() => {
 	height 100%
 	hover-transition(opacity)
 </style>
-@/tweaq/useAppStorage

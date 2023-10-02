@@ -37,6 +37,8 @@ export interface Theme {
 	colorInput: string
 	colorInputHover: string
 	colorOnInput: string
+	colorTintedInput: string
+	colorTintedInputActive: string
 	colorError: string
 	colorOnError: string
 	colorErrorContainer: string
@@ -50,8 +52,14 @@ export interface Theme {
 
 	// UI Metrics
 	paneBorderRadius: string
+
+	popupWidth: string
+	popupPadding: string
+	popupBorderRadius: string
+
 	inputBorderRadius: string
 	inputHeight: string
+	inputGap: string
 	hoverTransitionDuration: string
 }
 
@@ -103,6 +111,8 @@ export function provideTheme(
 				colorInputHover: toColor(
 					materialTheme.palettes.neutralVariant.tone(95)
 				),
+				colorTintedInput: toColor(colors.primaryContainer),
+				colorTintedInputActive: toColor(colors.inversePrimary),
 				colorOnInput: toColor(colors.onBackground),
 				colorError: toColor(colors.error),
 				colorOnError: toColor(colors.onError),
@@ -115,8 +125,14 @@ export function provideTheme(
 				fontNumeric: 'Inter, system-ui, sans-serif',
 
 				paneBorderRadius: '20px',
+
+				popupWidth: '300px',
+				popupPadding: '9px',
+				popupBorderRadius: '6px',
+
 				inputBorderRadius: '6px',
 				inputHeight: '24px',
+				inputGap: '9px',
 				hoverTransitionDuration: '0.15s',
 			}
 

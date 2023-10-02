@@ -1,3 +1,4 @@
+import {useInputColor} from './InputColor/useInputColor'
 import {provideActions} from './useActions'
 import {provideAppStorage} from './useAppStorage'
 import {ColorMode, provideTheme} from './useTheme'
@@ -26,6 +27,8 @@ export function useTweeq(appId: string, options: TweeqOptions = {}) {
 	// 		e.preventDefault()
 	// 	}
 	// })
+
+	useInputColor()
 
 	return {appStorage, theme, ...actions}
 }

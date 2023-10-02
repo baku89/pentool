@@ -38,6 +38,8 @@ const testNumber = ref(Math.PI)
 const testBoolean = ref(false)
 const testAlign = ref<'left' | 'center' | 'right'>('left')
 const colorSpace = ref<'r|g|b' | 'svh' | 'hsv' | 'hvs' | 'hsvr'>('hsv')
+const cubicBezier = ref([0, 0.5, 0.5, 1] as const)
+const testColor = ref('skyblue')
 
 // interface PaperDesc {
 // 	id?: string
@@ -401,6 +403,7 @@ window.addEventListener('drop', async e => {
 				</Tq.Tab>
 			</Tq.Tabs>
 		</Tq.FloatingPane>
+
 		<Tq.FloatingPane
 			name="timeline"
 			icon="timeline"
@@ -411,7 +414,7 @@ window.addEventListener('drop', async e => {
 					<Tq.InputString v-model="testString" />
 				</Tq.Parameter>
 				<Tq.Parameter label="Grow">
-					<Tq.InputNumber v-model="testNumber" :min="0" :max="Math.PI * 2" />
+					<Tq.InputNumber v-model="testNumber" />
 				</Tq.Parameter>
 				<Tq.Parameter label="Degrees">
 					<Tq.InputRotery v-model="testNumber" />
@@ -425,18 +428,24 @@ window.addEventListener('drop', async e => {
 				<Tq.Parameter label="Radio">
 					<Tq.InputRadio
 						v-model="testAlign"
-						:items="['left', 'center', 'right']"
+						:options="['left', 'center', 'right']"
 					/>
 				</Tq.Parameter>
 				<Tq.Parameter label="Radio">
 					<Tq.InputDropdown
 						v-model="colorSpace"
-						:items="['r|g|b', 'svh', 'hsv', 'hvs', 'hsvr']"
+						:options="['r|g|b', 'svh', 'hsv', 'hvs', 'hsvr']"
 						:labels="['RGB', 'SVH', 'HSV', 'HVS', 'Radial']"
 					/>
 				</Tq.Parameter>
 				<Tq.Parameter label="Button">
 					<Tq.InputButton label="Hey" />
+				</Tq.Parameter>
+				<Tq.Parameter label="Easing">
+					<Tq.InputCubicBezier v-model="cubicBezier" />
+				</Tq.Parameter>
+				<Tq.Parameter label="Stroke">
+					<Tq.InputColor v-model="testColor" :presets="['brown']" />
 				</Tq.Parameter>
 			</Tq.ParameterGrid>
 		</Tq.FloatingPane>

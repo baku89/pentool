@@ -1,7 +1,7 @@
 <template>
 	<div
-		id="mypopover"
 		ref="$popover"
+		class="Popover"
 		popover
 		:style="{left: offset[0] + 'px', top: offset[1] + 'px'}"
 	>
@@ -26,17 +26,31 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	open: false,
-	placement: 'bottom',
+	placement: 'bottom-start',
 })
 
 const emit = defineEmits<{
 	'update:open': [boolean]
 }>()
 
-const $ref = computed(() => props.reference)
+const $reference = computed(() => props.reference)
 const $popover = ref<null | HTMLElement>(null)
 
-const refBound = useElementBounding($ref)
+const refBound = useElementBounding($reference)
+
+let refBoundUpdateTimer: NodeJS.Timeout | null = null
+watch(
+	() => props.open,
+	open => {
+		if (open) {
+			refBound.update()
+			refBoundUpdateTimer = setInterval(refBound.update, 200)
+		} else {
+			refBoundUpdateTimer && clearInterval(refBoundUpdateTimer)
+		}
+	}
+)
+
 const popoverSize = useElementSize($popover)
 const windowSize = useWindowSize()
 
@@ -45,7 +59,7 @@ const offset = computed<Vec2>(() => {
 
 	let placement = props.placement
 
-	if (!$ref.value) throw new Error('Cannot align the popover')
+	if (!$reference.value) throw new Error('Cannot align the popover')
 
 	let x = 0
 	let y = 0
@@ -132,3 +146,8 @@ onMounted(() => {
 	})
 })
 </script>
+
+<style lang="stylus" scoped>
+.Popover
+	overflow visible
+</style>

@@ -2,8 +2,9 @@
 import {useElementBounding, useFocus, useKeyModifier} from '@vueuse/core'
 import {useWheel} from '@vueuse/gesture'
 import {scalar, Vec2} from 'linearly'
-import {computed, ref, watch, watchEffect} from 'vue'
+import {computed, ref, watch} from 'vue'
 
+import {InputHorizontalPosition, InputVerticalPosition} from '../types'
 import {useDrag} from '../useDrag'
 import {toFixed, unsignedMod} from '../util'
 
@@ -11,19 +12,25 @@ interface Props {
 	modelValue: number
 	min?: number
 	max?: number
+	bar?: boolean
 	clampMin?: boolean
 	clampMax?: boolean
 	invalid?: boolean
 	disabled?: boolean
 	precision?: number
+	unit?: string
+	horizontalPosition?: InputHorizontalPosition
+	verticalPosition?: InputVerticalPosition
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	min: Number.MIN_SAFE_INTEGER,
 	max: Number.MAX_SAFE_INTEGER,
+	bar: true,
 	clampMin: true,
 	clampMax: true,
 	precision: 4,
+	unit: '',
 })
 
 const emit = defineEmits<{
@@ -34,7 +41,7 @@ const root = ref<HTMLElement | null>(null)
 const input = ref<HTMLInputElement | null>(null)
 
 const local = ref(props.modelValue)
-const display = ref(toFixed(props.modelValue, props.precision))
+const display = ref(toFixed(props.modelValue, props.precision) + props.unit)
 
 const {left, top, width, height, right} = useElementBounding(root)
 
@@ -43,6 +50,7 @@ const shift = useKeyModifier('Shift')
 
 const hasRange = computed(() => {
 	return (
+		props.bar &&
 		props.min !== Number.MIN_SAFE_INTEGER &&
 		props.max !== Number.MAX_SAFE_INTEGER
 	)
@@ -158,7 +166,7 @@ const {dragging: tweaking, pointerLocked} = useDrag(root, {
 		}
 	},
 	onDragEnd() {
-		display.value = toFixed(props.modelValue, tweakPrecision.value)
+		display.value = toFixed(props.modelValue, tweakPrecision.value) + props.unit
 		tweakMode.value = null
 		speedMultiplierGesture.value = 1
 	},
@@ -170,7 +178,7 @@ useWheel(
 
 		local.value = props.modelValue + y * speedMultiplierGesture.value
 		local.value = scalar.clamp(local.value, validMin.value, validMax.value)
-		display.value = props.modelValue.toFixed(tweakPrecision.value)
+		display.value = props.modelValue.toFixed(tweakPrecision.value) + props.unit
 
 		emit('update:modelValue', local.value)
 	},
@@ -180,11 +188,14 @@ useWheel(
 let hasChanged = false
 let initialDisplay = ''
 
-const onFocus = (e: FocusEvent) => {
-	const el = e.target as HTMLInputElement
-	el.select()
+const focusing = useFocus(input).focused
+
+const onFocus = () => {
 	hasChanged = false
 	initialDisplay = display.value
+
+	// TODO: This is a hack to make the input element select all text
+	setTimeout(() => input.value?.select(), 16)
 }
 
 const onInput = (e: Event) => {
@@ -208,27 +219,41 @@ const increment = (delta: number) => {
 	)
 	local.value += delta * speedMultiplierKey.value
 	local.value = scalar.clamp(local.value, validMin.value, validMax.value)
-	display.value = toFixed(local.value, prec)
+	display.value = toFixed(local.value, prec) + props.unit
 	hasChanged = true
 	emit('update:modelValue', local.value)
 }
 
 const onBlur = () => {
 	if (hasChanged) {
-		display.value = toFixed(props.modelValue, props.precision)
+		display.value = toFixed(props.modelValue, props.precision) + props.unit
 	} else {
 		// 変な文字を打ったときはhasChanged === falseなので、これでリセットをかける
 		display.value = initialDisplay
 	}
 }
 
-watchEffect(() => {
-	if (tweaking.value) {
-		display.value = props.modelValue.toFixed(tweakPrecision.value)
-	}
-})
+watch(
+	() =>
+		[
+			props.modelValue,
+			tweaking.value,
+			focusing.value,
+			tweakPrecision.value,
+		] as const,
+	([modelValue, tweaking, focusing]) => {
+		if (tweaking) {
+			display.value = modelValue.toFixed(tweakPrecision.value) + props.unit
+		} else if (focusing) {
+			display.value = toFixed(modelValue, props.precision)
+		} else {
+			display.value = modelValue.toFixed(props.precision) + props.unit
+		}
+	},
+	{flush: 'sync'}
+)
 
-const scaleOffset = ref(0)
+const scaleOffset = ref(0.0)
 
 const scaleAttrs = (offset: number) => {
 	const precision = unsignedMod(
@@ -312,7 +337,14 @@ window.addEventListener('touchstart', (e: TouchEvent) => {
 </script>
 
 <template>
-	<div ref="root" class="InputNumber" :class="{tweaking}" v-bind="$attrs">
+	<div
+		ref="root"
+		class="InputNumber"
+		:class="{tweaking}"
+		:data-horizontal-position="horizontalPosition"
+		:data-vertical-position="verticalPosition"
+		v-bind="$attrs"
+	>
 		<div
 			v-if="hasRange"
 			class="bar"
@@ -379,10 +411,12 @@ window.addEventListener('touchstart', (e: TouchEvent) => {
 	input-base()
 
 	input
-		position relative
 		text-align center
+		position relative
 		font-numeric()
 		pointer-events none
+		padding-left 0
+		padding-right 0
 
 .bar
 	top 0
@@ -397,7 +431,7 @@ window.addEventListener('touchstart', (e: TouchEvent) => {
 	height 100%
 	width 2px
 	right -1px
-	background var(--tq-color-inverse-primary)
+	background var(--tq-color-tinted-input-active)
 	hover-transition(opacity)
 
 	&:before
@@ -413,7 +447,7 @@ window.addEventListener('touchstart', (e: TouchEvent) => {
 
 .InputNumber:hover, .InputNumber:focus-within
 	.bar
-		background var(--tq-color-inverse-primary)
+		background var(--tq-color-tinted-input-active)
 </style>
 
 <style lang="stylus">

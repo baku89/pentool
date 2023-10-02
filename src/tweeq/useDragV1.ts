@@ -87,8 +87,7 @@ export default function useDraggable(
 
 			updatePosAndOrigin(e)
 			drag.isMousedown = true
-			drag.prevPos = vec2.clone(drag.pos)
-			drag.startPos = vec2.clone(drag.pos)
+			drag.prevPos = drag.startPos = drag.pos
 
 			// Fire onDragstart and onDrag
 			if (options.disableClick) {
@@ -111,7 +110,7 @@ export default function useDraggable(
 
 		function onPointerDrag(e: PointerEvent) {
 			updatePosAndOrigin(e)
-			drag.delta = vec2.sub(vec2.zero, drag.pos, drag.prevPos)
+			drag.delta = vec2.sub(drag.pos, drag.prevPos)
 
 			if (!drag.isDragging) {
 				// Determine whether dragging has start
@@ -123,7 +122,7 @@ export default function useDraggable(
 			}
 
 			options.onDrag && options.onDrag(drag)
-			drag.prevPos = vec2.clone(drag.pos)
+			drag.prevPos = drag.pos
 		}
 
 		function onPointerUp() {
@@ -139,9 +138,7 @@ export default function useDraggable(
 			// Reset
 			drag.isMousedown = false
 			drag.isDragging = false
-			drag.pos = vec2.zero
-			drag.startPos = vec2.zero
-			drag.delta = vec2.zero
+			drag.pos = drag.startPos = drag.delta = vec2.zero
 			window.removeEventListener('pointermove', onPointerDrag)
 		}
 	}

@@ -1,40 +1,18 @@
-<template>
-	<button
-		ref="buttonEl"
-		class="InputCubicBezier"
-		:class="{opened}"
-		v-bind="$attrs"
-		@click="opened = true"
-	>
-		<svg class="InputCubicBezier__icon" viewBox="0 0 1 1">
-			<path :d="easingPath" />
-		</svg>
-	</button>
-	<Popover ref="$button" v-model:open="opened" placement="bottom">
-		<div class="InputCubicBezier__popover-frame">
-			<InputCubicBezierPicker
-				:modelValue="modelValue"
-				@update:modelValue="$emit('update:modelValue', $event)"
-			/>
-		</div>
-	</Popover>
-</template>
-
 <script lang="ts" setup>
 import {computed, ref} from 'vue'
 
 import Popover from '../Popover.vue'
 import InputCubicBezierPicker from './InputCubicBezierPicker.vue'
-import {CubicBezier} from './types'
+import {CubicBezierValue} from './util'
 
 interface Props {
-	modelValue: CubicBezier
+	modelValue: CubicBezierValue
 }
 
 const props = defineProps<Props>()
 
-defineEmits<{
-	'update:modelValue': [CubicBezier]
+const emit = defineEmits<{
+	'update:modelValue': [CubicBezierValue]
 }>()
 
 defineOptions({
@@ -42,55 +20,72 @@ defineOptions({
 })
 
 const $button = ref<HTMLElement | null>(null)
-const opened = ref(false)
+const open = ref(false)
 
 const easingPath = computed(() => {
 	const [x1, y1, x2, y2] = props.modelValue
-
 	return `M 0,0 C ${x1},${y1} ${x2},${y2} 1,1`
 })
 </script>
 
-<style lang="stylus">
+<template>
+	<button
+		ref="$button"
+		class="InputCubicBezier"
+		:class="{open}"
+		v-bind="$attrs"
+		@click="open = true"
+	>
+		<svg class="icon" viewBox="0 0 1 1">
+			<path :d="easingPath" />
+		</svg>
+	</button>
+	<Popover v-model:open="open" :reference="$button">
+		<div class="floating">
+			<InputCubicBezierPicker
+				:modelValue="modelValue"
+				@update:modelValue="emit('update:modelValue', $event)"
+			/>
+		</div>
+	</Popover>
+</template>
+
+<style lang="stylus" scoped>
 @import '../common.styl'
 
 .InputCubicBezier
 	position relative
 	width var(--tq-input-height)
 	height var(--tq-input-height)
-	border-radius var(--tq-input-border-round)
+	border-radius var(--tq-input-border-radius)
+	overflow hidden
 	hover-transition(background)
-	color base16('05')
+	background var(--tq-color-primary-container)
 
-	&:focus
-		background base16('01')
+	&:hover, &.open
+		background var(--tq-color-tinted-input-active)
 
-	&:hover, &.opened
-		background base16('accent', 0.5)
+.icon
+	display block
+	position absolute
+	inset 2px
+	overflow visible
 
-	&__icon
-		margin $subcontrol-margin
-		width var(--tq-input-height)
-		height var(--tq-input-height)
-		border-radius var(--tq-input-border-round)
-		background var(--tq-color-primary)
+	path
+		transform scaleY(-1)
+		transform-origin 50% 50%
+		stroke-width 1.5
+		stroke var(--tq-color-primary)
+		stroke-linecap round
+		fill none
+		vector-effect non-scaling-stroke
 
-		path
-			transform scaleY(-1)
-			transform-origin 50% 50%
-			stroke-width 1.5
-			stroke var(--tq-color-text)
-			stroke-linecap round
-			fill none
-			vector-effect non-scaling-stroke
-
-	&__popover-frame
-		margin 0.5rem
-		width 15rem
-		height 15rem
-		border 1px solid $color-frame
-		border-radius $popup-round
-		glass-bg('pane')
-		position relative
-		box-shadow 0 0 20px 0 base16('00', 0.9)
+.floating
+	width var(--tq-popup-width)
+	height var(--tq-popup-width)
+	padding var(--tq-popup-padding)
+	border 1px solid var(--tq-color-pane-border)
+	border-radius var(--tq-popup-border-radius)
+	position relative
+	box-shadow 0 0 20px -15px var(--tq-color-shadow)
 </style>

@@ -20,9 +20,12 @@ withDefaults(defineProps<Props>(), {label: ''})
 	background var(--tq-color-primary-container)
 	color var(--md-sys-color-on-primary-container)
 	font-size inherit
-	hover-transition(background, collor)
+	hover-transition(background, color)
 
-	&:hover, &:focus-visible
+	&:focus-visible
+		background var(--tq-color-tinted-input-active)
+
+	&:hover
 		color var(--tq-color-on-primary)
 		background var(--tq-color-primary)
 </style>

@@ -5,8 +5,8 @@ import CommandPalette from './CommandPalette'
 import FloatingPane from './FloatingPane'
 import InputButton from './InputButton.vue'
 import InputCheckbox from './InputCheckbox'
-import InputColorPicker from './InputColorPicker'
-import InputCubicBezier from './InputCubicBezier'
+import {InputColor, InputColorPicker} from './InputColor'
+import {InputCubicBezier, InputCubicBezierPicker} from './InputCubicBezier'
 import InputDropdown from './InputDropdown.vue'
 import InputNumber from './InputNumber'
 import InputRadio from './InputRadio.vue'
@@ -27,9 +27,11 @@ export default {
 	CommandPalette,
 	FloatingPane,
 	InputButton,
+	InputColor,
 	InputColorPicker,
 	InputCheckbox,
 	InputCubicBezier,
+	InputCubicBezierPicker,
 	InputDropdown,
 	InputNumber,
 	InputRadio,

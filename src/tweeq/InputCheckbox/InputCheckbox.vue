@@ -75,6 +75,7 @@ function onInput(e: InputEvent) {
 		color var(--tq-color-primary)
 		line-height 1em
 		pointer-events none
+		hover-transition(box-shadow)
 
 	&__checkmark
 		position relative
@@ -100,7 +101,7 @@ function onInput(e: InputEvent) {
 	// Hover and Focus
 	&:hover &__frame,
 	&:focus-within &__frame
-		box-shadow inset 0 0 0 1px var(--tq-color-primary)
+		box-shadow 0 0 0 1px var(--tq-color-primary)
 		color var(--tq-color-primary)
 
 	// Label

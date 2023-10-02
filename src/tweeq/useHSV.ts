@@ -38,7 +38,11 @@ export function rgba2color(dict: RGBA, useAlpha: boolean): string {
 	return c.hex()
 }
 
-export function rgb2hsv({r, g, b}: RGB): HSV {
+export function rgb2hsv([r, g, b]: [number, number, number]): [
+	number,
+	number,
+	number,
+] {
 	const [h, s, v] = chroma.rgb(r * 255, g * 255, b * 255).hsv()
 	return {h: isNaN(h) ? 0 : h / 360, s, v}
 }

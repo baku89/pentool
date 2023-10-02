@@ -1,87 +1,104 @@
-<script lang="ts">
-import _ from 'lodash'
-import Regl from 'regl'
+<script lang="ts" setup>
+import {isEqual, mapValues} from 'lodash'
+import Regl, {DrawConfig} from 'regl'
 import REGL from 'regl'
-import {
-	computed,
-	defineComponent,
-	onMounted,
-	onUnmounted,
-	PropType,
-	ref,
-	watch,
-} from 'vue'
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 
-import {REGL_QUAD_DEFAULT} from './util'
-
-interface UniformsProp {
-	[name: string]: number[] | string
+const REGL_QUAD_DEFAULT: DrawConfig = {
+	vert: `
+	precision mediump float;
+	attribute vec2 position;
+	varying vec2 uv;
+	void main() {
+		uv = position / 2.0 + 0.5;
+		gl_Position = vec4(position, 0, 1);
+	}`,
+	attributes: {
+		position: [-1, -1, 1, -1, -1, 1, 1, 1],
+	},
+	depth: {
+		enable: false,
+	},
+	count: 4,
+	primitive: 'triangle strip',
 }
 
-export default defineComponent({
-	name: 'GlslCnavas',
-	props: {
-		fragmentString: {
-			type: String,
-			default: `
-				precision mediump float;
-				varying vec2 uv;
-				void main() { gl_FragColor = vec4(uv, 0, 1); }`,
-		},
-		uniforms: {
-			type: Object as PropType<UniformsProp>,
-			default: () => ({}),
-		},
-	},
-	setup(props) {
-		const canvas = ref<null | HTMLCanvasElement>(null)
+interface Props {
+	fragmentString: string
+	uniforms: Record<
+		string,
+		number | number[] | readonly [number, number, number, number]
+	>
+}
 
-		const regl = ref<null | REGL.Regl>(null)
-
-		onMounted(() => {
-			if (!canvas.value) {
-				return
-			}
-
-			regl.value = Regl({
-				attributes: {
-					depth: false,
-					premultipliedAlpha: false,
-				},
-				canvas: canvas.value,
-			})
-		})
-
-		onUnmounted(() => regl.value?.destroy())
-
-		const uniformKeys = ref(_.keys(props.uniforms))
-
-		const drawCommand = computed(() => {
-			if (!regl.value) return null
-
-			const prop = regl.value.prop as any
-
-			const uniforms = _.fromPairs(uniformKeys.value.map(k => [k, prop(k)]))
-
-			return regl.value({
-				...REGL_QUAD_DEFAULT,
-				frag: props.fragmentString,
-				uniforms,
-			})
-		})
-
-		watch(
-			() => [regl.value, drawCommand.value, props.uniforms],
-			() => {
-				drawCommand.value && drawCommand.value(props.uniforms)
-			}
-		)
-
-		return {canvas}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	fragmentString: `
+		precision mediump float;
+		varying vec2 uv;
+		void main() { gl_FragColor = vec4(uv, 0, 1); }`,
+	uniforms: () => ({}),
 })
+
+const $canvas = ref<null | HTMLCanvasElement>(null)
+
+const regl = ref<null | REGL.Regl>(null)
+
+onMounted(() => {
+	if (!$canvas.value) return
+
+	regl.value = Regl({
+		attributes: {
+			depth: false,
+			premultipliedAlpha: false,
+		},
+		canvas: $canvas.value,
+	})
+})
+
+onUnmounted(() => regl.value?.destroy())
+
+const reglUniforms = ref<Record<string, any>>({})
+
+watch(
+	() => [props.uniforms, regl.value] as const,
+	([uniforms, regl]) => {
+		const keys = Object.keys(uniforms)
+		const oldKeys = Object.keys(reglUniforms.value)
+
+		if (isEqual(keys, oldKeys)) return
+		if (!regl) return
+
+		const prop = regl.prop as any
+
+		reglUniforms.value = mapValues(props.uniforms, (_, key) => prop(key))
+	},
+	{immediate: true}
+)
+
+const drawCommand = computed(() => {
+	if (!regl.value) return null
+
+	return regl.value({
+		...REGL_QUAD_DEFAULT,
+		frag: props.fragmentString,
+		uniforms: reglUniforms.value,
+	})
+})
+
+watch(
+	() => [drawCommand.value, props.uniforms] as const,
+	([draw, uniforms]) => {
+		// TODO: Fix this
+		try {
+			draw && draw(uniforms)
+		} catch {
+			return
+		}
+	},
+	{immediate: true}
+)
 </script>
 
 <template>
-	<canvas ref="canvas" />
+	<canvas ref="$canvas" />
 </template>

@@ -20,7 +20,6 @@ hover-transition(prop = all)
 
 input-base()
 	position relative
-	padding 4px 12px
 	width 100%
 	height var(--tq-input-height)
 	border-radius var(--tq-input-border-radius)
@@ -44,6 +43,7 @@ input-base()
 		--tq-color-primary-container var(--tq-color-error-container)
 
 	input
+		padding 4px 12px
 		width 100%
 		user-select none
 
@@ -53,6 +53,34 @@ input-base()
 		&:focus::selection
 			background var(--tq-color-primary)
 			color var(--tq-color-on-primary)
+
+	&.minimal
+		background transparent
+
+		&:hover
+			box-shadow 0 0 0 1px var(--tq-color-pane-border)
+
+		&:focus-within, &.tweaking
+			box-shadow 0 0 0 1px var(--tq-color-primary)
+
+	&[data-horizontal-position=middle], &[data-vertical-position=middle]
+		border-radius 0
+
+	&[data-horizontal-position=left]
+		border-top-right-radius 0
+		border-bottom-right-radius 0
+
+	&[data-horizontal-position=right]
+		border-top-left-radius 0
+		border-bottom-left-radius 0
+
+	&[data-vertical-position=top]
+		border-bottom-right-radius 0
+		border-bottom-left-radius 0
+
+	&[data-vertical-position=bottom]
+		border-top-left-radius 0
+		border-top-right-radius 0
 
 tooltip()
 	padding 4px 11px
@@ -67,6 +95,7 @@ input-overlay()
 	z-index 1000
 	width 100%
 	height 100%
+	pointer-events none
 
 	.thin, .bold, .extra-bold
 		fill none

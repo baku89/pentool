@@ -1,7 +1,47 @@
+<script lang="ts" setup generic="T">
+import _ from 'lodash'
+import {computed, ref} from 'vue'
+
+import {Labelizer, useLabelizer} from './types'
+
+interface CompleteOption {
+	value: T
+	label: string
+}
+
+interface Props {
+	modelValue: T
+	options: T[]
+	labels?: string[]
+	labelizer?: Labelizer<T>
+}
+
+const props = withDefaults(defineProps<Props>(), {})
+
+const labelizer = useLabelizer(props)
+
+const emit = defineEmits<{
+	'update:modelValue': [T]
+}>()
+
+const id = ref(_.uniqueId('InputRadio_'))
+
+const completeOptions = computed<CompleteOption[]>(() => {
+	return props.options.map(op => {
+		return {value: op, label: labelizer.value(op)}
+	})
+})
+
+function onChange(index: number) {
+	const newValue = completeOptions.value[index].value
+	emit('update:modelValue', newValue)
+}
+</script>
+
 <template>
 	<ul class="InputRadio">
 		<li
-			v-for="({value, label}, index) in completeItems"
+			v-for="({value, label}, index) in completeOptions"
 			:key="label"
 			class="list"
 		>
@@ -25,46 +65,6 @@
 		</li>
 	</ul>
 </template>
-
-<script lang="ts" setup generic="T">
-import {capital} from 'case'
-import _ from 'lodash'
-import {computed, ref} from 'vue'
-
-interface CompleteItem {
-	value: T
-	label: string
-}
-
-type Labelizer = (v: T) => string
-
-interface Props {
-	modelValue: T
-	items: T[]
-	labelize?: Labelizer
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	labelize: (v: T) => capital(v + ''),
-})
-
-const emit = defineEmits<{
-	'update:modelValue': [T]
-}>()
-
-const id = ref(_.uniqueId('InputRadio_'))
-
-const completeItems = computed<CompleteItem[]>(() => {
-	return props.items.map(it => {
-		return {value: it, label: props.labelize(it)}
-	})
-})
-
-function onChange(index: number) {
-	const newValue = completeItems.value[index].value
-	emit('update:modelValue', newValue)
-}
-</script>
 
 <style lang="stylus" scoped>
 @import './common.styl'
@@ -102,7 +102,7 @@ label
 	hover-transition(background, color)
 
 	&:hover
-		background var(--tq-color-inverse-primary)
+		background var(--tq-color-tinted-input-active)
 
 	&.active
 		background var(--tq-color-primary)

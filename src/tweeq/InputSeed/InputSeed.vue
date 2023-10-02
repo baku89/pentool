@@ -91,17 +91,23 @@ export default defineComponent({
 	padding 0
 	width var(--tq-input-height)
 	height var(--tq-input-height)
-	border-radius var(--tq-input-border-round)
+	border-radius var(--tq-input-border-radius)
 	background-size 100% 100%
-	color var(--tq-color-text)
+	color var(--tq-color-primary)
 	text-align center
 	cursor pointer
+
+	hover-transition(background, color)
 
 	&__icon
 		width var(--tq-input-height)
 		height var(--tq-input-height)
 		transition transform 0.3s cubic-bezier(0.19, 1.6, 0.42, 1)
 
-	&:hover, &:focus
-		color var(--tq-color-primary)
+	&:focus
+		background var(--tq-color-primary-container)
+
+	&:hover
+		background var(--tq-color-primary)
+		color var(--tq-color-on-primary)
 </style>

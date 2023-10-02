@@ -6,26 +6,20 @@ import {computed, Ref, ref, watch} from 'vue'
 import InputString from './InputString'
 import Popover from './Popover.vue'
 import SvgIcon from './SvgIcon.vue'
+import {InputTheme, Labelizer, useLabelizer} from './types'
 import {unsignedMod} from './util'
-
-type Labelizer = (v: T) => string
 
 interface Props {
 	modelValue: T
-	items: T[]
+	options: T[]
 	labels?: string[]
-	labelize?: Labelizer
+	labelizer?: Labelizer<T>
+	theme?: InputTheme
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {})
 
-const labelize = computed(() => {
-	if (props.labelize) return props.labelize
-	return (v: T) => {
-		const index = props.items.indexOf(v)
-		return props.labels?.[index] ?? String(v)
-	}
-})
+const labelizer = useLabelizer(props)
 
 const emit = defineEmits<{
 	'update:modelValue': [T]
@@ -41,14 +35,14 @@ const $root = ref<null | HTMLElement>(null)
 const {width: inputWidth} = useElementSize($root)
 
 const startValue = ref(props.modelValue) as Ref<T>
-const display = ref(labelize.value(props.modelValue))
+const display = ref(labelizer.value(props.modelValue))
 const displayEdited = ref(false)
 
 watch(
 	() => [open.value, props.modelValue] as const,
 	([open, modelValue]) => {
 		if (open) return
-		display.value = labelize.value(modelValue)
+		display.value = labelizer.value(modelValue)
 		displayEdited.value = false
 	},
 	{flush: 'post'}
@@ -60,17 +54,17 @@ watch(open, (open, oldOpen) => {
 	}
 })
 
-const filteredItems = computed(() => {
-	if (!display.value || !displayEdited.value) return props.items
+const filteredOptions = computed(() => {
+	if (!display.value || !displayEdited.value) return props.options
 
-	return search(display.value, props.items as any[], {
-		keySelector: labelize.value,
+	return search(display.value, props.options as any[], {
+		keySelector: labelizer.value,
 	}) as T[]
 })
 
-watch(filteredItems, items => {
-	if (items.length === 1 || !items.includes(props.modelValue)) {
-		emit('update:modelValue', items[0])
+watch(filteredOptions, options => {
+	if (!options.includes(props.modelValue)) {
+		emit('update:modelValue', options[0])
 	}
 })
 
@@ -82,11 +76,11 @@ function onBlur() {
 	open.value = false
 }
 
-function onSelect(item: T, e: PointerEvent) {
+function onSelect(option: T, e: PointerEvent) {
 	if (e.type === 'pointerdown' && e.isPrimary) {
 		open.value = false
 	}
-	emit('update:modelValue', item)
+	emit('update:modelValue', option)
 }
 
 function onUnselect() {
@@ -94,11 +88,11 @@ function onUnselect() {
 }
 
 function onPressArrow(isUp: boolean) {
-	const length = filteredItems.value.length
-	const index = filteredItems.value.indexOf(props.modelValue)
+	const length = filteredOptions.value.length
+	const index = filteredOptions.value.indexOf(props.modelValue)
 	const newIndex = unsignedMod(index + (isUp ? -1 : 1), length)
-	const item = filteredItems.value[newIndex]
-	emit('update:modelValue', item)
+	const option = filteredOptions.value[newIndex]
+	emit('update:modelValue', option)
 }
 </script>
 
@@ -106,6 +100,7 @@ function onPressArrow(isUp: boolean) {
 	<div ref="$root" class="InputDropdown" :class="{open}" v-bind="$attrs">
 		<InputString
 			v-model="display"
+			:theme="theme"
 			class="input"
 			@click="onFocus"
 			@blur="onBlur"
@@ -130,7 +125,7 @@ function onPressArrow(isUp: boolean) {
 				@pointerleave="open && onUnselect()"
 			>
 				<li
-					v-for="(item, index) in filteredItems"
+					v-for="(item, index) in filteredOptions"
 					:key="index"
 					class="option"
 					:class="{
@@ -141,7 +136,7 @@ function onPressArrow(isUp: boolean) {
 					@pointerenter="onSelect(item, $event)"
 				>
 					<slot name="option" :item="item">
-						{{ labelize(item) }}
+						{{ labelizer(item) }}
 					</slot>
 				</li>
 			</ul>
@@ -164,7 +159,6 @@ $right-arrow-width = 1em
 	&.open .input
 		background var(--tq-color-primary-container)
 
-
 .select
 	margin 1px
 	padding 0
@@ -177,12 +171,12 @@ $right-arrow-width = 1em
 	height var(--tq-input-height)
 	line-height var(--tq-input-height)
 
-.option.startValue
-	background var(--tq-color-primary-container)
+	&.startValue
+		background var(--tq-color-primary-container)
 
-.option.active
-	background var(--tq-color-primary)
-	color var(--tq-color-on-primary)
+	&.active
+		background var(--tq-color-primary)
+		color var(--tq-color-on-primary)
 
 .chevron
 	position absolute
@@ -193,6 +187,6 @@ $right-arrow-width = 1em
 	transform-origin 50% 50%
 	pointer-events none
 	fill none
-	stroke var(--tq-color-primary)
+	stroke var(--md-sys-color-outline-variant)
 	hover-transition(transform)
 </style>
