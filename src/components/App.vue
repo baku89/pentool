@@ -2,6 +2,7 @@
 import {useCssVar, useTitle} from '@vueuse/core'
 import * as acorn from 'acorn'
 import {mat2d, scalar, vec2} from 'linearly'
+import Tq, {ErrorInfo, useTweeq} from 'tweeq'
 import {
 	computed,
 	nextTick,
@@ -20,7 +21,6 @@ import paper from 'paper'
 import PaperOffset from 'paperjs-offset'
 PaperOffset(paper)
 
-import Tq, {ErrorInfo, useTweeq} from '@/tweeq'
 import {useCommentMeta} from '@/use/useCommentMeta'
 import {useZUI} from '@/use/useZUI'
 import {replaceTextBetween} from '@/utils'
@@ -453,8 +453,6 @@ window.addEventListener('drop', async e => {
 </template>
 
 <style lang="stylus" scoped>
-@import '../tweeq/common.styl'
-
 .title
 	.zoom
 		font-numeric()
@@ -517,5 +515,3 @@ window.addEventListener('drop', async e => {
 		border 0
 		border-radius 0.8rem
 </style>
-@/tweeq/useAppStorage ../tweeq/Tabs
-@/tweeq/FloatingPane@/tweeq/MonacoEditor@/tweeq/useAppStorage

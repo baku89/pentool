@@ -23,7 +23,8 @@
 		"paths": {
 			"@/*": ["./src/*"],
 			"bndr-js": ["./dev_modules/bndr-js/src/index.ts"],
-			"linearly": ["./dev_modules/linearly/src/index.ts"]
+			"linearly": ["./dev_modules/linearly/src/index.ts"],
+			"tweeq": ["./dev_modules/tweeq/src/index.ts"]
 		}
 	},
 	"include": ["src"]

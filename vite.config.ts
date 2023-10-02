@@ -59,6 +59,12 @@ export default defineConfig({
 					new URL('./dev_modules/linearly/src', import.meta.url)
 				),
 			},
+			{
+				find: 'tweeq',
+				replacement: fileURLToPath(
+					new URL('./dev_modules/tweeq/src', import.meta.url)
+				),
+			},
 		],
 	},
 })
