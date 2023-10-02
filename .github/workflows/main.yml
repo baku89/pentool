@@ -30,15 +30,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Update submodules
+        id: update
+        run: git submodule update --remote --recursive
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm install
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
+      - name: Test
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: test
       - name: Build
-        run: npm run build
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
