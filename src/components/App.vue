@@ -407,7 +407,7 @@ window.addEventListener('drop', async e => {
 		<Tq.FloatingPane
 			name="timeline"
 			icon="timeline"
-			:position="{anchor: 'bottom', height: 200}"
+			:position="{anchor: 'left', width: 400}"
 		>
 			<Tq.ParameterGrid>
 				<Tq.Parameter label="Distance">
