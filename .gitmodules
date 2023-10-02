@@ -4,3 +4,6 @@
 [submodule "bndr-js"]
 	path = dev_modules/bndr-js
 	url = https://github.com/baku89/bndr-js
+[submodule "tweeq"]
+	path = dev_modules/tweeq
+	url = https://github.com/baku89/tweeq
