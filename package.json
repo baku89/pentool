@@ -12,6 +12,9 @@
 		"preversion": "npm run test",
 		"postversion": "git push && git push --tags"
 	},
+	"workspaces": [
+		"dev_modules/*"
+	],
 	"devDependencies": {
 		"@material/material-color-utilities": "^0.2.7",
 		"@traptitech/markdown-it-katex": "^3.6.0",
